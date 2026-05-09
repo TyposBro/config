@@ -432,9 +432,9 @@ if ! did codex; then
 fi
 
 # ── 26. Pi coding agent ─────────────────────────────────────────────────────
+echo "==> Syncing pi coding agent setup..."
+bash "$REPO/pi/setup.sh"
 if ! did pi; then
-	echo "==> Installing pi coding agent setup..."
-	bash "$REPO/pi/setup.sh"
 	mark pi
 fi
 

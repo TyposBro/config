@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.70.6",
+  "lastChangelogVersion": "0.74.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "xhigh",
   "packages": [
     "npm:pi-markdown-preview",
     "npm:pi-simple",
@@ -12,5 +12,6 @@
     "npm:pi-web-access",
     "npm:@plannotator/pi-extension",
     "npm:pi-lens"
-  ]
+  ],
+  "hideThinkingBlock": true
 }

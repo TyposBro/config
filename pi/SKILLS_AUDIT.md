@@ -1,10 +1,10 @@
-# Skills audit — 2026-04-30
+# Skills audit — 2026-05-09
 
 Loaded user skill root: `~/.agents/skills`.
 
 ## Result
 
-Kept 13 skills:
+Kept 15 skills:
 
 - `agents-sdk`
 - `caveman`
@@ -15,10 +15,17 @@ Kept 13 skills:
 - `cloudflare`
 - `cloudflare-email-service`
 - `durable-objects`
+- `finish`
+- `finish-plan`
 - `sandbox-sdk`
 - `web-perf`
 - `workers-best-practices`
 - `wrangler`
+
+Added dedicated autonomy skills:
+
+- `finish` for open-ended end-to-end implement/debug/fix/refactor tasks.
+- `finish-plan` for explicit plan/checklist/TODO/roadmap completion.
 
 Removed duplicate:
 

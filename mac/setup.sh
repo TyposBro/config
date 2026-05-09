@@ -61,9 +61,9 @@ if ! did claude-code; then
 	mark claude-code
 fi
 
+echo "==> Syncing pi coding agent setup..."
+bash "$REPO/pi/setup.sh"
 if ! did pi; then
-	echo "==> Installing pi coding agent setup..."
-	bash "$REPO/pi/setup.sh"
 	mark pi
 fi
 

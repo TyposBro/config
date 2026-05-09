@@ -100,7 +100,7 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call this automatically. It manages non-secret settings + skills only; auth/session data stays local.
+Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret settings, global rules, and skills (`finish` + `finish-plan` included); auth/session data stays local.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 

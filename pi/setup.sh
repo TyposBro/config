@@ -5,7 +5,8 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MARK_DIR="$HOME/.local/state/config-pi"
-PI_VERSION="0.70.6"
+PI_PACKAGE="@earendil-works/pi-coding-agent"
+PI_VERSION="0.74.0"
 
 mkdir -p "$MARK_DIR"
 
@@ -35,16 +36,26 @@ ensure_node() {
 	fi
 }
 
-if ! did pi-cli; then
-	echo "==> Installing pi coding agent @${PI_VERSION}..."
+CURRENT_PI_VERSION=""
+if command -v pi >/dev/null 2>&1; then
+	CURRENT_PI_VERSION="$(pi --version 2>&1 | sed -n 's/.*\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*/\1/p' | head -n1 || true)"
+fi
+
+if [ "$CURRENT_PI_VERSION" != "$PI_VERSION" ]; then
+	echo "==> Installing pi coding agent ${PI_PACKAGE}@${PI_VERSION}..."
 	ensure_node
-	npm install -g "@mariozechner/pi-coding-agent@${PI_VERSION}"
+	npm install -g "${PI_PACKAGE}@${PI_VERSION}"
+	mark pi-cli
+elif ! did pi-cli; then
 	mark pi-cli
 fi
 
-echo "==> Installing pi global settings (no auth/session secrets)..."
+echo "==> Installing pi global settings/rules (no auth/session secrets)..."
 mkdir -p "$HOME/.pi/agent"
 cp "$DIR/agent/settings.json" "$HOME/.pi/agent/settings.json"
+if [ -f "$DIR/agent/AGENTS.md" ]; then
+	cp "$DIR/agent/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
+fi
 
 if [ -d "$DIR/skills" ]; then
 	echo "==> Syncing global skills..."
@@ -54,6 +65,8 @@ fi
 
 cat <<'EOF'
 ==> Pi setup done.
+    Managed global rules: ~/.pi/agent/AGENTS.md
+    Managed skills: ~/.agents/skills/
     Secrets intentionally not managed: ~/.pi/agent/auth.json
     Sessions intentionally not managed: ~/.pi/agent/sessions/
     First run may install packages from settings.json.
