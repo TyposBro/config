@@ -63,10 +63,26 @@ if [ -d "$DIR/skills" ]; then
 	rsync -a --delete "$DIR/skills/" "$HOME/.agents/skills/"
 fi
 
+if [ -d "$DIR/extensions" ]; then
+	echo "==> Syncing global extensions..."
+	mkdir -p "$HOME/.pi/agent/extensions"
+	for extension in "$DIR"/extensions/*; do
+		[ -e "$extension" ] || continue
+		name="$(basename "$extension")"
+		if [ -d "$extension" ]; then
+			mkdir -p "$HOME/.pi/agent/extensions/$name"
+			rsync -a --delete "$extension/" "$HOME/.pi/agent/extensions/$name/"
+		elif [ "${extension##*.}" = "ts" ]; then
+			cp "$extension" "$HOME/.pi/agent/extensions/$name"
+		fi
+	done
+fi
+
 cat <<'EOF'
 ==> Pi setup done.
     Managed global rules: ~/.pi/agent/AGENTS.md
     Managed skills: ~/.agents/skills/
+    Managed extensions: ~/.pi/agent/extensions/
     Secrets intentionally not managed: ~/.pi/agent/auth.json
     Sessions intentionally not managed: ~/.pi/agent/sessions/
     First run may install packages from settings.json.
