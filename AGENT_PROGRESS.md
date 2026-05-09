@@ -10,7 +10,7 @@ Copy the current Pi autonomous finish/finish-plan setup into the `nixos-config` 
 - [x] Align Pi settings/install version where needed.
 - [x] Update docs for restore behavior.
 - [x] Validate shell scripts, JSON, and skill discovery.
-- [ ] Commit stable logical chunk.
+- [x] Commit stable logical chunk.
 - [x] Record final state.
 
 ## Completed work
@@ -26,7 +26,7 @@ Copy the current Pi autonomous finish/finish-plan setup into the `nixos-config` 
 - Validated scripts, JSON, skill discovery, temp-home setup sync, and whitespace.
 
 ## Remaining work
-- Commit stable logical chunk.
+- None.
 
 ## Tests run
 - `git status --short`
@@ -40,10 +40,10 @@ Copy the current Pi autonomous finish/finish-plan setup into the `nixos-config` 
 - `shellcheck pi/setup.sh mac/setup.sh linux/kubuntu/setup.sh` — not run because `shellcheck` is not installed
 
 ## Commits
-- None yet.
+- `2cc66fb` — `feat(pi): sync finish skills setup`
 
 ## Blockers
 - None.
 
 ## Exact next action
-- Commit the dotfiles Pi setup changes.
+- Done; optional next user action is `git push` when ready.
