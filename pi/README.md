@@ -28,11 +28,14 @@ Clean marker + rerun install step:
 
 ## Current audit
 
-Removed duplicate skill:
+Pi is locked down to approved/custom resources only:
 
-- `compress` duplicated `caveman-compress` purpose/scripts.
-- Kept `caveman-compress` because name matches trigger family and has README/SECURITY.
+- No third-party Pi packages in `agent/settings.json` (`packages: []`).
+- Only `gplay-cli` is managed under `skills/` / `~/.agents/skills`.
+- Custom Pi rules and prompt commands remain under `~/.pi/agent/`.
+- Local custom extensions remain under `~/.pi/agent/extensions/`.
+- Ralph state/project dirs are not managed by this setup and were left intact.
 
 Backups:
 
-- `pi/backups/<timestamp>/` contains pre-clean snapshot of non-secret settings + skills.
+- `pi/backups/<timestamp>/` contains pre-clean snapshots of non-secret settings + skills.

@@ -1,16 +1,10 @@
 {
-  "lastChangelogVersion": "0.70.6",
+  "lastChangelogVersion": "0.74.0",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "medium",
-  "packages": [
-    "npm:pi-markdown-preview",
-    "npm:pi-simple",
-    "npm:pi-subagents",
-    "npm:taskplane",
-    "npm:pi-mcp-adapter",
-    "npm:pi-web-access",
-    "npm:@plannotator/pi-extension",
-    "npm:pi-lens"
-  ]
+  "defaultModel": "gpt-5.3-codex-spark",
+  "defaultThinkingLevel": "xhigh",
+  "packages": [],
+  "transport": "websocket",
+  "hideThinkingBlock": true,
+  "quietStartup": true
 }
