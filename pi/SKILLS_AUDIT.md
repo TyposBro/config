@@ -1,38 +1,36 @@
-# Skills audit — 2026-05-09
+# Skills audit — 2026-05-10
 
 Loaded user skill root: `~/.agents/skills`.
 
 ## Result
 
-Kept 15 skills:
+Kept 9 skills:
 
-- `agents-sdk`
 - `caveman`
+- `cloudflare`
+- `cloudflare-email-service`
+- `durable-objects`
+- `agents-sdk`
+- `gplay-cli`
+- `sandbox-sdk`
+- `workers-best-practices`
+- `wrangler`
+
+Removed from managed/live configs:
+
 - `caveman-commit`
 - `caveman-compress`
 - `caveman-help`
 - `caveman-review`
-- `cloudflare`
-- `cloudflare-email-service`
-- `durable-objects`
 - `finish`
 - `finish-plan`
-- `sandbox-sdk`
 - `web-perf`
-- `workers-best-practices`
-- `wrangler`
-
-Added dedicated autonomy skills:
-
-- `finish` for open-ended end-to-end implement/debug/fix/refactor tasks.
-- `finish-plan` for explicit plan/checklist/TODO/roadmap completion.
-
-Removed duplicate:
-
-- `compress`
 
 ## Why
 
-`compress` and `caveman-compress` had the same purpose and identical `scripts/` implementation. `caveman-compress` is better canonical name because it matches the caveman skill family and includes extra `README.md` + `SECURITY.md`.
+User request narrowed active global skills to:
+- `caveman` (core mode)
+- `gplay-cli` (Android publishing CLI workflows)
+- `cloudflare` and related Cloudflare development skill stack
 
-No other exact duplicate skill implementations found.
+No duplicate skill implementations were retained after cleanup.

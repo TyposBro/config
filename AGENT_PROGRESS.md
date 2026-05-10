@@ -1,6 +1,42 @@
 # AGENT_PROGRESS.md
 
 ## Current Task
+Unify agent runtime/state directories under `~/.agents` (`pi-lens` and `~/.claude/skills`) and track those configs in this repo.
+
+## Current Checklist
+- [x] Migrate existing `~/.pi-lens` directory into `~/.agents/pi-lens`.
+- [x] Replace `~/.pi-lens` with compatibility symlink to `~/.agents/pi-lens`.
+- [x] Set `PILENS_DATA_DIR=$HOME/.agents/pi-lens/projects` in shell configs.
+- [x] Set up `~/nixos-config/claude/setup.sh` and migrate `~/.claude/skills` to `~/.agents/claude/skills`.
+- [x] Update docs for the centralized pi-lens path.
+
+## Current Completed Work
+- Migrated `~/.pi-lens` state directory into `~/.agents/pi-lens` and replaced it with a symlink for compatibility.
+- Added `PILENS_DATA_DIR` to interactive shell startup configs (`mac/config/fish/config.fish`, `home/shared/shell.nix`) so pi-lens state remains centralized.
+- Added `claude/setup.sh` and wired `mac/setup.sh` + `linux/kubuntu/setup.sh` to sync `~/nixos-config/claude/skills` into `~/.agents/claude/skills`, with `~/.claude/skills` as a compatibility symlink.
+- Updated docs (`pi/README.md`) to note the centralization convention.
+- Skills cleanup from previous task is already complete in `~/.agents/skills` and `pi/skills`.
+
+## Current Tests Run
+- `ls /Users/typosbro/.agents/skills`
+- `ls /Users/typosbro/.pi/agent/skills`
+- `ls /Users/typosbro/nixos-config/pi/skills`
+- Verified `~/.pi-lens` now points to `~/.agents/pi-lens`.
+- Verified `PILENS_DATA_DIR` values and shell config updates.
+- Ran `bash /Users/typosbro/nixos-config/claude/setup.sh` with temporary HOME to validate symlink creation and sync.
+
+## Current Commits
+- Not committed yet (awaiting your preference).
+
+## Current Blockers
+- None.
+
+## Current Exact Next Action
+- Optional: run `/Users/typosbro/nixos-config/pi/setup.sh --clean` or `~/config/pi/setup.sh --clean` if you want to re-sync managed files, then restart shell to pick up `PILENS_DATA_DIR`.
+
+---
+
+## Previous Task
 Add a Pi Ralph-loop automation extension that can run milestone implementation/review cycles in fresh contexts with medium implementation thinking and xhigh review thinking.
 
 ## Current Checklist

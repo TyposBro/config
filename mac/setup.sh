@@ -67,6 +67,9 @@ if ! did pi; then
 	mark pi
 fi
 
+echo "==> Syncing Claude skills setup..."
+bash "$REPO/claude/setup.sh"
+
 FISH_PATH="$(command -v fish)"
 if [ "$(dscl . -read "/Users/$(whoami)" UserShell | awk '{print $2}')" != "$FISH_PATH" ]; then
 	echo "==> Setting fish as default shell..."

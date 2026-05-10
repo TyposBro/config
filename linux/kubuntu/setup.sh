@@ -438,6 +438,9 @@ if ! did pi; then
 	mark pi
 fi
 
+echo "==> Syncing Claude skills setup..."
+bash "$REPO/claude/setup.sh"
+
 # ── 27. T3 Code (AppImage from pingdotgg/t3code) ─────────────────────────────
 if ! did t3-code; then
 	echo "==> Installing T3 Code..."

@@ -18,6 +18,8 @@ if status is-interactive
     set -gx ANDROID_HOME $HOME/Library/Android/sdk
     set -gx JAVA_HOME (/usr/libexec/java_home -v 17 2>/dev/null)
     set -gx HOMEBREW_CASK_OPTS --no-quarantine
+    # Keep pi-lens data under ~/.agents
+    set -gx PILENS_DATA_DIR "$HOME/.agents/pi-lens/projects"
 
     # Aliases
     alias ll "ls -la"

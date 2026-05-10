@@ -31,21 +31,37 @@ Clean marker + rerun install step:
 ~/config/pi/setup.sh --clean
 ```
 
+For pi-lens cleanup, set project cache root to avoid per-repo `~/.pi-lens` state:
+
+```bash
+export PILENS_DATA_DIR="$HOME/.agents/pi-lens/projects"
+```
+
+(Managed shell configs in `home/shared/shell.nix` and `mac/config/fish/config.fish` set this automatically for interactive shells.)
+
 ## Current audit
 
-Kept dedicated autonomy skills:
+Kept skills in `pi/skills`:
 
-- `finish` — open-ended end-to-end implement/debug/fix/refactor work with `AGENT_PROGRESS.md`
-- `finish-plan` — explicit plan/checklist/TODO/roadmap completion with checkpoint commits/progress
+- `caveman`
+- `cloudflare`
+- `cloudflare-email-service`
+- `durable-objects`
+- `agents-sdk`
+- `gplay-cli`
+- `sandbox-sdk`
+- `workers-best-practices`
+- `wrangler`
+
+Removed to keep the set focused:
+
+- `caveman-commit`, `caveman-compress`, `caveman-help`, `caveman-review`
+- `finish`, `finish-plan`
+- `web-perf`
 
 Managed automation extension:
 
 - `ralph-loop` — `/ralph <plan.md>` runs one milestone at a time in fresh Pi subprocess sessions: medium/default implementation, xhigh review, then next milestone. Use `/ralph-status` to inspect the latest run.
-
-Removed duplicate skill:
-
-- `compress` duplicated `caveman-compress` purpose/scripts.
-- Kept `caveman-compress` because name matches trigger family and has README/SECURITY.
 
 Backups:
 
