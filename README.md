@@ -16,7 +16,7 @@ mac/
   setup.sh    # idempotent setup — safe to re-run
   defaults.sh # macOS system settings (dock, finder, key repeat)
   config/     # fish, ghostty, starship dotfiles
-pi/           # pi coding-agent settings + skills (no auth/session secrets)
+pi/           # pi coding-agent settings/extensions (skills live in ~/agent-memory)
 ```
 
 ## macOS
@@ -58,7 +58,7 @@ Step names: `configs`, `fish-theme`, `defaults`, `rust`, `claude-code`, `pi`.
 | macOS defaults                     | `mac/defaults.sh` (`defaults write`)      |
 | Rust toolchain                     | `rustup`                                  |
 | Claude Code CLI                    | `claude.ai/install.sh`                    |
-| Pi + skills                        | `pi/setup.sh`                             |
+| Pi settings/extensions             | `pi/setup.sh`                             |
 | Infisical CLI                      | `mac/Brewfile`                            |
 
 ## Linux (NixOS)
@@ -100,7 +100,7 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call this automatically. It manages non-secret settings + skills only; auth/session data stays local.
+Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret Pi settings, global rules, and extensions (`/ralph` milestone automation included); auth/session data stays local. Global harness skills live in `~/agent-memory/skills` and are linked into `~/.agents/skills` / `~/.claude/skills`.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 

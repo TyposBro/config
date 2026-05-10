@@ -22,6 +22,7 @@ did() { [ -f "$MARK_DIR/$1" ]; }
 mark() { touch "$MARK_DIR/$1"; }
 
 echo "==> Installing packages (brew bundle)..."
+export HOMEBREW_CASK_OPTS="--no-quarantine"
 brew bundle --file="$DIR/Brewfile"
 
 if ! did configs; then
@@ -60,11 +61,14 @@ if ! did claude-code; then
 	mark claude-code
 fi
 
+echo "==> Syncing pi coding agent setup..."
+bash "$REPO/pi/setup.sh"
 if ! did pi; then
-	echo "==> Installing pi coding agent setup..."
-	bash "$REPO/pi/setup.sh"
 	mark pi
 fi
+
+echo "==> Linking Claude skills from agent-memory..."
+bash "$REPO/claude/setup.sh"
 
 FISH_PATH="$(command -v fish)"
 if [ "$(dscl . -read "/Users/$(whoami)" UserShell | awk '{print $2}')" != "$FISH_PATH" ]; then

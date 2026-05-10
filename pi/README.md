@@ -2,17 +2,24 @@
 
 Reproducible pi coding-agent setup for Kubuntu + macOS.
 
+`~/config/pi` manages Pi installation/settings/extensions. Agent/harness memory and global skills live in `~/agent-memory`; runtime locations under `~/.pi` and `~/.agents` should be treated as generated mirrors, not edited directly.
+
 Managed:
 
 - `agent/settings.json` — global pi settings/packages
-- `skills/` — global `~/.agents/skills` without duplicates
-- `setup.sh` — installs pi CLI and syncs settings/skills
+- `agent/AGENTS.md` — global autonomy/progress/default behavior rules copied to `~/.pi/agent/AGENTS.md`
+- global skills link — `~/.agents/skills` points to `~/agent-memory/skills` when agent-memory is present
+- `extensions/` — global Pi extensions copied/synced to `~/.pi/agent/extensions`
+- `setup.sh` — installs Pi CLI and links/syncs settings/rules/extensions; skills are linked from agent-memory
 
 Not managed:
 
 - `~/.pi/agent/auth.json` — provider/OAuth secrets
 - `~/.pi/agent/sessions/` — local session history
 - `~/.pi/agent/taskplane/` — runtime task state
+- `~/.pi/agent/ralph-loop/` — Ralph loop run logs/state
+- `~/.agents/.skill-lock.json` — local skill UI/selection state
+- `~/.agents/pi-lens/` — local Pi Lens project cache/runtime state
 
 ## Restore
 
@@ -20,21 +27,67 @@ Not managed:
 ~/config/pi/setup.sh
 ```
 
+macOS and Kubuntu setup scripts call this automatically on every run so changes to Pi rules/skills/extensions are applied without deleting setup markers.
+
 Clean marker + rerun install step:
 
 ```bash
 ~/config/pi/setup.sh --clean
 ```
 
+For pi-lens cleanup, set project cache root to avoid per-repo `~/.pi-lens` state:
+
+```bash
+export PILENS_DATA_DIR="$HOME/.agents/pi-lens/projects"
+```
+
+(Managed shell configs in `home/shared/shell.nix` and `mac/config/fish/config.fish` set this automatically for interactive shells.)
+
+## Skill source of truth
+
+Edit skills only under:
+
+```text
+~/agent-memory/skills/
+```
+
+`setup.sh` makes this link when `~/agent-memory/skills` exists:
+
+```text
+~/.agents/skills -> ~/agent-memory/skills
+```
+
+If `~/.agents/skills` already exists as a real directory, setup moves it to a timestamped backup before creating the symlink.
+
 ## Current audit
 
-Pi is locked down to approved/custom resources only:
+Active managed skills in `~/agent-memory/skills`:
 
-- No third-party Pi packages in `agent/settings.json` (`packages: []`).
-- Only `gplay-cli` is managed under `skills/` / `~/.agents/skills`.
-- Custom Pi rules and prompt commands remain under `~/.pi/agent/`.
-- Local custom extensions remain under `~/.pi/agent/extensions/`.
-- Ralph state/project dirs are not managed by this setup and were left intact.
+- `agents-sdk`
+- `caveman`
+- `cloudflare`
+- `cloudflare-email-service`
+- `durable-objects`
+- `github-project`
+- `gplay-cli`
+- `sandbox-sdk`
+- `spec`
+- `workers-best-practices`
+- `wrangler`
+
+Removed from active managed skills:
+
+- `caveman-commit`
+- `caveman-compress`
+- `caveman-help`
+- `caveman-review`
+- `finish`
+- `finish-plan`
+- `web-perf`
+
+Pi prompt command `/finish` remains under `~/.pi/agent/prompts/finish.md` and is intentionally not managed here.
+
+No third-party Pi packages are installed by `agent/settings.json`; custom skills are managed from `~/agent-memory`, and custom Pi extensions are managed locally from this repo.
 
 Backups:
 

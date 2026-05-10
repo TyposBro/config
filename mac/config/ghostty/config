@@ -2,7 +2,7 @@ font-family = JetBrainsMono Nerd Font
 font-size = 20
 font-feature = +liga
 
-theme = catppuccin-mocha
+theme = Catppuccin Mocha
 background-opacity = 0.92
 cursor-style = bar
 cursor-style-blink = true

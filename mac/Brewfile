@@ -33,6 +33,7 @@ brew "watchman"
 brew "awscli"
 brew "cloudflared"
 brew "infisical"
+brew "opentofu"
 
 # Media
 brew "mpv"

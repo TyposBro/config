@@ -2,3 +2,23 @@
 # result/ symlinks from nix builds
 result
 result-*
+
+# Taskplane runtime artifacts (machine-specific, do not commit)
+.taskplane/.pi/batch-state.json
+.taskplane/.pi/batch-history.json
+.taskplane/.pi/lane-state-*
+.taskplane/.pi/merge-result-*
+.taskplane/.pi/merge-request-*
+.taskplane/.pi/worker-conversation-*
+.taskplane/.pi/orch-logs/
+.taskplane/.pi/orch-abort-signal
+.taskplane/.pi/settings.json
+.taskplane/.worktrees/
+.taskplane/.taskplane-tasks/
+
+# Pi project-local packages (if using pi install -l)
+.taskplane/.pi/npm/
+
+# Agent/harness skills live in ~/agent-memory, not this PC setup repo
+pi/skills/
+pi/backups/

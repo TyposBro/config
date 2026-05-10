@@ -12,6 +12,10 @@
       else if test -d ~/.local/share/JetBrains/Toolbox/apps/android-studio/jbr
         set -gx JAVA_HOME ~/.local/share/JetBrains/Toolbox/apps/android-studio/jbr
       end
+
+      # Keep pi-lens state and cache under ~/.agents
+      set -gx PILENS_DATA_DIR "$HOME/.agents/pi-lens/projects"
+
       # GitHub token for Nix flake fetches (avoids API rate limits)
       if command -q gh
         set -gx NIX_CONFIG "access-tokens = github.com=$(gh auth token 2>/dev/null)"

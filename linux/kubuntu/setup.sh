@@ -432,11 +432,14 @@ if ! did codex; then
 fi
 
 # ── 26. Pi coding agent ─────────────────────────────────────────────────────
+echo "==> Syncing pi coding agent setup..."
+bash "$REPO/pi/setup.sh"
 if ! did pi; then
-	echo "==> Installing pi coding agent setup..."
-	bash "$REPO/pi/setup.sh"
 	mark pi
 fi
+
+echo "==> Linking Claude skills from agent-memory..."
+bash "$REPO/claude/setup.sh"
 
 # ── 27. T3 Code (AppImage from pingdotgg/t3code) ─────────────────────────────
 if ! did t3-code; then

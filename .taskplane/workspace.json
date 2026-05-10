@@ -1,0 +1,14 @@
+{
+  "repos": [
+    {
+      "name": "nixos-config",
+      "path": "../nixos-config",
+      "default_branch": "main"
+    }
+  ],
+  "routing": {
+    "tasks_root": "taskplane-tasks",
+    "default_repo": "nixos-config",
+    "strict": false
+  }
+}

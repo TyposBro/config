@@ -2,34 +2,53 @@
 
 Loaded user skill root: `~/.agents/skills`.
 
-## Result
+## Source of truth
 
-Kept approved/custom items:
+`~/agent-memory/skills` is the source of truth for global skills.
 
-- `gplay-cli` in `~/.agents/skills/gplay-cli`
-- Pi prompt command `/finish` in `~/.pi/agent/prompts/finish.md`
-- Pi global rules in `~/.pi/agent/AGENTS.md`
-- Local custom Pi extensions in `~/.pi/agent/extensions/`
-- Ralph state/projects outside global skills, e.g. `~/agent-memory/.ralph` and project `.ralph` dirs
+`~/.agents/skills` should be a symlink mirror:
 
-Removed from active global skills and reproducible source:
+```text
+~/.agents/skills -> ~/agent-memory/skills
+```
+
+Do not edit skills directly under `~/.agents/skills`; edit `~/agent-memory/skills` and rerun `~/agent-memory/setup.sh` if the link needs repair.
+
+## Active managed skills
+
+Kept in `~/agent-memory/skills`:
 
 - `agents-sdk`
 - `caveman`
+- `cloudflare`
+- `cloudflare-email-service`
+- `durable-objects`
+- `github-project`
+- `gplay-cli`
+- `sandbox-sdk`
+- `spec`
+- `workers-best-practices`
+- `wrangler`
+
+## Removed from managed/live configs
+
 - `caveman-commit`
 - `caveman-compress`
 - `caveman-help`
 - `caveman-review`
-- `cloudflare`
-- `cloudflare-email-service`
-- `durable-objects`
-- `naver-local-research`
-- `sandbox-sdk`
+- `finish`
+- `finish-plan`
 - `web-perf`
-- `workers-best-practices`
-- `wrangler`
 
-Removed/disabled package installs:
+Pi prompt command `/finish` remains under `~/.pi/agent/prompts/finish.md` and is intentionally separate from skills.
+
+## Package policy
+
+`pi/agent/settings.json` uses local/custom skills and extensions only:
+
+- `packages: []`
+
+Previously disabled package installs include:
 
 - `npm:pi-markdown-preview`
 - `npm:pi-simple`
@@ -42,19 +61,15 @@ Removed/disabled package installs:
 
 ## Backup
 
-Pre-clean backup:
+Pre-clean backups live under:
 
-- `/home/typosbro/config/pi/backups/20260510-003455-pi-cleanup`
+- `/home/typosbro/config/pi/backups/`
 
-## Removed package artifacts
+Non-secret runtime state remains outside source control:
 
-Moved inactive third-party package/runtime artifacts out of load/cache locations:
-
-- `~/.pi-lens`
-- `~/agent-memory/.pi-lens`
-- `~/agent-memory/.pi/taskplane.json`
-- `~/agent-memory/.pi/agents/supervisor.md`
-
-Artifact backup location:
-
-- `/home/typosbro/config/pi/backups/20260510-003455-pi-cleanup/removed-artifacts/`
+- `~/.pi/agent/auth.json`
+- `~/.pi/agent/sessions/`
+- `~/.pi/agent/taskplane/`
+- `~/.pi/agent/ralph-loop/`
+- `~/.agents/.skill-lock.json`
+- `~/.agents/pi-lens/`
