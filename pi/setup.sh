@@ -57,6 +57,17 @@ if [ -f "$DIR/agent/AGENTS.md" ]; then
 	cp "$DIR/agent/AGENTS.md" "$HOME/.pi/agent/AGENTS.md"
 fi
 
+# Agent/harness skills live in ~/agent-memory/skills. Remove stale Pi-local
+# skills/prompts/package runtime artifacts that can shadow or re-enable old
+# third-party resources. Keep auth.json, sessions, models, and ralph-loop state.
+rm -rf \
+	"$HOME/.pi/agent/skills" \
+	"$HOME/.pi/agent/prompts" \
+	"$HOME/.pi/agent/taskplane" \
+	"$HOME/.pi/agent/bin" \
+	"$HOME/.pi/taskplane-pointer.json" \
+	"$HOME/.pi/taskplane-workspace.yaml"
+
 SKILLS_SOURCE="${AGENT_MEMORY_ROOT:-$HOME/agent-memory}/skills"
 if [ -d "$SKILLS_SOURCE" ]; then
 	echo "==> Linking global skills to agent-memory source..."
