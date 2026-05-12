@@ -8,7 +8,7 @@ Managed:
 
 - `agent/settings.json` — global pi settings/packages
 - `agent/AGENTS.md` — global autonomy/progress/default behavior rules copied to `~/.pi/agent/AGENTS.md`
-- global skills link — `~/.agents/skills` points to `~/agent-memory/skills` when agent-memory is present
+- global skills links — `~/.agents/skills` and `~/.claude/skills` point to `~/agent-memory/skills` when agent-memory is present
 - `extensions/` — global Pi extensions copied/synced to `~/.pi/agent/extensions`
 - `setup.sh` — installs Pi CLI and links/syncs settings/rules/extensions; skills are linked from agent-memory
 
@@ -51,13 +51,14 @@ Edit skills only under:
 ~/agent-memory/skills/
 ```
 
-`setup.sh` makes this link when `~/agent-memory/skills` exists:
+`setup.sh` makes these links when `~/agent-memory/skills` exists:
 
 ```text
 ~/.agents/skills -> ~/agent-memory/skills
+~/.claude/skills -> ~/agent-memory/skills
 ```
 
-If `~/.agents/skills` already exists as a real directory, setup moves it to a timestamped backup before creating the symlink.
+Pi auto-discovers `~/.agents/skills`, so no copy under `~/.pi/agent/skills` is needed. Claude Code uses the compatibility `~/.claude/skills` link. If either link path already exists as a real directory, setup moves it to a timestamped backup before creating the symlink.
 
 ## AI model shortcuts (reproducible)
 
@@ -92,9 +93,17 @@ Active managed skills in `~/agent-memory/skills`:
 
 - `agents-sdk`
 - `caveman`
+- `caveman-commit`
+- `caveman-compress`
+- `caveman-help`
+- `caveman-review`
 - `cloudflare`
 - `cloudflare-email-service`
+- `codex-spark-e2e`
+- `compress`
 - `durable-objects`
+- `finish`
+- `finish-plan`
 - `github-project`
 - `gplay-cli`
 - `sandbox-sdk`
@@ -104,17 +113,11 @@ Active managed skills in `~/agent-memory/skills`:
 
 Removed from active managed skills:
 
-- `caveman-commit`
-- `caveman-compress`
-- `caveman-help`
-- `caveman-review`
-- `finish`
-- `finish-plan`
 - `web-perf`
 
 Pi prompt command `/finish` remains under `~/.pi/agent/prompts/finish.md` and is intentionally not managed here.
 
-No third-party Pi packages are installed by `agent/settings.json`; custom skills are managed from `~/agent-memory`, and custom Pi extensions are managed locally from this repo.
+No third-party Pi packages are installed by `agent/settings.json`; custom skills are managed from `~/agent-memory` via `~/.agents/skills`, and custom Pi extensions are managed locally from this repo.
 
 Backups:
 

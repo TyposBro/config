@@ -6,13 +6,14 @@ Loaded user skill root: `~/.agents/skills`.
 
 `~/agent-memory/skills` is the source of truth for global skills.
 
-`~/.agents/skills` should be a symlink mirror:
+`~/.agents/skills` should be a symlink mirror for Pi and Agent Skills-compatible harnesses. `~/.claude/skills` should be the Claude Code compatibility mirror:
 
 ```text
 ~/.agents/skills -> ~/agent-memory/skills
+~/.claude/skills -> ~/agent-memory/skills
 ```
 
-Do not edit skills directly under `~/.agents/skills`; edit `~/agent-memory/skills` and rerun `~/agent-memory/setup.sh` if the link needs repair.
+Pi auto-discovers `~/.agents/skills`, so no copy under `~/.pi/agent/skills` is needed. Do not edit skills directly under runtime harness paths; edit `~/agent-memory/skills` and rerun `~/agent-memory/setup.sh` or `~/config/pi/setup.sh` if links need repair.
 
 ## Active managed skills
 
@@ -20,9 +21,17 @@ Kept in `~/agent-memory/skills`:
 
 - `agents-sdk`
 - `caveman`
+- `caveman-commit`
+- `caveman-compress`
+- `caveman-help`
+- `caveman-review`
 - `cloudflare`
 - `cloudflare-email-service`
+- `codex-spark-e2e`
+- `compress`
 - `durable-objects`
+- `finish`
+- `finish-plan`
 - `github-project`
 - `gplay-cli`
 - `sandbox-sdk`
@@ -32,19 +41,13 @@ Kept in `~/agent-memory/skills`:
 
 ## Removed from managed/live configs
 
-- `caveman-commit`
-- `caveman-compress`
-- `caveman-help`
-- `caveman-review`
-- `finish`
-- `finish-plan`
 - `web-perf`
 
 Pi prompt command `/finish` remains under `~/.pi/agent/prompts/finish.md` and is intentionally separate from skills.
 
 ## Package policy
 
-`pi/agent/settings.json` uses local/custom skills and extensions only:
+`pi/agent/settings.json` uses auto-discovered/local custom skills and extensions only:
 
 - `packages: []`
 

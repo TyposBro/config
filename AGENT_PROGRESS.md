@@ -1,6 +1,44 @@
 # AGENT_PROGRESS.md
 
 ## Current Task
+Make Agent Skills reusable across Pi and other harnesses by keeping `~/agent-memory/skills` as the source of truth, exposing it through `~/.agents/skills`, and tracking Pi reproducibility in `~/config`.
+
+## Current Checklist
+- [x] Confirm Pi supports `~/.agents/skills` global discovery.
+- [x] Confirm live `~/.agents/skills` and `~/.claude/skills` point at `~/agent-memory/skills`.
+- [x] Update `~/config/pi/setup.sh` to repair both links reproducibly.
+- [x] Track current live Pi non-secret settings in `~/config/pi/agent/settings.json`.
+- [x] Update `~/config` Pi docs/audit to match the active `~/agent-memory/skills` inventory.
+- [x] Validate setup, JSON, symlinks, and Pi skill discovery.
+
+## Current Completed Work
+- Read Pi `skills.md` and `settings.md`; Pi loads global skills from `~/.pi/agent/skills` and `~/.agents/skills`.
+- Kept skills out of `~/.pi/agent/skills`; Pi should consume the shared Agent Skills path instead.
+- Updated `pi/setup.sh` to link both `~/.agents/skills` and `~/.claude/skills` to `${AGENT_MEMORY_ROOT:-$HOME/agent-memory}/skills`.
+- Updated Pi settings snapshot to match live model/thinking/terminal settings.
+- Updated `README.md`, `pi/README.md`, and `pi/SKILLS_AUDIT.md`.
+
+## Current Tests Run
+- `bash -n pi/setup.sh`
+- `python3 -m json.tool pi/agent/settings.json >/dev/null`
+- Temp-home `AGENT_MEMORY_ROOT="$HOME/agent-memory" HOME="$TMP_HOME" bash pi/setup.sh` — verified `~/.agents/skills` and `~/.claude/skills` links.
+- Node `DefaultResourceLoader` skill discovery — loaded 19 skills from `~/.agents/skills` with no non-collision diagnostics.
+- `diff -u ~/config/pi/agent/settings.json ~/.pi/agent/settings.json` — content matches except trailing newline.
+- `git diff --check`
+
+## Current Commits
+- This commit — `feat(pi): centralize agent skills`.
+
+## Current Blockers
+- None.
+
+## Current Exact Next Action
+- Done; optional next action is `git push`.
+
+---
+
+
+## Current Task
 Unify agent runtime/state directories under `~/.agents` (`pi-lens` and `~/.claude/skills`) and track those configs in this repo.
 
 ## Current Checklist

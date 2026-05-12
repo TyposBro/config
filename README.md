@@ -100,7 +100,7 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret Pi settings, global rules, and extensions (`/ralph` milestone automation included); auth/session data stays local. Global harness skills live in `~/agent-memory/skills` and are linked into `~/.agents/skills` / `~/.claude/skills`.
+Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret Pi settings, global rules, and extensions (`/ralph` milestone automation included); auth/session data stays local. Global harness skills live in `~/agent-memory/skills`; Pi auto-discovers them via `~/.agents/skills`, and Claude Code gets the same skills via `~/.claude/skills`.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 

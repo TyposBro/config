@@ -69,24 +69,32 @@ rm -rf \
 	"$HOME/.pi/taskplane-workspace.yaml"
 
 SKILLS_SOURCE="${AGENT_MEMORY_ROOT:-$HOME/agent-memory}/skills"
+link_skills_dir() {
+	local link="$1"
+	local label="$2"
+
+	mkdir -p "$(dirname "$link")"
+	if [ -L "$link" ]; then
+		CURRENT_TARGET="$(readlink "$link")"
+		if [ "$CURRENT_TARGET" != "$SKILLS_SOURCE" ]; then
+			rm "$link"
+			ln -s "$SKILLS_SOURCE" "$link"
+		fi
+	elif [ -e "$link" ]; then
+		BACKUP="$link.backup.$(date +%Y%m%d-%H%M%S)"
+		mv "$link" "$BACKUP"
+		ln -s "$SKILLS_SOURCE" "$link"
+		echo "    Existing $label moved to $BACKUP"
+	else
+		ln -s "$SKILLS_SOURCE" "$link"
+	fi
+}
+
 if [ -d "$SKILLS_SOURCE" ]; then
 	echo "==> Linking global skills to agent-memory source..."
-	mkdir -p "$HOME/.agents"
-	SKILLS_LINK="$HOME/.agents/skills"
-	if [ -L "$SKILLS_LINK" ]; then
-		CURRENT_TARGET="$(readlink "$SKILLS_LINK")"
-		if [ "$CURRENT_TARGET" != "$SKILLS_SOURCE" ]; then
-			rm "$SKILLS_LINK"
-			ln -s "$SKILLS_SOURCE" "$SKILLS_LINK"
-		fi
-	elif [ -e "$SKILLS_LINK" ]; then
-		BACKUP="$HOME/.agents/skills.backup.$(date +%Y%m%d-%H%M%S)"
-		mv "$SKILLS_LINK" "$BACKUP"
-		ln -s "$SKILLS_SOURCE" "$SKILLS_LINK"
-		echo "    Existing ~/.agents/skills moved to $BACKUP"
-	else
-		ln -s "$SKILLS_SOURCE" "$SKILLS_LINK"
-	fi
+	# Pi auto-discovers ~/.agents/skills. Claude Code still expects ~/.claude/skills.
+	link_skills_dir "$HOME/.agents/skills" "~/.agents/skills"
+	link_skills_dir "$HOME/.claude/skills" "~/.claude/skills"
 else
 	echo "==> Skipping global skills link: $SKILLS_SOURCE not found (run ~/agent-memory/setup.sh after cloning agent-memory)."
 fi
@@ -109,7 +117,7 @@ fi
 cat <<'EOF'
 ==> Pi setup done.
     Managed global rules: ~/.pi/agent/AGENTS.md
-    Managed skills link: ~/.agents/skills -> ~/agent-memory/skills (when agent-memory is present)
+    Managed skills links: ~/.agents/skills + ~/.claude/skills -> ~/agent-memory/skills (when agent-memory is present)
     Managed extensions: ~/.pi/agent/extensions/
     Secrets intentionally not managed: ~/.pi/agent/auth.json
     Sessions intentionally not managed: ~/.pi/agent/sessions/
