@@ -20,6 +20,13 @@ defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
+# Power (plugged in)
+if [ "$(id -u)" -eq 0 ]; then
+  pmset -c sleep 0 displaysleep 0 lessbright 0 halfdim 0
+else
+  sudo pmset -c sleep 0 displaysleep 0 lessbright 0 halfdim 0
+fi
+
 # Apply
 killall Dock
 killall Finder

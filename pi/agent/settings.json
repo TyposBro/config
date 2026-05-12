@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.74.0",
   "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "xhigh",
+  "defaultModel": "gpt-5.3-codex-spark",
+  "defaultThinkingLevel": "medium",
   "packages": [],
   "transport": "websocket",
   "hideThinkingBlock": true,

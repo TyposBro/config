@@ -59,6 +59,33 @@ Edit skills only under:
 
 If `~/.agents/skills` already exists as a real directory, setup moves it to a timestamped backup before creating the symlink.
 
+## AI model shortcuts (reproducible)
+
+This repo now includes quick model profiles for both pi and other CLIs:
+
+- `aispark [cli] [args...]` → `gpt-5.3-codex-spark` + `medium`
+- `ai_high [cli] [args...]` → `gpt-5.5` + `high`
+- `ai_xhigh [cli] [args...]` → `gpt-5.5` + `xhigh`
+
+`cli` defaults to `pi`. You can pass `codex`, `opencode`, or `claude`.
+Examples:
+
+- `aispark` (defaults to pi)
+- `ai_high codex`
+- `ai_xhigh opencode --dangerously-skip-permissions`
+
+Aliases are also provided for short names:
+
+- `spark`
+- `high`
+- `xhigh`
+
+These are defined in `shell/model-shortcuts.fish` and are loaded by
+`mac/config/fish/config.fish`.
+
+If you also use bash/zsh, source `pi/shell/model-shortcuts.sh` from your startup file
+(e.g., `.bashrc`/`.zshrc`) to get the same commands.
+
 ## Current audit
 
 Active managed skills in `~/agent-memory/skills`:

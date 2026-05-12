@@ -38,6 +38,12 @@ if status is-interactive
     alias expa "npx expo run:android"
     alias expi "npx expo run:ios"
 
+    # Shared model shortcuts for AI CLIs (pi / codex / opencode / claude)
+    set -l pi_model_shortcuts "$HOME/config/pi/shell/model-shortcuts.fish"
+    if test -f "$pi_model_shortcuts"
+        source "$pi_model_shortcuts"
+    end
+
     function cli --description "Run Codex in bypass mode with shorthand for resume/fork last"
         set -l base_args --dangerously-bypass-approvals-and-sandbox
 
