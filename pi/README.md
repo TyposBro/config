@@ -7,7 +7,7 @@ Reproducible pi coding-agent setup for Kubuntu + macOS.
 Managed:
 
 - `agent/settings.json` — global pi settings/packages
-- `agent/AGENTS.md` — global autonomy/progress/default behavior rules copied to `~/.pi/agent/AGENTS.md`
+- `agent/AGENTS.md` — global autonomy/progress/default behavior rules copied to `~/.pi/agent/AGENTS.md`; includes the `~/Documents/private/spiko/rules.md` trigger for "follow the rules"
 - global skills links — `~/.agents/skills` and `~/.claude/skills` point to `~/agent-memory/skills` when agent-memory is present
 - `extensions/` — global Pi extensions copied/synced to `~/.pi/agent/extensions`
 - `setup.sh` — installs Pi CLI and links/syncs settings/rules/extensions; skills are linked from agent-memory
@@ -108,6 +108,7 @@ Active managed skills in `~/agent-memory/skills`:
 - `gplay-cli`
 - `sandbox-sdk`
 - `spec`
+- `spiko-rules`
 - `workers-best-practices`
 - `wrangler`
 

@@ -36,6 +36,7 @@ Kept in `~/agent-memory/skills`:
 - `gplay-cli`
 - `sandbox-sdk`
 - `spec`
+- `spiko-rules`
 - `workers-best-practices`
 - `wrangler`
 
