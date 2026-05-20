@@ -8,6 +8,9 @@ if status is-interactive
     fish_add_path $HOME/.opencode/bin
     fish_add_path $HOME/.cargo/bin
     fish_add_path $HOME/.deno/bin
+    fish_add_path $HOME/Android/Sdk/platform-tools
+    fish_add_path $HOME/Android/Sdk/emulator
+    fish_add_path $HOME/Android/Sdk/cmdline-tools/latest/bin
 
     # Tools
     if command -q starship
@@ -20,6 +23,10 @@ if status is-interactive
     # Env
     set -gx BUN_INSTALL $HOME/.bun
     set -gx ANDROID_HOME $HOME/Android/Sdk
+    if test -d $HOME/.local/jdks/jdk-21
+        set -gx JAVA_HOME $HOME/.local/jdks/jdk-21
+        fish_add_path $JAVA_HOME/bin
+    end
     if test -d /snap/android-studio/current/android-studio/jbr
         set -gx JAVA_HOME /snap/android-studio/current/android-studio/jbr
     end

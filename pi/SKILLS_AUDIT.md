@@ -33,6 +33,7 @@ Kept in `~/agent-memory/skills`:
 - `durable-objects`
 - `finish`
 - `finish-plan`
+- `frontend-design`
 - `github-project`
 - `gplay-cli`
 - `sandbox-sdk`

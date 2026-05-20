@@ -101,11 +101,13 @@ Active managed skills in `~/agent-memory/skills`:
 - `cloudflare-email-service`
 - `codex-spark-e2e`
 - `compress`
+- `design-iteration-harness`
 - `durable-objects`
 - `finish`
 - `finish-plan`
 - `github-project`
 - `gplay-cli`
+- `frontend-design`
 - `sandbox-sdk`
 - `spec`
 - `spiko-rules`
