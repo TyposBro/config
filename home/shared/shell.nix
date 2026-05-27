@@ -65,6 +65,10 @@
     background-opacity = 0.9
     cursor-style = bar
     shell-integration = fish
+    working-directory = ~
+    window-inherit-working-directory = false
+    tab-inherit-working-directory = false
+    split-inherit-working-directory = false
     window-decoration = true
     macos-titlebar-style = tabs
     command = /run/current-system/sw/bin/fish
