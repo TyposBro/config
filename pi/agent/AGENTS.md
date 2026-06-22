@@ -11,7 +11,8 @@
 
 - Spiko clean architecture/code-quality rules live at `~/Documents/private/spiko/rules.md`.
 - When the user says "follow the rules", "use the rules", references `rules.md`, or asks for Spiko/code-quality enforcement, read that file completely before editing or reviewing.
-- In Spiko-related repos, treat those rules as the default architecture/code-quality rules unless repo-local instructions explicitly conflict.
+- In Spiko-related repos, treat those rules as the default rule set unless repo-local instructions explicitly conflict.
+- Rule style: explicit standard Clean Architecture + code quality only. Do not enforce legacy customized layer/import/UI-pattern rules unless a repo-local rule explicitly asks for them.
 - In Pi, `/skill:spiko-rules` can force-load the same workflow.
 
 ## Autonomous End-to-End Implementation Protocol

@@ -31,3 +31,6 @@ omp/agent/blobs/
 
 # Local MCP server installs keep source and lockfiles here, not dependency trees.
 mcp/*/node_modules/
+
+# Nested MCP checkouts keep their own git metadata local.
+mcp/*/.git/

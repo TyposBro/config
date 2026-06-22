@@ -1,0 +1,81 @@
+# Portable intent for virtual desktop layout.
+#
+# macOS uses a stable 1x4 row because Mission Control cannot natively animate
+# a 2x2 grid on modern macOS.
+#
+# KDE can use a real 2x2 grid. GNOME generally behaves best as 1x4 unless
+# extensions are added.
+
+[shortcuts.macos]
+desktop_1 = "Ctrl+Option+Command+H"
+desktop_2 = "Ctrl+Option+Command+J"
+desktop_3 = "Ctrl+Option+Command+K"
+desktop_4 = "Ctrl+Option+Command+L"
+
+[shortcuts.linux]
+desktop_1 = "Ctrl+Alt+H"
+desktop_2 = "Ctrl+Alt+J"
+desktop_3 = "Ctrl+Alt+K"
+desktop_4 = "Ctrl+Alt+L"
+
+[spaces.1]
+name = "Browser"
+coordinate = "x1"
+purpose = "Web, docs, browsing, browser-first work"
+apps = [
+  "Zen",
+]
+macos_bundle_ids = [
+  "app.zen-browser.zen",
+]
+
+[spaces.2]
+name = "Development"
+coordinate = "x2"
+purpose = "General coding, terminal, AI coding tools"
+apps = [
+  "Ghostty",
+  "Visual Studio Code",
+  "Codex",
+  "T3 Code",
+  "Antigravity",
+]
+macos_bundle_ids = [
+  "com.mitchellh.ghostty",
+  "com.microsoft.VSCode",
+  "com.openai.codex",
+  "com.t3tools.t3code",
+  "com.google.antigravity",
+]
+
+[spaces.3]
+name = "Native Apps"
+coordinate = "x3"
+purpose = "Android, Kotlin, Flutter, iOS, native IDE work"
+apps = [
+  "Android Studio",
+  "Xcode",
+]
+macos_bundle_ids = [
+  "com.google.android.studio",
+  "com.apple.dt.Xcode",
+]
+
+[spaces.4]
+name = "Reference And Comms"
+coordinate = "x4"
+purpose = "Notes, music, messaging, background communication"
+apps = [
+  "Obsidian",
+  "Spotify",
+  "Telegram",
+  "WhatsApp",
+  "Discord",
+]
+macos_bundle_ids = [
+  "md.obsidian",
+  "com.spotify.client",
+  "ru.keepcoder.Telegram",
+  "net.whatsapp.WhatsApp",
+  "com.hnc.Discord",
+]
