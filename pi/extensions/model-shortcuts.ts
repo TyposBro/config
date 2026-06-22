@@ -1,10 +1,14 @@
 /**
- * Quick model + thinking shortcuts for my common Codex modes.
+ * Quick provider + model + thinking shortcuts for my common agent modes.
  *
  * Commands:
- *   /spark   -> gpt-5.3-codex-spark + medium
- *   /high    -> gpt-5.5 + high
- *   /xhigh   -> gpt-5.5 + xhigh
+ *   /spark      -> openai-codex/gpt-5.3-codex-spark + medium
+ *   /high       -> openai-codex/gpt-5.5 + high
+ *   /xhigh      -> openai-codex/gpt-5.5 + xhigh
+ *   /reviewer   -> openai-codex/gpt-5.5 + xhigh
+ *   /oracle     -> openai-codex/gpt-5.5 + xhigh
+ *   /explore    -> google/gemini-3.1-pro-preview + high
+ *   /quick_task -> deepseek/deepseek-v4-pro + medium
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
@@ -33,6 +37,26 @@ const SHORTCUTS: Record<string, Shortcut> = {
 		provider: "openai-codex",
 		modelId: "gpt-5.5",
 		thinking: "xhigh",
+	},
+	reviewer: {
+		provider: "openai-codex",
+		modelId: "gpt-5.5",
+		thinking: "xhigh",
+	},
+	oracle: {
+		provider: "openai-codex",
+		modelId: "gpt-5.5",
+		thinking: "xhigh",
+	},
+	explore: {
+		provider: "google",
+		modelId: "gemini-3.1-pro-preview",
+		thinking: "high",
+	},
+	quick_task: {
+		provider: "deepseek",
+		modelId: "deepseek-v4-pro",
+		thinking: "medium",
 	},
 };
 

@@ -27,11 +27,12 @@ Kept in `~/agent-memory/skills`:
 - `caveman-review`
 - `cloudflare`
 - `cloudflare-email-service`
-- `codex-spark-e2e`
 - `compress`
+- `context7-cli`
+- `context7-mcp`
 - `design-iteration-harness`
 - `durable-objects`
-- `finish`
+- `find-docs`
 - `finish-plan`
 - `frontend-design`
 - `github-project`
@@ -76,6 +77,5 @@ Non-secret runtime state remains outside source control:
 - `~/.pi/agent/auth.json`
 - `~/.pi/agent/sessions/`
 - `~/.pi/agent/taskplane/`
-- `~/.pi/agent/ralph-loop/`
 - `~/.agents/.skill-lock.json`
 - `~/.agents/pi-lens/`

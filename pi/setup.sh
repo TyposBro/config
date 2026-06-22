@@ -59,7 +59,7 @@ fi
 
 # Agent/harness skills live in ~/agent-memory/skills. Remove stale Pi-local
 # skills/prompts/package runtime artifacts that can shadow or re-enable old
-# third-party resources. Keep auth.json, sessions, models, and ralph-loop state.
+# third-party resources. Keep auth.json, sessions, models, and taskplane state.
 rm -rf \
 	"$HOME/.pi/agent/skills" \
 	"$HOME/.pi/agent/prompts" \
@@ -67,6 +67,10 @@ rm -rf \
 	"$HOME/.pi/agent/bin" \
 	"$HOME/.pi/taskplane-pointer.json" \
 	"$HOME/.pi/taskplane-workspace.yaml"
+
+# ralph-loop was a repo-managed extension; delete the generated mirror now that
+# it has been removed from the source tree.
+rm -rf "$HOME/.pi/agent/extensions/ralph-loop"
 
 SKILLS_SOURCE="${AGENT_MEMORY_ROOT:-$HOME/agent-memory}/skills"
 link_skills_dir() {

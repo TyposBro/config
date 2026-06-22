@@ -100,7 +100,17 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret Pi settings, global rules, and extensions (`/ralph` milestone automation included); auth/session data stays local. Global harness skills live in `~/agent-memory/skills`; Pi auto-discovers them via `~/.agents/skills`, and Claude Code gets the same skills via `~/.claude/skills`.
+Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret Pi settings, global rules, and repo-managed extensions; auth/session data stays local. Global harness skills live in `~/agent-memory/skills`; Pi auto-discovers them via `~/.agents/skills`, and Claude Code gets the same skills via `~/.claude/skills`.
+
+### OMP coding agent
+
+OMP routing policy is backed up/reproducible under `omp/`:
+
+```bash
+~/config/omp/setup.sh
+```
+
+This restores non-secret OMP config, role routing, `/loop`, `deepseek-advisor`, and the model-delegation skill. Provider credentials stay local in `~/.omp/agent/models.yml` or the machine key store.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 

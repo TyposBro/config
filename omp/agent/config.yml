@@ -1,0 +1,32 @@
+symbolPreset: nerd
+colorBlindMode: true
+setupVersion: 1
+hideThinkingBlock: true
+defaultThinkingLevel: low
+modelRoles: 
+  default: openai-codex/gpt-5.5:xhigh
+  slow: openai-codex/gpt-5.5:xhigh
+  task: openai-codex/gpt-5.5:xhigh
+  plan: openai-codex/gpt-5.5:xhigh
+  reviewer: openai-codex/gpt-5.5:xhigh
+  oracle: openai-codex/gpt-5.5:xhigh
+  explore: google/gemini-3.1-pro-preview:high
+  quick_task: deepseek/deepseek-v4-pro:medium
+  commit: openai-codex/gpt-5.5:medium
+  vision: google/gemini-3.1-pro-preview:high
+  designer: google/gemini-3.1-pro-preview:high
+  advisor: openai-codex/gpt-5.5:xhigh
+  smol: deepseek/deepseek-v4-pro:medium
+  title: deepseek/deepseek-v4-pro:low
+advisor: 
+  enabled: true
+  syncBacklog: 1
+  immuneTurns: 1
+enabledModels: 
+  - openai-codex/gpt-5.5
+  - google/gemini-3.1-pro-preview
+  - deepseek/deepseek-v4-pro
+cycleOrder: 
+  - default
+  - designer
+  - smol

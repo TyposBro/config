@@ -124,3 +124,22 @@ if status is-interactive
     alias upd "sudo apt update && sudo apt upgrade"
     alias kreboot "systemctl reboot"
 end
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+if test -f /home/typosbro/miniconda3/bin/conda
+    eval /home/typosbro/miniconda3/bin/conda "shell.fish" "hook" $argv | source
+else
+    if test -f "/home/typosbro/miniconda3/etc/fish/conf.d/conda.fish"
+        . "/home/typosbro/miniconda3/etc/fish/conf.d/conda.fish"
+    else
+        set -x PATH "/home/typosbro/miniconda3/bin" $PATH
+    end
+end
+# <<< conda initialize <<<
+
+# Codex API keys (from pi auth)
+set -gx OPENAI_API_KEY (python3 -c 'import json; print(json.load(open("/home/typosbro/.pi/agent/auth.json"))["openrouter"]["key"])')
+set -gx OPENROUTER_API_KEY $OPENAI_API_KEY
+set -gx GEMINI_API_KEY (python3 -c 'import json; print(json.load(open("/home/typosbro/.pi/agent/auth.json"))["google"]["key"])')
+

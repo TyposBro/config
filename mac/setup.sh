@@ -67,6 +67,9 @@ if ! did pi; then
 	mark pi
 fi
 
+echo "==> Syncing OMP coding agent setup..."
+bash "$REPO/omp/setup.sh"
+
 echo "==> Linking Claude skills from agent-memory..."
 bash "$REPO/claude/setup.sh"
 

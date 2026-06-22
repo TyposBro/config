@@ -1,5 +1,47 @@
 # AGENT_PROGRESS.md
 
+
+## Current Task
+Make OMP model routing durable across local + remote config, add reviewer/oracle/explore/quick_task role routing, and remove the ralph-loop extension.
+
+## Current Checklist
+- [x] Add OMP reviewer/oracle/explore/quick_task role routing.
+- [x] Persist non-secret OMP policy/config in `config/omp/agent`.
+- [x] Add `config/omp/setup.sh` and wire it into macOS/Kubuntu setup.
+- [x] Mirror OMP loop assets into `agent-memory`.
+- [x] Add provider-aware Pi shell and slash-command shortcuts.
+- [x] Remove local and remote `ralph-loop` extension mirrors.
+- [x] Sync changes to remote `~/config` and `~/agent-memory`.
+- [x] Validate local and remote syntax, routing, and shortcut behavior.
+
+## Current Completed Work
+- OMP roles now include `reviewer` and `oracle` on GPT-5.5 xhigh, `explore` on Gemini 3.1 Pro high, and `quick_task` on DeepSeek V4 Pro medium.
+- `config/omp/setup.sh` restores `config.yml`, `APPEND_SYSTEM.md`, `WATCHDOG.md`, `/loop`, `deepseek-advisor`, and `model-delegation-loop` without touching local `models.yml`.
+- `mac/setup.sh` and `linux/kubuntu/setup.sh` now run `omp/setup.sh`.
+- `pi/shell/model-shortcuts.sh`, `pi/shell/model-shortcuts.fish`, and `pi/extensions/model-shortcuts.ts` expose reviewer/oracle/explore/quick_task profiles with provider-aware routing.
+- `pi/setup.sh` deletes the stale generated `~/.pi/agent/extensions/ralph-loop` mirror now that the source extension is removed.
+
+## Current Tests Run
+- `bash -n` on Pi/OMP/macOS/Kubuntu setup scripts.
+- `fish -n pi/shell/model-shortcuts.fish`.
+- Local bash shortcut functional test for `ai_explore`, `ai_quick_task --continue`, `ai_reviewer`, and non-OpenAI `codex` rejection.
+- Local fish shortcut functional test with a fake `pi` executable.
+- `~/config/omp/setup.sh && omp config get modelRoles --json`.
+- Remote OMP setup + `omp config get modelRoles --json`.
+- Remote bash and fish shortcut functional tests.
+- Remote syntax checks and `test ! -e` checks for removed `ralph-loop` extension mirrors.
+- `find` check confirmed no `models.yml` or OMP DB/session/blob files were copied into `config/omp/agent`.
+
+## Current Commits
+- Not committed yet.
+
+## Current Blockers
+- None.
+
+## Current Exact Next Action
+- Done; commit/push when ready.
+
+---
 ## Current Task
 Add the Spiko `rules.md` trigger to reproducible Pi config and sync it into live `~/.pi/agent/AGENTS.md`.
 

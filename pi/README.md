@@ -17,7 +17,6 @@ Not managed:
 - `~/.pi/agent/auth.json` — provider/OAuth secrets
 - `~/.pi/agent/sessions/` — local session history
 - `~/.pi/agent/taskplane/` — runtime task state
-- `~/.pi/agent/ralph-loop/` — Ralph loop run logs/state
 - `~/.agents/.skill-lock.json` — local skill UI/selection state
 - `~/.agents/pi-lens/` — local Pi Lens project cache/runtime state
 
@@ -62,24 +61,33 @@ Pi auto-discovers `~/.agents/skills`, so no copy under `~/.pi/agent/skills` is n
 
 ## AI model shortcuts (reproducible)
 
-This repo now includes quick model profiles for both pi and other CLIs:
+This repo includes quick provider/model/thinking profiles for pi and other CLIs:
 
-- `aispark [cli] [args...]` → `gpt-5.3-codex-spark` + `medium`
-- `ai_high [cli] [args...]` → `gpt-5.5` + `high`
-- `ai_xhigh [cli] [args...]` → `gpt-5.5` + `xhigh`
+- `aispark [cli] [args...]` → `openai-codex/gpt-5.3-codex-spark` + `medium`
+- `ai_high [cli] [args...]` → `openai-codex/gpt-5.5` + `high`
+- `ai_xhigh [cli] [args...]` → `openai-codex/gpt-5.5` + `xhigh`
+- `ai_reviewer [cli] [args...]` → `openai-codex/gpt-5.5` + `xhigh`
+- `ai_oracle [cli] [args...]` → `openai-codex/gpt-5.5` + `xhigh`
+- `ai_explore [cli] [args...]` → `google/gemini-3.1-pro-preview` + `high`
+- `ai_quick_task [cli] [args...]` → `deepseek/deepseek-v4-pro` + `medium`
 
-`cli` defaults to `pi`. You can pass `codex`, `opencode`, or `claude`.
+`cli` defaults to `pi`. You can pass `codex`, `opencode`, or `claude`; `codex` rejects non-`openai-codex` profiles.
 Examples:
 
 - `aispark` (defaults to pi)
-- `ai_high codex`
-- `ai_xhigh opencode --dangerously-skip-permissions`
+- `ai_reviewer codex`
+- `ai_explore pi --continue`
+- `ai_quick_task pi -p "rename this file-safe string"`
 
 Aliases are also provided for short names:
 
 - `spark`
 - `high`
 - `xhigh`
+- `reviewer`
+- `oracle`
+- `explore`
+- `quick_task`
 
 These are defined in `shell/model-shortcuts.fish` and are loaded by
 `mac/config/fish/config.fish`.
@@ -99,11 +107,12 @@ Active managed skills in `~/agent-memory/skills`:
 - `caveman-review`
 - `cloudflare`
 - `cloudflare-email-service`
-- `codex-spark-e2e`
 - `compress`
+- `context7-cli`
+- `context7-mcp`
 - `design-iteration-harness`
 - `durable-objects`
-- `finish`
+- `find-docs`
 - `finish-plan`
 - `github-project`
 - `gplay-cli`

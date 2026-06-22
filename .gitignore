@@ -22,3 +22,12 @@ result-*
 # Agent/harness skills live in ~/agent-memory, not this PC setup repo
 pi/skills/
 pi/backups/
+
+# OMP provider credentials are machine-local secrets.
+omp/agent/models.yml
+omp/agent/*.db*
+omp/agent/sessions/
+omp/agent/blobs/
+
+# Local MCP server installs keep source and lockfiles here, not dependency trees.
+mcp/*/node_modules/
