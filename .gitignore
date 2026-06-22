@@ -34,3 +34,4 @@ mcp/*/node_modules/
 
 # Nested MCP checkouts keep their own git metadata local.
 mcp/*/.git/
+mcp/*/.git.local/
