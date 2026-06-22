@@ -14,3 +14,7 @@ macos-titlebar-style = tabs
 
 shell-integration = fish
 command = /opt/homebrew/bin/fish --login --interactive
+working-directory = ~
+window-inherit-working-directory = false
+tab-inherit-working-directory = false
+split-inherit-working-directory = false
