@@ -4,13 +4,16 @@ if status is-interactive
 
     set -U fish_greeting ""
 
+    if test "$PWD" = "/" && test -d "$HOME"
+        cd "$HOME"
+    end
+
     # Tools
     starship init fish | source
     fnm env --use-on-cd --shell fish | source
 
     # PATH additions
     fish_add_path $HOME/.bun/bin
-    fish_add_path $HOME/.opencode/bin
     fish_add_path $HOME/.cargo/bin
 
     # Env
@@ -38,26 +41,10 @@ if status is-interactive
     alias expa "npx expo run:android"
     alias expi "npx expo run:ios"
 
-    # Shared model shortcuts for AI CLIs (pi / codex / opencode / claude)
+    # Shared model shortcuts for AI CLIs (pi / claude)
     set -l pi_model_shortcuts "$HOME/config/pi/shell/model-shortcuts.fish"
     if test -f "$pi_model_shortcuts"
         source "$pi_model_shortcuts"
-    end
-
-    function cli --description "Run Codex in bypass mode with shorthand for resume/fork last"
-        set -l base_args --dangerously-bypass-approvals-and-sandbox
-
-        if test (count $argv) -ge 2
-            if test "$argv[1]" = "resume" -a "$argv[2]" = "last"
-                command codex $base_args resume --last $argv[3..-1]
-                return $status
-            else if test "$argv[1]" = "fork" -a "$argv[2]" = "last"
-                command codex $base_args fork --last $argv[3..-1]
-                return $status
-            end
-        end
-
-        command codex $base_args $argv
     end
 
     function picli --description "Run pi with shorthand for last-session continue"
@@ -74,19 +61,4 @@ if status is-interactive
         command pi $argv
     end
 
-    function ocli --description "Run opencode in skip-permissions mode with shorthand for resume/fork last"
-        set -l base_args --dangerously-skip-permissions
-
-        if test (count $argv) -ge 2
-            if test "$argv[1]" = "resume" -a "$argv[2]" = "last"
-                command opencode $base_args --continue $argv[3..-1]
-                return $status
-            else if test "$argv[1]" = "fork" -a "$argv[2]" = "last"
-                command opencode $base_args --continue --fork $argv[3..-1]
-                return $status
-            end
-        end
-
-        command opencode $base_args $argv
-    end
 end

@@ -8,7 +8,7 @@
 #   ai_explore [cli] [...]
 #   ai_quick_task [cli] [...]
 #
-# Supported cli targets: pi, codex, opencode, claude
+# Supported cli targets: pi, claude
 
 function __ai_profile_for_name
 	set -l name "$argv[1]"
@@ -35,7 +35,7 @@ function __ai_with_profile
 
 	if test (count $argv) -ge 1
 		switch "$argv[1]"
-			case pi codex opencode claude
+			case pi claude
 				set cli "$argv[1]"
 				set -e argv[1]
 		end
@@ -58,18 +58,10 @@ function __ai_with_profile
 				set pi_args --provider "$provider" $pi_args
 			end
 			command pi $pi_args $argv
-		case codex
-			if test "$provider" != openai-codex
-				echo "Profile '$profile' uses provider $provider; codex only supports openai-codex. Use pi instead." >&2
-				return 1
-			end
-			command codex --model "$model" $argv
-		case opencode
-			command opencode --model "$model" $argv
 		case claude
 			command claude --model "$model" $argv
 		case '*'
-			echo "Unsupported cli target: $cli (expected pi|codex|opencode|claude)" >&2
+			echo "Unsupported cli target: $cli (expected pi|claude)" >&2
 			return 1
 	end
 end

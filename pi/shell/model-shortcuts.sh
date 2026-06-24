@@ -6,13 +6,10 @@
 #
 # Usage:
 #   ai_explore [cli] [args...]   # Default cli: pi
-#   ai_reviewer codex --resume last
 #   ai_quick_task pi --continue
 #
 # Supported cli targets:
 #   pi       (uses --thinking)
-#   codex    (model only)
-#   opencode (model only)
 #   claude   (model only)
 
 _ai_profile_for_name() {
@@ -56,7 +53,7 @@ _ai() {
 
   local cli="pi"
   case "${1:-}" in
-    pi|codex|opencode|claude)
+    pi|claude)
       cli="$1"
       shift
       ;;
@@ -74,21 +71,11 @@ _ai() {
       fi
       command pi "${provider_args[@]}" --model "$_AI_PROFILE_MODEL" --thinking "$_AI_PROFILE_THINKING" "$@"
       ;;
-    codex)
-      if [ "$_AI_PROFILE_PROVIDER" != "openai-codex" ]; then
-        echo "Profile '$profile' uses provider $_AI_PROFILE_PROVIDER; codex only supports openai-codex. Use pi instead." >&2
-        return 1
-      fi
-      command codex --model "$_AI_PROFILE_MODEL" "$@"
-      ;;
-    opencode)
-      command opencode --model "$_AI_PROFILE_MODEL" "$@"
-      ;;
     claude)
       command claude --model "$_AI_PROFILE_MODEL" "$@"
       ;;
     *)
-      echo "Unsupported cli target: $cli (expected pi|codex|opencode|claude)" >&2
+      echo "Unsupported cli target: $cli (expected pi|claude)" >&2
       return 1
       ;;
   esac
