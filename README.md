@@ -104,13 +104,13 @@ Kubuntu + macOS setup scripts call this automatically on every run. It manages n
 
 ### OMP coding agent
 
-OMP routing policy is backed up/reproducible under `omp/`:
+OMP agent-harness setup is backed up/reproducible under `omp/`:
 
 ```bash
 ~/config/omp/setup.sh
 ```
 
-This restores non-secret OMP config, role routing, `/loop`, `deepseek-advisor`, and the model-delegation skill. Provider credentials stay local in `~/.omp/agent/models.yml` or the machine key store.
+This restores the OMP Superpowers setup, global personality/AuDHD communication layer, role routing, Superpowers bootstrap extension, and vendored Superpowers skills. It intentionally removes the old `/loop`, `deepseek-advisor`, `WATCHDOG.md`, and model-delegation skill workflow. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 

@@ -1,29 +1,48 @@
 #!/usr/bin/env bash
-# Reproduce TyposBro OMP agent policy/config. Safe to re-run.
+# Reproduce TyposBro OMP agent harness policy/config. Safe to re-run.
 
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET="$HOME/.omp/agent"
+TARGET="${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}"
+PLUGIN_SPEC="github:obra/superpowers"
+
+mkdir -p "$TARGET"
+
+if command -v omp >/dev/null 2>&1; then
+	echo "==> Ensuring Superpowers OMP plugin is installed..."
+	omp plugin install "$PLUGIN_SPEC" >/dev/null
+else
+	cat >&2 <<'MSG'
+==> Warning: omp is not installed or not on PATH.
+    Managed files will still be copied, but run this again after installing omp
+    so the Superpowers plugin is registered.
+MSG
+fi
+
+echo "==> Installing OMP Superpowers/personality config..."
+
+# Remove old repo-managed workflows replaced by Superpowers.
+rm -rf \
+	"$TARGET/skills" \
+	"$TARGET/commands/loop.md" \
+	"$TARGET/agents/deepseek-advisor.md" \
+	"$TARGET/WATCHDOG.md"
 
 mkdir -p \
-	"$TARGET/agents" \
+	"$TARGET/skills" \
+	"$TARGET/extensions" \
 	"$TARGET/commands" \
-	"$TARGET/skills/model-delegation-loop"
+	"$TARGET/agents"
 
 cp "$DIR/agent/config.yml" "$TARGET/config.yml"
 cp "$DIR/agent/APPEND_SYSTEM.md" "$TARGET/APPEND_SYSTEM.md"
-cp "$DIR/agent/WATCHDOG.md" "$TARGET/WATCHDOG.md"
-cp "$DIR/agent/agents/deepseek-advisor.md" "$TARGET/agents/deepseek-advisor.md"
-cp "$DIR/agent/commands/loop.md" "$TARGET/commands/loop.md"
-cp "$DIR/agent/skills/model-delegation-loop/SKILL.md" "$TARGET/skills/model-delegation-loop/SKILL.md"
+cp -R "$DIR/agent/skills/." "$TARGET/skills/"
+cp -R "$DIR/agent/extensions/." "$TARGET/extensions/"
 
-if [ ! -f "$TARGET/models.yml" ]; then
-	cat <<'MSG'
-==> OMP model routing restored.
-    ~/.omp/agent/models.yml is still local-only and was not created.
-    Configure provider credentials on this machine before using Google/Gemini models.
+cat <<'MSG'
+==> OMP agent harness setup restored.
+    Managed: config.yml, APPEND_SYSTEM.md, Superpowers skills, bootstrap extension.
+    Removed: old /loop command, deepseek-advisor workflow, WATCHDOG.md, previous skills.
+    Local-only state left untouched: models.yml, auth, sessions, DBs, blobs.
 MSG
-else
-	echo "==> OMP model routing restored. Local models.yml left untouched."
-fi

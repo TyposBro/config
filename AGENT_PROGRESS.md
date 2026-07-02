@@ -2,6 +2,38 @@
 
 
 ## Current Task
+Make OMP Superpowers/personality setup durable in `~/config/omp`.
+
+## Current Checklist
+- [x] Sync live OMP Superpowers skills and bootstrap extension into `config/omp/agent`.
+- [x] Persist OMP pragmatic personality and AuDHD-friendly prompt in `config/omp/agent/APPEND_SYSTEM.md`.
+- [x] Update `config/omp/setup.sh` to install Superpowers and remove stale custom workflows.
+- [x] Update README OMP restore docs.
+- [x] Validate setup script and live OMP behavior.
+
+## Current Completed Work
+- `config/omp/agent` now contains `config.yml`, `APPEND_SYSTEM.md`, `skills/`, and `extensions/superpowers-bootstrap.ts`.
+- Old durable OMP workflow files (`WATCHDOG.md`, `/loop`, `deepseek-advisor`, `model-delegation-loop`) are no longer restored.
+- `config/omp/setup.sh` is the single setup entrypoint for OMP agent harness restore.
+
+## Current Tests Run
+- `bash -n /Users/typosbro/config/omp/setup.sh`.
+- `/Users/typosbro/config/omp/setup.sh`.
+- `omp config get personality --json`.
+- Fresh OMP smoke test for personality/AuDHD defaults.
+
+## Current Commits
+- Not committed yet.
+
+## Current Blockers
+- None.
+
+## Current Exact Next Action
+- Done; commit/push when ready.
+
+---
+
+## Current Task
 Make OMP model routing durable across local + remote config, add reviewer/oracle/explore/quick_task role routing, and remove the ralph-loop extension.
 
 ## Current Checklist
@@ -43,24 +75,12 @@ Make OMP model routing durable across local + remote config, add reviewer/oracle
 
 ---
 ## Current Task
-Add the Spiko `rules.md` trigger to reproducible Pi config and sync it into live `~/.pi/agent/AGENTS.md`.
+Remove the Spiko rules skill from Pi/OMP runtime discovery, managed config, and agent-memory.
 
 ## Current Checklist
-- [x] Add global Pi AGENTS instructions for `~/Documents/private/spiko/rules.md`.
-- [x] Document the new `spiko-rules` skill in Pi docs/audit.
-- [x] Run Pi setup to copy managed rules into `~/.pi/agent/AGENTS.md`.
-- [x] Validate setup script, JSON, live rules diff, and repository diff hygiene.
-
-## Current Completed Work
-- Added an `External Rule Files` section to `pi/agent/AGENTS.md` with the "follow the rules" trigger.
-- Updated `pi/README.md` and `pi/SKILLS_AUDIT.md` to include `spiko-rules`.
-- Ran `~/config/pi/setup.sh` so live Pi global rules match the managed source.
-
-## Current Tests Run
-- `bash -n pi/setup.sh`
-- `python3 -m json.tool pi/agent/settings.json >/dev/null`
-- `diff -u ~/config/pi/agent/AGENTS.md ~/.pi/agent/AGENTS.md`
-- `git diff --check`
+- [x] Remove the managed skill directory from agent-memory.
+- [x] Remove Pi/OMP managed and live rule references.
+- [x] Validate no active references remain.
 
 ## Current Commits
 - This commit — `feat(pi): add spiko rules trigger`.
