@@ -51,6 +51,7 @@ skills:
   enableAgentsProject: false
   customDirectories: 
     - ~/.omp/agent/skills
+    - ~/config/omp/agent/skills
 commands: 
   enableClaudeUser: false
   enableClaudeProject: false
