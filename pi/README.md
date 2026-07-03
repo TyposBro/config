@@ -119,7 +119,6 @@ Active managed skills in `~/agent-memory/skills`:
 - `frontend-design`
 - `sandbox-sdk`
 - `spec`
-- `spiko-rules`
 - `workers-best-practices`
 - `wrangler`
 

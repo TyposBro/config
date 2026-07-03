@@ -7,14 +7,6 @@
 - Use fenced code blocks only for multi-line snippets, copy-paste commands, SQL, JSON, diffs, logs, or code where formatting matters.
 - When using fenced code blocks, use the actual language (`bash`, `sql`, `json`, etc.) and avoid `txt` fences for simple lists.
 
-## External Rule Files
-
-- Spiko clean architecture/code-quality rules live at `~/Documents/private/spiko/rules.md`.
-- When the user says "follow the rules", "use the rules", references `rules.md`, or asks for Spiko/code-quality enforcement, read that file completely before editing or reviewing.
-- In Spiko-related repos, treat those rules as the default rule set unless repo-local instructions explicitly conflict.
-- Rule style: explicit standard Clean Architecture + code quality only. Do not enforce legacy customized layer/import/UI-pattern rules unless a repo-local rule explicitly asks for them.
-- In Pi, `/skill:spiko-rules` can force-load the same workflow.
-
 ## Autonomous End-to-End Implementation Protocol
 
 Use this protocol whenever the user asks to implement, debug, fix, refactor, migrate, continue a multi-step task, finish a checklist/TODO/roadmap, or explicitly requests autonomy such as “execute, don’t instruct”, “do not stop”, “commit and continue”, or “finish end-to-end”.
