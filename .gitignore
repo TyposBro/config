@@ -28,6 +28,12 @@ omp/agent/models.yml
 omp/agent/*.db*
 omp/agent/sessions/
 omp/agent/blobs/
+omp/agent/mcp.json
+omp/agent/terminal-sessions/
+omp/agent/last-changelog-version
+omp/cache/
+omp/logs/
+omp/gpu_cache.json
 
 # Local MCP server installs keep source and lockfiles here, not dependency trees.
 mcp/*/node_modules/
