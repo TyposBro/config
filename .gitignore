@@ -34,6 +34,7 @@ omp/agent/last-changelog-version
 omp/cache/
 omp/logs/
 omp/gpu_cache.json
+omp/plugins/
 
 # Local MCP server installs keep source and lockfiles here, not dependency trees.
 mcp/*/node_modules/
