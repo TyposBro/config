@@ -2,34 +2,43 @@
 
 
 ## Current Task
-Make OMP Superpowers/personality setup durable in `~/config/omp`.
+Build a durable, cross-device OMP environment with explicit model-pinned delegation and a personally maintained Paseo fork.
+
+## Decisions
+- Delegate explicitly by task agent: `sol` for GPT-5.6 Sol implementation, `fable` for Anthropic Fable 5 / Opus 4.8 review, and `gemini-pro` for Gemini 3.1 Pro UI work.
+- Keep the main OMP session model independent from delegated task models.
+- Run the always-on OMP/Paseo environment on `ssh typosbro@typosbro`.
+- Maintain custom functionality on `TyposBro/paseo:typosbro`, adopt all `getpaseo/paseo:main` changes transactionally, and never open automatic upstream PRs.
+- Keep upstream branding and attribution; this is a personal compatibility fork, not a competing rebrand.
+- Pass on Hermes.
 
 ## Current Checklist
-- [x] Sync live OMP Superpowers skills and bootstrap extension into `config/omp/agent`.
-- [x] Persist OMP pragmatic personality and AuDHD-friendly prompt in `config/omp/agent/APPEND_SYSTEM.md`.
-- [x] Update `config/omp/setup.sh` to install Superpowers and remove stale custom workflows.
-- [x] Update README OMP restore docs.
-- [x] Validate setup script and live OMP behavior.
+- [x] Add durable `sol`, `fable`, and `gemini-pro` OMP task agents.
+- [x] Update remote OMP to 17.1.2 and verify delegated Sol execution.
+- [x] Run Paseo as an enabled user service on the always-on host.
+- [x] Build and deploy the `TyposBro/paseo:typosbro` compatibility branch.
+- [x] Add tested transactional upstream sync, atomic deployment, rollback, and release retention.
+- [ ] Authenticate Anthropic in remote OMP for Fable 5 / Opus 4.8.
 
 ## Current Completed Work
-- `config/omp/agent` now contains `config.yml`, `APPEND_SYSTEM.md`, `skills/`, and `extensions/superpowers-bootstrap.ts`.
-- Old durable OMP workflow files (`WATCHDOG.md`, `/loop`, `deepseek-advisor`, `model-delegation-loop`) are no longer restored.
-- `config/omp/setup.sh` is the single setup entrypoint for OMP agent harness restore.
+- `omp/agent/agents/` contains model-pinned task definitions for Sol, Fable, and Gemini Pro.
+- Remote Paseo runs from `~/.local/share/paseo-fork/current`, preserves `~/.paseo`, and listens only on `127.0.0.1:6767`.
+- `~/src/paseo` tracks `origin/typosbro`; upstream pushes are disabled locally.
+- The fork carries OMP/ACP rendering, structured-question, skill-card, model metadata, embedded tool-call, and Pi voice-adapter improvements.
+- A user systemd timer adopts upstream only after 172 focused provider tests and the server build pass, then atomically deploys with rollback.
 
 ## Current Tests Run
-- `bash -n /Users/typosbro/config/omp/setup.sh`.
-- `/Users/typosbro/config/omp/setup.sh`.
-- `omp config get personality --json`.
-- Fresh OMP smoke test for personality/AuDHD defaults.
-
-## Current Commits
-- Not committed yet.
+- Remote delegated Sol smoke returned `SOL_SMOKE_OK`.
+- Paseo focused Pi/OMP/ACP tests: 172 passed.
+- Paseo server build passed.
+- Fork daemon health passed on `127.0.0.1:6767`.
+- Forced daemon crash restarted into the fork release successfully.
 
 ## Current Blockers
-- None.
+- Remote OMP has no Anthropic authentication, so `fable` is configured correctly but cannot run there yet.
 
 ## Current Exact Next Action
-- Done; commit/push when ready.
+- Authenticate Anthropic in remote OMP, then run a delegated Fable review smoke.
 
 ---
 

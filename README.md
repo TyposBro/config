@@ -110,7 +110,7 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 ~/config/omp/setup.sh
 ```
 
-This restores the OMP Superpowers setup, global personality/AuDHD communication layer, role routing, Superpowers bootstrap extension, and vendored Superpowers skills. It intentionally removes the old `/loop`, `deepseek-advisor`, `WATCHDOG.md`, and model-delegation skill workflow. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+This restores the global personality/AuDHD communication layer, role routing, and model-pinned task agents (`sol`, `fable`, and `gemini-pro`). It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 
