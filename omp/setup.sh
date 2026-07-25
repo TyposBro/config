@@ -18,6 +18,7 @@ rm -rf \
 
 # Remove obsolete Superpowers bootstrap / old agent definitions.
 rm -f \
+	"$TARGET/agents/gemini-pro.md" \
 	"$TARGET/agents/deepseek-advisor.md" \
 	"$TARGET/extensions/superpowers-bootstrap.ts"
 
@@ -43,7 +44,7 @@ fi
 
 cat <<'MSG'
 ==> OMP agent harness setup restored.
-    Managed: config.yml, APPEND_SYSTEM.md, skills, named agents (sol, fable, gemini-pro).
+    Managed: config.yml, APPEND_SYSTEM.md, skills, named agents (sol, fable).
     Removed: obsolete Superpowers plugin/bootstrap, /loop command, WATCHDOG.md, stale skills.
     Local-only state left untouched: models.yml, auth, sessions, DBs, blobs.
 MSG

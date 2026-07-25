@@ -6,15 +6,15 @@ defaultThinkingLevel: auto
 modelRoles: 
   default: openai-codex/gpt-5.5:xhigh
   slow: openai-codex/gpt-5.5:xhigh
-  task: google/gemini-3.5-flash:high
+  task: deepseek/deepseek-v4-flash:high
   plan: openai-codex/gpt-5.5:xhigh
   reviewer: openai-codex/gpt-5.5:xhigh
   oracle: openai-codex/gpt-5.5:xhigh
-  explore: google/gemini-3.1-pro-preview:high
+  explore: openai-codex/gpt-5.6-sol:high
   quick_task: deepseek/deepseek-v4-flash:medium
-  commit: google/gemini-3.5-flash:medium
-  vision: google/gemini-3.1-pro-preview:high
-  designer: google/gemini-3.1-pro-preview:high
+  commit: deepseek/deepseek-v4-flash:medium
+  vision: openai-codex/gpt-5.6-sol:high
+  designer: openai-codex/gpt-5.6-sol:high
   advisor: deepseek/deepseek-v4-pro:xhigh
   smol: deepseek/deepseek-v4-flash:medium
   title: deepseek/deepseek-v4-flash:low
@@ -28,10 +28,8 @@ enabledModels:
   - openai-codex/gpt-5.6-sol
   - anthropic/claude-fable-5
   - anthropic/claude-opus-5
-  - google/gemini-3.1-pro-preview
   - deepseek/deepseek-v4-pro
   - deepseek/deepseek-v4-flash
-  - google/gemini-3.5-flash
 images: 
   blockImages: false
   describeForTextModels: true
