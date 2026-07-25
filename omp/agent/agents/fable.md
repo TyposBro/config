@@ -1,6 +1,6 @@
 ---
 name: fable
-description: "Anthropic-only code review specialist pinned to Claude Fable 5 with Claude Opus 4.8 fallback; requires Anthropic authentication and never falls back across provider families"
+description: "Anthropic-only code review specialist pinned to Claude Fable 5 with Claude Opus 5 fallback; requires Anthropic authentication and never falls back across provider families"
 tools:
   - read
   - grep
@@ -13,7 +13,7 @@ spawns:
   - scout
 model:
   - anthropic/claude-fable-5
-  - anthropic/claude-opus-4-8
+  - anthropic/claude-opus-5
 thinkingLevel: high
 output:
   properties:

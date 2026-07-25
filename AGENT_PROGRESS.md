@@ -5,7 +5,7 @@
 Build a durable, cross-device OMP environment with explicit model-pinned delegation and a personally maintained Paseo fork.
 
 ## Decisions
-- Delegate explicitly by task agent: `sol` for GPT-5.6 Sol implementation and `fable` for Anthropic Fable 5 / Opus 4.8 review. Kubuntu intentionally excludes Gemini and OpenRouter.
+- Delegate explicitly by task agent: `sol` for GPT-5.6 Sol implementation and `fable` for Anthropic Fable 5 / Opus 5 review. Kubuntu intentionally excludes Gemini and OpenRouter.
 - Keep the main OMP session model independent from delegated task models.
 - Run the always-on OMP/Paseo environment on `ssh typosbro@typosbro`.
 - Maintain custom functionality on `TyposBro/paseo:typosbro`, adopt all `getpaseo/paseo:main` changes transactionally, and never open automatic upstream PRs.
