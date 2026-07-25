@@ -1,3 +1,5 @@
+set -gx PI_CONFIG_DIR $HOME/.omp
+
 if status is-interactive
     set -U fish_greeting ""
 
