@@ -11,6 +11,8 @@ git clone https://github.com/TyposBro/config.git ~/config
 
 Runs every step: apt install (including PulseAudio + OpenSSH server), SSH server enablement, AC-power always-on settings (no sleep/dim while plugged in), 16G swapfile setup, dedicated NVIDIA mode (prime-select nvidia), third-party repos, Perfect Equalizer (EasyEffects via Flatpak), Ghostty, Zen Browser (Flatpak), fonts, starship, fnm, bun, rustup, deno, lazygit, glab, cloudflared, awscli, gcloud, Terraform/OpenTofu, VS Code, Brave, Docker, ProtonVPN, snap apps (Spotify/Discord/Postman/Obsidian/Android Studio/ngrok), Bitwarden (Flatpak), Claude Code, OpenCode, Codex CLI, T3 Code (AppImage + `t3 code` shim), tectonic, configs, git config, fish theme, SSH key + GitHub/GitLab key upload, fish as default shell, Ghostty as KDE default terminal.
 
+Kubuntu OMP intentionally excludes Gemini and OpenRouter. UI, vision, and exploration roles use GPT-5.6 Sol; lightweight task and commit roles use DeepSeek.
+
 ## Update / re-run
 
 ```bash

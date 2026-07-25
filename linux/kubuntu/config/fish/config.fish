@@ -85,7 +85,3 @@ else
 end
 # <<< conda initialize <<<
 
-# Codex API keys (from pi auth)
-set -gx OPENAI_API_KEY (python3 -c 'import json; print(json.load(open("/home/typosbro/.pi/agent/auth.json"))["openrouter"]["key"])')
-set -gx OPENROUTER_API_KEY $OPENAI_API_KEY
-set -gx GEMINI_API_KEY (python3 -c 'import json; print(json.load(open("/home/typosbro/.pi/agent/auth.json"))["google"]["key"])')

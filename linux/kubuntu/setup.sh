@@ -465,6 +465,16 @@ fi
 echo "==> Syncing OMP coding agent setup..."
 bash "$REPO/omp/setup.sh"
 
+echo "==> Applying Kubuntu OMP provider policy..."
+omp config set modelRoles.task deepseek/deepseek-v4-flash:high
+omp config set modelRoles.explore openai-codex/gpt-5.6-sol:high
+omp config set modelRoles.commit deepseek/deepseek-v4-flash:medium
+omp config set modelRoles.vision openai-codex/gpt-5.6-sol:high
+omp config set modelRoles.designer openai-codex/gpt-5.6-sol:high
+omp config set enabledModels \
+	'["openai-codex/gpt-5.5","openai-codex/gpt-5.6-sol","anthropic/claude-fable-5","anthropic/claude-opus-4-8","deepseek/deepseek-v4-pro","deepseek/deepseek-v4-flash"]'
+rm -f "$HOME/.omp/agent/agents/gemini-pro.md"
+
 echo "==> Linking Claude skills from agent-memory..."
 bash "$REPO/claude/setup.sh"
 

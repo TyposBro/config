@@ -5,7 +5,7 @@
 Build a durable, cross-device OMP environment with explicit model-pinned delegation and a personally maintained Paseo fork.
 
 ## Decisions
-- Delegate explicitly by task agent: `sol` for GPT-5.6 Sol implementation, `fable` for Anthropic Fable 5 / Opus 4.8 review, and `gemini-pro` for Gemini 3.1 Pro UI work.
+- Delegate explicitly by task agent: `sol` for GPT-5.6 Sol implementation and `fable` for Anthropic Fable 5 / Opus 4.8 review. Kubuntu intentionally excludes Gemini and OpenRouter.
 - Keep the main OMP session model independent from delegated task models.
 - Run the always-on OMP/Paseo environment on `ssh typosbro@typosbro`.
 - Maintain custom functionality on `TyposBro/paseo:typosbro`, adopt all `getpaseo/paseo:main` changes transactionally, and never open automatic upstream PRs.
@@ -13,21 +13,23 @@ Build a durable, cross-device OMP environment with explicit model-pinned delegat
 - Pass on Hermes.
 
 ## Current Checklist
-- [x] Add durable `sol`, `fable`, and `gemini-pro` OMP task agents.
+- [x] Add durable Sol/Fable delegation and a local-only Gemini UI task agent.
 - [x] Update remote OMP to 17.1.2 and verify delegated Sol execution.
 - [x] Run Paseo as an enabled user service on the always-on host.
 - [x] Build and deploy the `TyposBro/paseo:typosbro` compatibility branch.
 - [x] Add tested transactional upstream sync, atomic deployment, rollback, and release retention.
 - [x] Authenticate Anthropic in remote OMP and verify Fable 5 delegation.
 - [x] Install JetBrainsMono Nerd Font and make it the remote Konsole default.
+- [x] Remove Gemini and OpenRouter credentials, routes, and agents from the Kubuntu host.
 
 ## Current Completed Work
-- `omp/agent/agents/` contains model-pinned task definitions for Sol, Fable, and Gemini Pro.
+- Shared OMP config defines Sol, Fable, and Gemini task agents; Kubuntu setup removes Gemini and routes UI/vision/exploration through Sol.
 - Remote Paseo runs from `~/.local/share/paseo-fork/current`, preserves `~/.paseo`, and listens only on `127.0.0.1:6767`.
 - `~/src/paseo` tracks `origin/typosbro`; upstream pushes are disabled locally.
 - The fork carries OMP/ACP rendering, structured-question, skill-card, model metadata, embedded tool-call, and Pi voice-adapter improvements.
 - A user systemd timer adopts upstream only after 172 focused provider tests and the server build pass, then atomically deploys with rollback.
 - JetBrainsMono Nerd Font Mono is installed under `~/.local/share/fonts`; Konsole defaults to `TyposBro.profile`.
+- Remote Pi/OMP shells expose neither Gemini nor OpenRouter credentials.
 
 ## Current Tests Run
 - Remote delegated Sol and Fable smokes returned `SOL_SMOKE_OK` and `FABLE_DELEGATION_OK`.
@@ -38,10 +40,10 @@ Build a durable, cross-device OMP environment with explicit model-pinned delegat
 - `fc-match` resolves JetBrainsMono Nerd Font Mono and Konsole selects `TyposBro.profile`.
 
 ## Current Blockers
-- `gemini-pro` resolves correctly, but the remote Google provider returns HTTP 429 because its monthly spending cap is exhausted.
+- None.
 
 ## Current Exact Next Action
-- Restore Google Gemini quota or add another Google/OpenRouter credential, then run the delegated Gemini UI smoke.
+- Continue iterating on OMP fidelity in the maintained Paseo fork.
 
 ---
 
