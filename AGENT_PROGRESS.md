@@ -18,7 +18,8 @@ Build a durable, cross-device OMP environment with explicit model-pinned delegat
 - [x] Run Paseo as an enabled user service on the always-on host.
 - [x] Build and deploy the `TyposBro/paseo:typosbro` compatibility branch.
 - [x] Add tested transactional upstream sync, atomic deployment, rollback, and release retention.
-- [ ] Authenticate Anthropic in remote OMP for Fable 5 / Opus 4.8.
+- [x] Authenticate Anthropic in remote OMP and verify Fable 5 delegation.
+- [x] Install JetBrainsMono Nerd Font and make it the remote Konsole default.
 
 ## Current Completed Work
 - `omp/agent/agents/` contains model-pinned task definitions for Sol, Fable, and Gemini Pro.
@@ -26,19 +27,21 @@ Build a durable, cross-device OMP environment with explicit model-pinned delegat
 - `~/src/paseo` tracks `origin/typosbro`; upstream pushes are disabled locally.
 - The fork carries OMP/ACP rendering, structured-question, skill-card, model metadata, embedded tool-call, and Pi voice-adapter improvements.
 - A user systemd timer adopts upstream only after 172 focused provider tests and the server build pass, then atomically deploys with rollback.
+- JetBrainsMono Nerd Font Mono is installed under `~/.local/share/fonts`; Konsole defaults to `TyposBro.profile`.
 
 ## Current Tests Run
-- Remote delegated Sol smoke returned `SOL_SMOKE_OK`.
+- Remote delegated Sol and Fable smokes returned `SOL_SMOKE_OK` and `FABLE_DELEGATION_OK`.
 - Paseo focused Pi/OMP/ACP tests: 172 passed.
 - Paseo server build passed.
 - Fork daemon health passed on `127.0.0.1:6767`.
 - Forced daemon crash restarted into the fork release successfully.
+- `fc-match` resolves JetBrainsMono Nerd Font Mono and Konsole selects `TyposBro.profile`.
 
 ## Current Blockers
-- Remote OMP has no Anthropic authentication, so `fable` is configured correctly but cannot run there yet.
+- `gemini-pro` resolves correctly, but the remote Google provider returns HTTP 429 because its monthly spending cap is exhausted.
 
 ## Current Exact Next Action
-- Authenticate Anthropic in remote OMP, then run a delegated Fable review smoke.
+- Restore Google Gemini quota or add another Google/OpenRouter credential, then run the delegated Gemini UI smoke.
 
 ---
 

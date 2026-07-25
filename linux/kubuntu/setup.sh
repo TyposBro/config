@@ -186,16 +186,40 @@ if ! did zen; then
 	mark zen
 fi
 
-# ── 5. JetBrainsMono Nerd Font ───────────────────────────────────────────────
-if ! did fonts-nerd; then
+# ── 5. JetBrainsMono Nerd Font + Konsole profile ─────────────────────────────
+FONT_DIR="$HOME/.local/share/fonts/JetBrainsMonoNerdFont"
+FONT_FILE="$FONT_DIR/JetBrainsMonoNerdFontMono-Regular.ttf"
+if ! did fonts-nerd || [ ! -f "$FONT_FILE" ]; then
 	echo "==> Installing JetBrainsMono Nerd Font..."
-	mkdir -p "$HOME/.local/share/fonts/JetBrainsMonoNF"
-	curl -fsSL -o /tmp/JBM.zip \
-		https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
-	unzip -o -q /tmp/JBM.zip -d "$HOME/.local/share/fonts/JetBrainsMonoNF"
-	fc-cache -f
-	rm /tmp/JBM.zip
+	rm -rf "$FONT_DIR"
+	mkdir -p "$FONT_DIR"
+	curl -fsSL \
+		https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz |
+		tar -xJ -C "$FONT_DIR"
+	fc-cache -f "$HOME/.local/share/fonts"
 	mark fonts-nerd
+fi
+
+KONSOLE_PROFILE_DIR="$HOME/.local/share/konsole"
+KONSOLE_PROFILE="$KONSOLE_PROFILE_DIR/TyposBro.profile"
+if ! did konsole-nerd-font || [ ! -f "$KONSOLE_PROFILE" ]; then
+	echo "==> Configuring Konsole with JetBrainsMono Nerd Font..."
+	mkdir -p "$KONSOLE_PROFILE_DIR"
+	cat >"$KONSOLE_PROFILE" <<'EOF'
+[Appearance]
+ColorScheme=Breeze
+Font=JetBrainsMono Nerd Font Mono,11,-1,5,50,0,0,0,0,0
+
+[General]
+Name=TyposBro
+Parent=FALLBACK/
+EOF
+	if command -v kwriteconfig6 >/dev/null 2>&1; then
+		kwriteconfig6 --file konsolerc --group "Desktop Entry" --key DefaultProfile TyposBro.profile
+	else
+		kwriteconfig5 --file konsolerc --group "Desktop Entry" --key DefaultProfile TyposBro.profile
+	fi
+	mark konsole-nerd-font
 fi
 
 # ── 6. Starship prompt ───────────────────────────────────────────────────────
