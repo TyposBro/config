@@ -38,13 +38,16 @@ fi
 if [ -d "$DIR/agent/agents" ]; then
 	cp -R "$DIR/agent/agents/." "$TARGET/agents/"
 fi
+if [ -d "$DIR/agent/commands" ]; then
+	cp -R "$DIR/agent/commands/." "$TARGET/commands/"
+fi
 if [ -d "$DIR/agent/extensions" ]; then
 	cp -R "$DIR/agent/extensions/." "$TARGET/extensions/"
 fi
 
 cat <<'MSG'
 ==> OMP agent harness setup restored.
-    Managed: config.yml, APPEND_SYSTEM.md, skills, named agents (sol, fable).
-    Removed: obsolete Superpowers plugin/bootstrap, /loop command, WATCHDOG.md, stale skills.
+    Managed: config.yml, APPEND_SYSTEM.md, skills, agents, extensions, commands.
+    Routed workflow: Sol control plane, DeepSeek workers, Claude design/review.
     Local-only state left untouched: models.yml, auth, sessions, DBs, blobs.
 MSG

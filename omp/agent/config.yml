@@ -4,27 +4,23 @@ setupVersion: 1
 hideThinkingBlock: true
 defaultThinkingLevel: auto
 modelRoles: 
-  default: openai-codex/gpt-5.5:xhigh
-  slow: openai-codex/gpt-5.5:xhigh
-  task: deepseek/deepseek-v4-flash:high
-  plan: openai-codex/gpt-5.5:xhigh
-  reviewer: openai-codex/gpt-5.5:xhigh
-  oracle: openai-codex/gpt-5.5:xhigh
-  explore: openai-codex/gpt-5.6-sol:high
-  quick_task: deepseek/deepseek-v4-flash:medium
-  commit: deepseek/deepseek-v4-flash:medium
+  default: openai-codex/gpt-5.6-sol
+  slow: openai-codex/gpt-5.6-sol
+  task: openai-codex/gpt-5.6-sol
+  plan: anthropic/claude-opus-5
+  reviewer: anthropic/claude-fable-5
+  commit: deepseek/deepseek-v4-flash
   vision: openai-codex/gpt-5.6-sol:high
-  designer: openai-codex/gpt-5.6-sol:high
-  advisor: deepseek/deepseek-v4-pro:xhigh
-  smol: deepseek/deepseek-v4-flash:medium
-  title: deepseek/deepseek-v4-flash:low
+  designer: anthropic/claude-opus-5
+  advisor: openai-codex/gpt-5.6-sol
+  smol: deepseek/deepseek-v4-flash
+  tiny: deepseek/deepseek-v4-flash
 advisor: 
   enabled: false
   syncBacklog: "off"
   immuneTurns: 1
   subagents: false
 enabledModels: 
-  - openai-codex/gpt-5.5
   - openai-codex/gpt-5.6-sol
   - anthropic/claude-fable-5
   - anthropic/claude-opus-5
@@ -38,8 +34,7 @@ cycleOrder:
   - designer
   - smol
 dev: 
-  autoqa: 
-    consent: granted
+  autoqaConsent: granted
 inspect_image: 
   enabled: true
 edit: 

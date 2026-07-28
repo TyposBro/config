@@ -56,3 +56,15 @@ For decisions:
 - Why.
 - Tradeoff.
 - Check.
+
+## Model Routing
+
+Sol is the control plane and owns scope, integration, production-risk decisions, final verification, and the completion claim.
+
+- Delegate exact, bounded, reversible implementation to `deepseek-fast` when iteration speed matters.
+- Delegate bounded implementation needing more reasoning to `deepseek-pro`.
+- Use `designer` when UI direction, visual hierarchy, UX, copy, or product judgment is unclear.
+- Use `fable` for an independent correctness review after meaningful changes.
+- Keep auth, billing, data, infrastructure, deployment, migrations, cross-cutting work, and ambiguous high-blast-radius changes in Sol.
+- Inspect and verify all delegated implementation before reporting completion.
+- `/fast` explicitly requests the Flash path, `/design` requests Claude-led direction before implementation, and `/ship` requests Sol-owned end-to-end delivery.
