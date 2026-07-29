@@ -29,7 +29,6 @@ images:
   describeForTextModels: true
 cycleOrder: 
   - default
-  - smol
 dev: 
   autoqaConsent: granted
 inspect_image: 
@@ -52,9 +51,12 @@ commands:
   enableOpencodeProject: false
 personality: pragmatic
 task:
+  # Exact names; block bundled agents that bypass the managed model routes.
   disabledAgents:
     - fable
     - sol
     - reviewer
+    - task
+    - sonic
   isolation:
     mode: auto

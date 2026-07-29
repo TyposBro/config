@@ -5,7 +5,6 @@ tools:
   - read
   - grep
   - glob
-  - lsp
   - web_search
   - hub
   - yield

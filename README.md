@@ -116,6 +116,8 @@ Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics
 
 After running the installer, stop and relaunch every OMP session. Existing sessions retain the model roles, agents, and system prompt loaded at startup; installing files does not hot-reload them.
 
+The installer treats user-level agent and slash-command Markdown as convergent managed inventories: stale `~/.omp/agent/agents/*.md` and `commands/*.md` files are removed before the checked-in set is published. Add any desired global definition to this repository before reinstalling.
+
 ### Curated agent skills
 
 Run:

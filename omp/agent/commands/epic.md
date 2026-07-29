@@ -17,11 +17,12 @@ This workflow is restart-safe after the previous master has stopped; it is not p
 
 Before dispatching work:
 
-1. Confirm the target issue belongs to the current Git repository. Stop on a repository mismatch rather than editing the wrong checkout.
-2. Read the nearest `AGENTS.md` and the repository's source-of-truth index, roadmap, architecture, engineering rules, and GitHub-project conventions. Follow the repository's own document order; do not invent a second one.
-3. Read the target epic, all child issues, current project fields/statuses, linked PRs, and `skill://github-project-org`.
-4. Discover the correct GitHub repository, project number, fields, status options, default branch, validation commands, package manager, and worktree conventions from repository sources and APIs. Never hardcode Spiko's Project #1 or Arbee's Project #6 into this cross-repository workflow.
-5. Treat issue acceptance criteria and non-goals as the implementation contract. If the epic is underspecified in a way repository evidence cannot resolve, record the exact decision needed instead of silently choosing a different product.
+1. Inspect repository-local `.omp` commands, agents, config, `APPEND_SYSTEM.md`, and effective `task.agentModelOverrides`. Require `deepseek-fast`, `sol-reviewer`, `deepseek-pro`, `designer`, and `opus-reviewer` to resolve to the managed source, pinned model, and declared tools; a repository-specific contract may add constraints but never weaken exclusive Flash writing, read-only review, isolation, or the frozen dual-review gate. Return `BLOCKED` on any mismatch.
+2. Confirm the target issue belongs to the current Git repository. Stop on a repository mismatch rather than editing the wrong checkout.
+3. Read the nearest `AGENTS.md` and the repository's source-of-truth index, roadmap, architecture, engineering rules, and GitHub-project conventions. Follow the repository's own document order; do not invent a second one.
+4. Read the target epic, all child issues, current project fields/statuses, linked PRs, and `skill://github-project-org`.
+5. Discover the correct GitHub repository, project number, fields, status options, default branch, validation commands, package manager, and worktree conventions from repository sources and APIs. Never hardcode Spiko's Project #1 or Arbee's Project #6 into this cross-repository workflow.
+6. Treat issue acceptance criteria and non-goals as the implementation contract. If the epic is underspecified in a way repository evidence cannot resolve, record the exact decision needed instead of silently choosing a different product.
 
 ## My operating preferences
 
@@ -30,7 +31,7 @@ Before dispatching work:
 - Sol owns product scope, architecture, auth, billing, user data, migrations, infrastructure, integration, and production-risk decisions.
 - `deepseek-fast` is the sole code-writing agent for implementation, tests, migrations, integration conflict resolution, and remediation. Sol decomposes complex work into bounded Flash tasks. `sol-reviewer`, `deepseek-pro`, `opus-reviewer`, and `designer` remain read-only with respect to delivered code.
 - Parallelize only independent slices. Sequence shared foundations and dependent PRs explicitly.
-- Use isolated child workspaces. Never review a branch while it is changing.
+- Set `isolated: true` on every child task item. If the task schema or isolation backend is unavailable, return `BLOCKED`; never fall back to a shared checkout. Never review a branch while it is changing.
 - Freeze an exact pushed commit SHA at each review boundary.
 - Reviewers receive issue contracts, PRs, the frozen SHA, and a structured factual handoff—not implementation transcripts or internal reasoning.
 - Smoke-test changed behavior. Run shared validation once at the integration gate rather than redundantly in every worker.
@@ -41,7 +42,7 @@ Before dispatching work:
 
 Run this phase on every invocation before spawning any agent. GitHub and Git are durable state; prior OMP transcripts, todos, and final prose are optional evidence, never required inputs.
 
-Acquire an exclusive local lease before reading or changing phase state. Resolve the shared Git directory with `git rev-parse --path-format=absolute --git-common-dir`, then atomically create `<git-common-dir>/omp-epic-locks/<owner-repository-issue>.lock` with `mkdir`. Store a run ID, hostname, parent OMP PID, start time, heartbeat time, and expiry in that directory. If it already exists, reclaim it only when the recorded same-host PID is dead or the lease expired without a newer GitHub checkpoint heartbeat. A lock missing owner metadata is reclaimable only after its directory mtime is at least 30 seconds old; a newer empty lock may still be initializing and remains owned. Otherwise return `BLOCKED` rather than running a second master. Refresh the local and GitHub lease before and after every phase. Remove the local lease only after a terminal handoff; a crashed run leaves a reclaimable lease.
+Acquire an exclusive local lease before reading or changing phase state. Resolve the shared Git directory with `git rev-parse --path-format=absolute --git-common-dir`, then atomically create `<git-common-dir>/omp-epic-locks/<owner-repository-issue>.lock` with `mkdir`. Store a run ID, hostname, parent OMP PID, start time, heartbeat time, and expiry in that directory. An existing same-host lock whose recorded PID is alive is always owned regardless of expiry. Reclaim a same-host lock only when its PID is dead; reclaim a cross-host or unverifiable owner only after expiry and only when no newer GitHub checkpoint heartbeat exists. A lock missing owner metadata is reclaimable only after its directory mtime is at least 30 seconds old. While any phase or child task is active, refresh the local lease and GitHub heartbeat from the master's wait loop at least every one-third of the lease TTL, as well as before and after each phase. Otherwise return `BLOCKED` rather than running a second master.
 
 1. Refresh remote refs without modifying worktrees.
 2. Inventory the epic, every child issue, parent links, project statuses, issue comments, linked PRs, PR bodies, reviews, checks, base/head branches, head SHAs, merge state, and merged/closed state.
@@ -82,7 +83,7 @@ Run only when reconciliation finds incomplete engineering work. Skip when the ne
 
 1. Map dependency waves and contracts before spawning agents.
 2. Move child issues through the repository's status flow as evidence supports each transition.
-3. Assign every independent child issue to `deepseek-fast` in an isolated workspace. If a child is too large for one Flash task, decompose it into dependency-ordered bounded Flash tasks rather than switching writers.
+3. Assign every independent child issue to an explicit `deepseek-fast` task item with `isolated: true`. If a child is too large for one Flash task, decompose it into dependency-ordered bounded Flash tasks rather than switching writers.
 4. Require complete issue-level implementation: affected contracts, callsites, migrations, behavior-focused tests where needed, smoke evidence, and one issue-scoped draft PR.
 5. Follow the repository's PR linking convention and keep PRs out of the GitHub Project unless that repository explicitly says otherwise.
 6. Delegate integration, code-level conflict resolution, and any required corrective edits to one `deepseek-fast` integration writer on the dedicated review branch; never merge to the default branch.
@@ -103,12 +104,12 @@ Do not start review until implementation jobs have settled, the integration SHA 
 
 ## Phase B — independent review
 
-Launch two required fresh reviewers in parallel at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA:
+Launch two required fresh reviewers in parallel as explicit `sol-reviewer` and `deepseek-pro` task items with `isolated: true` at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA. Block rather than review in a shared checkout.
 
-1. `sol-reviewer` performs the primary independent architectural critique and executable verification. It reviews the full diff and may run repository-prescribed targeted tests, typechecks, builds, contract checks, and smoke scenarios without editing source.
-2. `deepseek-pro` provides an independent adversarial pass focused on subtle logic, security, ownership, concurrency, partial failure, migration, and hidden-coupling defects. It may run narrow read-only reproductions but never implements a fix.
+1. `sol-reviewer` performs the primary independent source-only architectural critique of the full diff. It has no execution or mutation tools.
+2. `deepseek-pro` provides an independent source-only adversarial pass focused on subtle logic, security, ownership, concurrency, partial failure, migration, and hidden-coupling defects. It never executes or implements a fix.
 
-Give both reviewers the issue contracts, PRs, exact SHA, and factual handoff—not implementation transcripts or internal reasoning. Give each an invocation-specific strict `outputSchema` containing verdict, reviewed SHA, P0-P3 findings with `path:line`, evidence/reproduction, acceptance-criterion matrix, commands and observed results, blockers, correction required, safe dependency/merge order, and collaboration addendum. Each reviewer must send its frozen initial output to `Main` through `hub`, then wait without yielding or contacting peers.
+Give both reviewers the issue contracts, PRs, exact SHA, and factual verification handoff—not implementation transcripts or internal reasoning. Give each an invocation-specific strict `outputSchema` containing verdict, reviewed SHA, P0-P3 findings with `path:line`, source evidence, acceptance-criterion matrix, blockers, correction required, safe dependency/merge order, and collaboration addendum. Each reviewer must send its frozen initial output to `Main` through `hub`, then call `hub wait` without yielding or contacting peers.
 
 Request one narrow `opus-reviewer` secondary opinion only when at least one trigger applies:
 
