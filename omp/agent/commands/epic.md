@@ -41,10 +41,12 @@ Before dispatching work:
 
 Run this phase on every invocation before spawning any agent. GitHub and Git are durable state; prior OMP transcripts, todos, and final prose are optional evidence, never required inputs.
 
+Acquire an exclusive local lease before reading or changing phase state. Resolve the shared Git directory with `git rev-parse --path-format=absolute --git-common-dir`, then atomically create `<git-common-dir>/omp-epic-locks/<owner-repository-issue>.lock` with `mkdir`. Store a run ID, hostname, parent OMP PID, start time, heartbeat time, and expiry in that directory. If it already exists, reclaim it only when the recorded same-host PID is dead or the lease expired without a newer GitHub checkpoint heartbeat. A lock missing owner metadata is reclaimable only after its directory mtime is at least 30 seconds old; a newer empty lock may still be initializing and remains owned. Otherwise return `BLOCKED` rather than running a second master. Refresh the local and GitHub lease before and after every phase. Remove the local lease only after a terminal handoff; a crashed run leaves a reclaimable lease.
+
 1. Refresh remote refs without modifying worktrees.
 2. Inventory the epic, every child issue, parent links, project statuses, issue comments, linked PRs, PR bodies, reviews, checks, base/head branches, head SHAs, merge state, and merged/closed state.
 3. Inventory the integration branch plus all local and remote issue branches. Read `git worktree list --porcelain`; map every worktree to its branch, HEAD, cleanliness, and ahead/behind relationship.
-4. Locate the epic's verification/release-gate issue and the newest `omp-epic-flow:v1` checkpoint, if present. Corroborate checkpoint claims against live GitHub and Git state.
+4. Locate the epic's verification/release-gate issue and the newest `omp-epic-flow:v2` checkpoint. If only `v1` exists, reconstruct remediation cycles from distinct reviewed and remediated SHAs before writing `v2`; if the count is ambiguous, return `BLOCKED` rather than resetting it. Corroborate every checkpoint claim against live GitHub and Git state.
 5. Build and report one row per child using only these states:
    - `not_started`
    - `dirty_local_worktree`
@@ -72,7 +74,7 @@ Reconciliation rules:
 - If all children are merged/done, verify the final gate and exit without creating work.
 - Existing CI success, comments, or project status never override a contradictory live diff, branch head, or unresolved finding.
 
-Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v1 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, review verdict, unresolved findings, external blockers, and update time. Update it immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
+Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v2 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, combined review verdict, static-review model, remediation cycle count, unresolved findings, external blockers, lease owner/expiry, final state, and update time. Increment and persist the remediation cycle before spawning remediation so interruption cannot reset the cap. Update the checkpoint immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
 
 ## Phase A — implementation
 
@@ -101,45 +103,39 @@ Do not start review until implementation jobs have settled, the integration SHA 
 
 ## Phase B — independent review
 
-Launch a fresh Fable reviewer in a clean isolated workspace at the frozen SHA only when no valid `pass` verdict exists for that exact SHA. An interrupted review resumes as a new independent review of the same SHA, not as repeated implementation. The reviewer is read-only: no edits, commits, pushes, remediation, merge, deployment, issue closure, project-status completion, or production mutation.
+Launch two fresh, independent agents in one batch at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA:
 
-The reviewer must:
+1. A `fable` static reviewer in a clean isolated workspace. Use its native `overall_correctness`, `findings`, `explanation`, and `confidence` output contract; do not require it to run builds or tests that its read-only agent contract forbids. It may read the implementation diff and issue contracts, but receives no implementation transcript. Record the actual Anthropic model from task metadata. If both configured Anthropic models are unavailable, review is `blocked`; never substitute a non-Anthropic model.
+2. A `sol` verification agent in a separate clean isolated workspace. It is read-only with respect to source and Git: no edits, commits, pushes, remediation, merge, deployment, issue closure, project-status completion, or production mutation. It may run the repository-prescribed targeted tests, typechecks, contract checks, builds, and smoke scenarios. Give it an invocation-specific strict `outputSchema` containing reviewed SHA, per-issue PASS/FAIL/BLOCKED/N/A matrix, commands and observed results, external blockers, and safe dependency/merge order.
 
-1. Review the entire base-to-frozen-SHA diff and prove every intended child head is included.
-2. Map every child acceptance criterion to direct evidence or a precise blocker.
-3. Audit correctness, security, ownership, concurrency, idempotency, partial failure, migration safety, privacy, platform policy, rollback, dependency direction, and unexpected scope.
-4. Independently run relevant targeted tests, typechecks, contract checks, builds, and smoke scenarios. CI is supporting evidence, not review.
-5. Reproduce claimed pre-existing failures on the base branch before accepting them as baseline.
-6. Audit stacked dependencies, closing/link metadata, project hygiene, and whether the integration PR is a merge candidate or review-only bundle.
-7. Complete the whole review after finding a defect.
+Both agents must:
 
-Require strict output:
+- use the exact frozen SHA and fail on divergence
+- review the entire base-to-frozen-SHA diff and prove every intended child head is included
+- map every child acceptance criterion to direct evidence or a precise blocker
+- audit correctness, security, ownership, concurrency, idempotency, partial failure, migration safety, privacy, platform policy, rollback, dependency direction, and unexpected scope
+- reproduce claimed pre-existing failures on the base branch before accepting them as baseline
+- audit stacked dependencies, closing/link metadata, project hygiene, and whether the integration PR is a merge candidate or review-only bundle
+- complete their whole assigned review after finding a defect
 
-- `verdict`: `pass`, `changes_required`, or `blocked`
-- reviewed SHA
-- P0/P1/P2/P3 findings
-- PR plus `path:line`
-- concrete failure scenario and violated contract
-- evidence or reproduction
-- minimal source-level correction
-- proof required after correction
-- per-issue PASS/FAIL/BLOCKED/N/A matrix
-- commands and observed results
-- external blockers
-- safe dependency and merge order
+Synthesize one combined verdict without weakening either result:
 
-P0/P1/P2 block owner QA. P3 is advisory unless several findings expose one systemic defect.
+- `changes_required` when Fable reports any P0/P1/P2 finding or verification reports any FAIL
+- `blocked` when no failure is established but either required agent is unavailable or verification contains a required BLOCKED item
+- `pass` only when both agents reviewed the same SHA, Fable has no P0/P1/P2 finding, and every verification criterion is PASS or justified N/A
+
+P3 is advisory unless several findings expose one systemic defect. Preserve both raw structured outputs alongside the combined verdict.
 
 ## Phase C — remediation and fresh re-review
 
-When review returns `changes_required`:
+When the combined review returns `changes_required`:
 
 1. Launch a fresh remediation agent with only the frozen SHA, issue contracts, structured findings, affected PRs, and required proof.
 2. Fix every P0/P1/P2 at its source, add behavior coverage for plausible regressions, update the correct draft PRs, rebuild the integration branch, and return finding → fix → test → new SHA.
 3. Independently confirm the new SHA and CI.
-4. Launch a new fresh Fable reviewer to recheck findings, review the remediation diff, rerun affected verification, and search for regressions.
+4. Launch a new fresh Fable static reviewer and Sol verification agent to recheck findings, review the remediation diff, rerun affected verification, and search for regressions.
 
-Allow at most three remediation/re-review cycles. Then report unresolved findings as BLOCKED; never weaken the standard or relabel unfinished work.
+Allow at most three remediation/re-review cycles using the durable checkpoint count. Then report unresolved P0/P1/P2 findings as BLOCKED; never weaken the standard, reset the count, or relabel unfinished work.
 
 ## Final control-plane gate
 
@@ -150,13 +146,13 @@ Before yielding, independently confirm:
 - intended PR heads are included and mergeable in the documented order
 - required CI passed
 - GitHub project hierarchy, status, and PR-link behavior match repository conventions
-- reviewer verdict is `pass`
+- combined reviewer verdict is `pass` for the final SHA
 - no forbidden merge, deployment, production mutation, pricing change, or manual issue closure occurred
 - unavailable external acceptance is explicit
 
 Record final evidence on the epic's existing verification/release-gate child issue. If external/device/deployment acceptance is materially required and no release-gate child exists, create one using that repository's epic/sub-issue/project convention.
 
-Update the single `omp-epic-flow:v1` checkpoint with the final SHA, reviewer verdict, remaining blockers, and final state before yielding.
+Update the single `omp-epic-flow:v2` checkpoint with the final SHA, both raw review outputs, combined verdict, remediation count, remaining blockers, and final state before yielding. Expire the GitHub lease and remove the local lock after the checkpoint update.
 
 Return exactly one final state:
 

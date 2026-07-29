@@ -112,7 +112,7 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 
 This restores the global personality/AuDHD communication layer, role routing, model-pinned task agents (`sol` and `fable`), and the same canonical skill set used by Pi and Claude. It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
-Managed slash commands include `/ship`, `/fast`, `/design`, and `/epic`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, then resumes the first incomplete implementation → independent Fable review → remediation gate. It stops at owner QA unless the initiating request explicitly authorizes consequential actions.
+Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, then resumes the first incomplete implementation → independent static and executable verification → remediation gate. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds leaf-agent concurrency and shared Git locks serialize conflicting branches. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
 
 ### Curated agent skills
 
