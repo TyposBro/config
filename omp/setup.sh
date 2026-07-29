@@ -23,7 +23,6 @@ rm -f \
 	"$TARGET/extensions/superpowers-bootstrap.ts"
 
 mkdir -p \
-	"$TARGET/skills" \
 	"$TARGET/extensions" \
 	"$TARGET/commands" \
 	"$TARGET/agents"
@@ -31,10 +30,8 @@ mkdir -p \
 cp "$DIR/agent/config.yml" "$TARGET/config.yml"
 cp "$DIR/agent/APPEND_SYSTEM.md" "$TARGET/APPEND_SYSTEM.md"
 
-# Idempotent copies — handle potentially empty/missing source dirs.
-if [ -d "$DIR/agent/skills" ]; then
-	cp -R "$DIR/agent/skills/." "$TARGET/skills/"
-fi
+# Install and link the same curated global skills used by Pi, Claude, and Codex.
+bash "$DIR/../agent-skills/setup.sh"
 if [ -d "$DIR/agent/agents" ]; then
 	cp -R "$DIR/agent/agents/." "$TARGET/agents/"
 fi
@@ -47,7 +44,7 @@ fi
 
 cat <<'MSG'
 ==> OMP agent harness setup restored.
-    Managed: config.yml, APPEND_SYSTEM.md, skills, agents, extensions, commands.
+    Managed: config.yml, APPEND_SYSTEM.md, shared skills link, agents, extensions, commands.
     Routed workflow: Sol control plane, DeepSeek workers, Claude design/review.
     Local-only state left untouched: models.yml, auth, sessions, DBs, blobs.
 MSG

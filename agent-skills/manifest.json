@@ -1,0 +1,79 @@
+{
+  "source": {
+    "commit": "2ab958093e83e0ec752e6c1c5932da465bf23e0c",
+    "sha256": "80e06b58bde4b3423637b8bf83044473249fd6606e6cb36296fbfde4468dd202",
+    "url": "https://github.com/mattpocock/skills/archive/{commit}.tar.gz"
+  },
+  "upstream": [
+    {
+      "name": "grilling",
+      "path": "skills/productivity/grilling",
+      "invocation": "autonomous"
+    },
+    {
+      "name": "prototype",
+      "path": "skills/engineering/prototype",
+      "invocation": "user"
+    },
+    {
+      "name": "diagnosing-bugs",
+      "path": "skills/engineering/diagnosing-bugs",
+      "invocation": "user"
+    },
+    {
+      "name": "handoff",
+      "path": "skills/productivity/handoff",
+      "invocation": "user"
+    },
+    {
+      "name": "writing-great-skills",
+      "path": "skills/productivity/writing-great-skills",
+      "invocation": "user"
+    },
+    {
+      "name": "tdd",
+      "path": "skills/engineering/tdd",
+      "invocation": "user"
+    },
+    {
+      "name": "codebase-design",
+      "path": "skills/engineering/codebase-design",
+      "invocation": "user"
+    },
+    {
+      "name": "domain-modeling",
+      "path": "skills/engineering/domain-modeling",
+      "invocation": "user"
+    }
+  ],
+  "local": [
+    {
+      "name": "wise-teacher",
+      "invocation": "user"
+    }
+  ],
+  "allowedExtras": [
+    "caveman",
+    "caveman-commit",
+    "caveman-compress",
+    "caveman-help",
+    "caveman-review"
+  ],
+  "rejected": [
+    "ask-matt",
+    "code-review",
+    "find-skills",
+    "grill-me",
+    "grill-with-docs",
+    "implement",
+    "improve-codebase-architecture",
+    "research",
+    "resolving-merge-conflicts",
+    "setup-matt-pocock-skills",
+    "teach",
+    "to-spec",
+    "to-tickets",
+    "triage",
+    "wayfinder"
+  ]
+}

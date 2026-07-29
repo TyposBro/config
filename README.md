@@ -100,7 +100,7 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call this automatically on every run. It manages non-secret Pi settings, global rules, and repo-managed extensions; auth/session data stays local. Global harness skills live in `~/agent-memory/skills`; Pi auto-discovers them via `~/.agents/skills`, and Claude Code gets the same skills via `~/.claude/skills`.
+Kubuntu + macOS setup scripts call this automatically on every run. Global harness skills are installed reproducibly by `agent-skills/setup.sh`: pinned third-party skills are checksum-verified, repo-owned skills override them, rejected skills are pruned, and unknown manually installed skills are preserved but reported by the checker. Pi and Claude discover the canonical set through `~/agent-memory/skills`.
 
 ### OMP coding agent
 
@@ -110,7 +110,31 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 ~/config/omp/setup.sh
 ```
 
-This restores the global personality/AuDHD communication layer, role routing, and model-pinned task agents (`sol` and `fable`). It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+This restores the global personality/AuDHD communication layer, role routing, model-pinned task agents (`sol` and `fable`), and the same canonical skill set used by Pi and Claude. It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+
+### Curated agent skills
+
+Run:
+
+```bash
+~/config/agent-skills/setup.sh
+```
+
+Validate the installed inventory without changing it:
+
+```bash
+~/config/agent-skills/setup.sh --check
+```
+
+`agent-skills/manifest.json` is the source of truth for upstream pins, invocation policy, rejected skills, and allowed host-local extras. The Caveman suite is explicitly allowed as host-local rather than required on every machine.
+
+The managed set is intentionally small:
+
+- Autonomous: `grilling`
+- Manual workflows: `prototype`, `diagnosing-bugs`, `handoff`, `writing-great-skills`, `wise-teacher`
+- Manual specialist references: `tdd`, `codebase-design`, `domain-modeling`
+
+`prototype` cleans up throwaway code unless preservation is explicitly requested. `diagnosing-bugs` prefers a tight reproduction loop without blocking targeted source inspection. The installer removes the audited workflow bundle that caused automatic commits, issue-tracker ceremony, unsafe merge completion, or unnecessary subagent/document creation.
 
 ### Keybindings (GNOME, Caps Lock = Super)
 
