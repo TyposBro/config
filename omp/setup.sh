@@ -30,6 +30,11 @@ restore_previous() {
 	else
 		rm -f "$TARGET/APPEND_SYSTEM.md"
 	fi
+	if [ -f "$STAGE/previous/WATCHDOG.md" ]; then
+		cp "$STAGE/previous/WATCHDOG.md" "$TARGET/WATCHDOG.md"
+	else
+		rm -f "$TARGET/WATCHDOG.md"
+	fi
 }
 
 abort_publish() {
@@ -86,6 +91,9 @@ if [ -f "$TARGET/config.yml" ]; then
 fi
 if [ -f "$TARGET/APPEND_SYSTEM.md" ]; then
 	cp "$TARGET/APPEND_SYSTEM.md" "$STAGE/previous/APPEND_SYSTEM.md"
+fi
+if [ -f "$TARGET/WATCHDOG.md" ]; then
+	cp "$TARGET/WATCHDOG.md" "$STAGE/previous/WATCHDOG.md"
 fi
 
 echo "==> Publishing OMP agent harness config..."
