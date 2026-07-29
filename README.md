@@ -110,13 +110,13 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 ~/config/omp/setup.sh
 ```
 
-This restores the global personality/AuDHD communication layer, role routing, model-pinned agents, and the same canonical skill set used by Pi and Claude. Sol is the main control plane; DeepSeek V4 Flash is the sole application-code writer; fresh Sol and DeepSeek V4 Pro sessions are required reviewers; Claude Opus 5 is a narrow secondary opinion for high-risk or disputed changes. Claude Fable is not configured. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+This restores the active OMP agent directory (default `~/.omp/agent`) with the personality/AuDHD communication layer, role routing, model-pinned agents, and the canonical Pi/Claude skill set. Sol is the main control plane; DeepSeek V4 Flash is the sole application-code writer; fresh Sol and DeepSeek V4 Pro sessions are required reviewers; Claude Opus 5 is one narrow secondary pass for high-risk surfaces, reviewer disagreement, supported P0/P1/P2 findings, or an explicit request. Claude Fable and generic writer fallbacks are disabled. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
 Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, resumes Flash-only implementation, then runs independent Sol/DeepSeek review, conditional Opus critique, reviewer collaboration, and Flash-only remediation. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds concurrency and shared Git locks serialize conflicts. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
 
 After running the installer, stop and relaunch every OMP session. Existing sessions retain the model roles, agents, and system prompt loaded at startup; installing files does not hot-reload them.
 
-The installer treats user-level agent and slash-command Markdown as convergent managed inventories: stale `~/.omp/agent/agents/*.md` and `commands/*.md` files are removed before the checked-in set is published. Add any desired global definition to this repository before reinstalling.
+The installer treats user-level agents, slash commands, and extensions as convergent managed inventories: stale files are removed before the checked-in set is published, with rollback on caught publication failures or termination signals. Add any desired global definition to this repository before reinstalling. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
 
 ### Curated agent skills
 

@@ -14,16 +14,41 @@ cleanup() {
 	rm -rf "$STAGE"
 }
 
-warn_incomplete() {
-	if [ "$PUBLISHING" -eq 1 ]; then
-		printf '%s\n' \
-			"ERROR: OMP routing publication stopped after target mutation." \
-			"Stop all OMP sessions, rerun this installer, and relaunch only after it succeeds." >&2
+restore_previous() {
+	rm -rf "$TARGET/agents" "$TARGET/commands" "$TARGET/extensions"
+	mkdir -p "$TARGET/agents" "$TARGET/commands" "$TARGET/extensions"
+	cp -R "$STAGE/previous/agents/." "$TARGET/agents/"
+	cp -R "$STAGE/previous/commands/." "$TARGET/commands/"
+	cp -R "$STAGE/previous/extensions/." "$TARGET/extensions/"
+	if [ -f "$STAGE/previous/config.yml" ]; then
+		cp "$STAGE/previous/config.yml" "$TARGET/config.yml"
+	else
+		rm -f "$TARGET/config.yml"
+	fi
+	if [ -f "$STAGE/previous/APPEND_SYSTEM.md" ]; then
+		cp "$STAGE/previous/APPEND_SYSTEM.md" "$TARGET/APPEND_SYSTEM.md"
+	else
+		rm -f "$TARGET/APPEND_SYSTEM.md"
 	fi
 }
 
+abort_publish() {
+	local status="${1:-1}"
+	trap - ERR HUP INT TERM
+	if [ "$PUBLISHING" -eq 1 ]; then
+		set +e
+		restore_previous
+		PUBLISHING=0
+		printf '%s\n' \
+			"ERROR: OMP routing publication was interrupted and the previous managed inventory was restored." \
+			"Stop all OMP sessions, rerun this installer, and relaunch only after it succeeds." >&2
+	fi
+	exit "$status"
+}
+
 trap cleanup EXIT
-trap warn_incomplete ERR
+trap 'abort_publish $?' ERR
+trap 'abort_publish 130' HUP INT TERM
 
 echo "==> Staging OMP agent harness config..."
 mkdir -p "$STAGE/agents" "$STAGE/commands" "$STAGE/extensions"
@@ -46,14 +71,32 @@ if [ ! -f "$SKILLS_SETUP" ]; then
 fi
 bash "$SKILLS_SETUP"
 
+mkdir -p "$STAGE/previous/agents" "$STAGE/previous/commands" "$STAGE/previous/extensions"
+if [ -d "$TARGET/agents" ]; then
+	cp -R "$TARGET/agents/." "$STAGE/previous/agents/"
+fi
+if [ -d "$TARGET/commands" ]; then
+	cp -R "$TARGET/commands/." "$STAGE/previous/commands/"
+fi
+if [ -d "$TARGET/extensions" ]; then
+	cp -R "$TARGET/extensions/." "$STAGE/previous/extensions/"
+fi
+if [ -f "$TARGET/config.yml" ]; then
+	cp "$TARGET/config.yml" "$STAGE/previous/config.yml"
+fi
+if [ -f "$TARGET/APPEND_SYSTEM.md" ]; then
+	cp "$TARGET/APPEND_SYSTEM.md" "$STAGE/previous/APPEND_SYSTEM.md"
+fi
+
 echo "==> Publishing OMP agent harness config..."
 PUBLISHING=1
-mkdir -p "$TARGET" "$TARGET/extensions" "$TARGET/commands" "$TARGET/agents"
+mkdir -p "$TARGET"
 
-# Agents and commands are managed inventories. Remove stale definitions so
-# bundled or prior custom routes cannot bypass the pinned model contracts.
-rm -f "$TARGET/agents/"*.md "$TARGET/commands/"*.md
-rm -f "$TARGET/WATCHDOG.md" "$TARGET/extensions/superpowers-bootstrap.ts"
+# Agents, commands, and extensions are managed inventories. Replace them
+# completely so prior custom routes cannot bypass the pinned model contracts.
+rm -rf "$TARGET/agents" "$TARGET/commands" "$TARGET/extensions"
+mkdir -p "$TARGET/agents" "$TARGET/commands" "$TARGET/extensions"
+rm -f "$TARGET/WATCHDOG.md"
 
 cp -R "$STAGE/agents/." "$TARGET/agents/"
 cp -R "$STAGE/commands/." "$TARGET/commands/"
@@ -63,7 +106,7 @@ cp -R "$STAGE/extensions/." "$TARGET/extensions/"
 cp "$STAGE/APPEND_SYSTEM.md" "$TARGET/APPEND_SYSTEM.md"
 cp "$STAGE/config.yml" "$TARGET/config.yml"
 PUBLISHING=0
-trap - ERR
+trap - ERR HUP INT TERM
 
 cat <<'MSG'
 ==> OMP agent harness setup restored.
@@ -73,3 +116,4 @@ cat <<'MSG'
     IMPORTANT: Stop and relaunch every existing OMP session before using this routing.
     Running sessions retain the model roles, agent definitions, and system prompt loaded at startup.
 MSG
+printf '    Installed target: %s\n' "$TARGET"
