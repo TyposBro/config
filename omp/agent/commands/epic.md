@@ -1,15 +1,17 @@
 ---
-description: Autonomously implement, review, and hand off a GitHub epic
+description: Resume, implement, independently review, and hand off a GitHub epic
 ---
-Run a deterministic, dependency-gated multi-agent workflow for the current repository.
+Run a convergent, dependency-gated multi-agent workflow for the current repository.
 
 Target: $1
-Start phase: $2
+Requested phase: $2
 Frozen review SHA: $3
 
-Interpret an omitted start phase as `implement`. Supported phases are `implement` and `review`. In review mode, use the supplied SHA; if omitted, resolve the current integration PR head once, freeze it, and report it.
+Interpret an omitted phase as `auto`. Supported phases are `auto`, `implement`, and `review`. `auto` must reconstruct durable state and continue from the first incomplete gate. `implement` and `review` constrain the next eligible phase but never authorize duplicating already-complete work. In review mode, use the supplied SHA; if omitted, resolve and freeze the current integration PR head.
 
-You are the Sol control plane. Own scope, sequencing, handoffs, integration checks, and the final claim. Do not implement or review code yourself.
+You are the Sol control plane. Own scope, reconciliation, sequencing, handoffs, integration checks, and the final claim. Do not implement or review code yourself.
+
+This workflow is restart-safe after the previous master has stopped; it is not permission for two masters to write the same branches concurrently. Refuse to start a duplicate phase when a live local OMP process or agent can be shown to own it.
 
 ## Discover this repository's contract
 
@@ -35,9 +37,46 @@ Before dispatching work:
 - No merge, deployment, production mutation, manual issue closure, pricing change, or externally consequential action without explicit authorization in the initiating request.
 - Continue reachable work when one item is blocked. Missing credentials, consoles, signed artifacts, devices, deployment access, or observation time remain explicit blockers, never fake passes.
 
+## Phase 0 — reconcile and resume
+
+Run this phase on every invocation before spawning any agent. GitHub and Git are durable state; prior OMP transcripts, todos, and final prose are optional evidence, never required inputs.
+
+1. Refresh remote refs without modifying worktrees.
+2. Inventory the epic, every child issue, parent links, project statuses, issue comments, linked PRs, PR bodies, reviews, checks, base/head branches, head SHAs, merge state, and merged/closed state.
+3. Inventory the integration branch plus all local and remote issue branches. Read `git worktree list --porcelain`; map every worktree to its branch, HEAD, cleanliness, and ahead/behind relationship.
+4. Locate the epic's verification/release-gate issue and the newest `omp-epic-flow:v1` checkpoint, if present. Corroborate checkpoint claims against live GitHub and Git state.
+5. Build and report one row per child using only these states:
+   - `not_started`
+   - `dirty_local_worktree`
+   - `branch_without_pr`
+   - `implementation_in_progress`
+   - `pr_waiting_for_ci`
+   - `ready_for_integration`
+   - `ready_for_review`
+   - `review_in_progress`
+   - `changes_required`
+   - `ready_for_owner_qa`
+   - `merged_done`
+   - `blocked`
+6. Select the first incomplete dependency gate. A URL-only invocation must continue from that gate without asking the user to repeat prior prompts, PR lists, branch names, or SHAs.
+
+Reconciliation rules:
+
+- Reuse an existing issue PR and its head branch. Never create a second PR or replacement branch for the same child merely because the prior agent session ended.
+- Treat pushed remote commits and GitHub PR metadata as authoritative over an abandoned agent transcript.
+- If a branch exists without a PR, verify its issue ownership and continue it; do not create another branch.
+- Never delete, reset, clean, stash, or overwrite a dirty worktree. Record its path, branch, HEAD, tracked diff, and untracked inventory. If ownership is unambiguous, preserve a patch artifact and let a recovery implementer reconcile it against the same issue branch in an isolated workspace. Keep the original worktree untouched until the recovered commits are pushed and verified. Ambiguous dirty work is `blocked`.
+- A review verdict is valid only for its exact integration SHA. `pass` at the current SHA skips review; findings at the current SHA resume remediation; evidence for an older SHA is stale.
+- If implementation is complete and a review was interrupted before a verdict, launch a fresh read-only reviewer at the same frozen SHA. Do not rerun implementation.
+- If remediation changed the SHA, launch a fresh reviewer for the new SHA even when the older SHA passed.
+- If all children are merged/done, verify the final gate and exit without creating work.
+- Existing CI success, comments, or project status never override a contradictory live diff, branch head, or unresolved finding.
+
+Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v1 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, review verdict, unresolved findings, external blockers, and update time. Update it immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
+
 ## Phase A — implementation
 
-Skip when start phase is `review`.
+Run only when reconciliation finds incomplete engineering work. Skip when the next durable gate is review, remediation, owner QA, or done.
 
 1. Map dependency waves and contracts before spawning agents.
 2. Move child issues through the repository's status flow as evidence supports each transition.
@@ -62,7 +101,7 @@ Do not start review until implementation jobs have settled, the integration SHA 
 
 ## Phase B — independent review
 
-Launch a fresh Fable reviewer in a clean isolated workspace at the frozen SHA. It is read-only: no edits, commits, pushes, remediation, merge, deployment, issue closure, project-status completion, or production mutation.
+Launch a fresh Fable reviewer in a clean isolated workspace at the frozen SHA only when no valid `pass` verdict exists for that exact SHA. An interrupted review resumes as a new independent review of the same SHA, not as repeated implementation. The reviewer is read-only: no edits, commits, pushes, remediation, merge, deployment, issue closure, project-status completion, or production mutation.
 
 The reviewer must:
 
@@ -116,6 +155,8 @@ Before yielding, independently confirm:
 - unavailable external acceptance is explicit
 
 Record final evidence on the epic's existing verification/release-gate child issue. If external/device/deployment acceptance is materially required and no release-gate child exists, create one using that repository's epic/sub-issue/project convention.
+
+Update the single `omp-epic-flow:v1` checkpoint with the final SHA, reviewer verdict, remaining blockers, and final state before yielding.
 
 Return exactly one final state:
 
