@@ -23,7 +23,7 @@ One `/epics` invocation operates in one repository. Cross-repository portfolios 
 
 Verify the effective `deepseek-fast`, `deepseek-pro`, and `sol-reviewer` definitions resolve to the managed source, pinned models, and declared tools before dispatch; inspect repository-local agents/config and `task.agentModelOverrides`, not only discoverability. `designer` and `opus-reviewer` are conditional specialists subject to the same check. Missing or mismatched Flash blocks code-writing nodes. Missing or mismatched required reviewers blocks review. Opus unavailability is recorded and blocks only an unresolved high-risk disagreement; never substitute an unavailable model with a code writer.
 
-Compute a stable portfolio ID from the sorted canonical epic keys. On the lexicographically first valid epic, maintain one updatable comment with `<!-- omp-portfolio-flow:v1 -->`, portfolio ID, normalized lanes, current DAG edges, admitted/queued lanes, completed wave, per-lane gate/SHA/checkpoint, active task IDs, blockers, and update time. Corroborate it against live state on restart and update it after every settled wave; never append wave spam.
+Compute a stable portfolio ID from the sorted canonical epic keys. Before reading or mutating portfolio state, acquire a portfolio-master lock under the shared Git directory using the complete `/epic` Phase 0 lease protocol; include the portfolio ID in its owner key and return `BLOCKED` on a live owner or failed fenced takeover. On the lexicographically first valid epic, maintain one updatable comment with `<!-- omp-portfolio-flow:v1 -->`, portfolio ID, normalized lanes, current DAG edges, admitted/queued lanes, completed wave, per-lane gate/SHA/checkpoint, active task IDs, blockers, and update time. Corroborate it against live state on restart and update it after every settled wave; never append wave spam.
 
 ## Reconcile every lane before dispatch
 
@@ -118,3 +118,5 @@ Return one row per requested URL, in input order, with:
 - exactly one next owner action
 
 Also report the cross-epic dependency order and any lanes deliberately serialized. Never collapse lane-specific blockers into a misleading portfolio-wide success claim.
+
+Before returning the final handoff, durably update the single portfolio checkpoint with every lane's terminal state, final SHA, reviewer result, unresolved blocker, dependency order, and zero active task IDs. Reread and validate the portfolio-master fencing token, then release that lock with the ownership-checked compare-and-delete or atomic-rename protocol. If checkpoint or token-checked release fails, return `BLOCKED` and retain the lock for recovery.
