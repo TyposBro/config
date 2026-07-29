@@ -83,7 +83,7 @@ Run only when reconciliation finds incomplete engineering work. Skip when the ne
 
 1. Map dependency waves and contracts before spawning agents.
 2. Move child issues through the repository's status flow as evidence supports each transition.
-3. Assign every independent child issue to an explicit `deepseek-fast` task item with `isolated: true`. Include the active master, lane, and node lock paths plus their fencing tokens in every branch-owning assignment; the worker must validate them before each commit, push, PR mutation, or other branch-changing action. If a child is too large for one Flash task, decompose it into dependency-ordered bounded Flash tasks rather than switching writers.
+3. Before each branch-owning spawn, create a writer-node lock under the shared Git directory using the complete Phase 0 acquisition, metadata, heartbeat, fencing, takeover, and ownership-checked release protocol. Then assign the issue to an explicit `deepseek-fast` task item with `isolated: true`, including the active per-epic master lock and writer-node lock paths plus both fencing tokens. The worker must validate every supplied token before each commit, push, PR mutation, or other branch-changing action. If a child is too large for one Flash task, decompose it into dependency-ordered bounded Flash tasks rather than switching writers.
 4. Require complete issue-level implementation: affected contracts, callsites, migrations, behavior-focused tests where needed, smoke evidence, and one issue-scoped draft PR.
 5. Follow the repository's PR linking convention and keep PRs out of the GitHub Project unless that repository explicitly says otherwise.
 6. Delegate integration, code-level conflict resolution, and any required corrective edits to one `deepseek-fast` integration writer on the dedicated review branch; never merge to the default branch.
@@ -104,7 +104,7 @@ Do not start review until implementation jobs have settled, the integration SHA 
 
 ## Phase B — independent review
 
-Launch two required fresh reviewers in parallel as explicit `sol-reviewer` and `deepseek-pro` task items with `isolated: true` at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA. Block rather than review in a shared checkout.
+Before launching, create one per-SHA review-node lock under the shared Git directory using the complete Phase 0 lease protocol. Then launch the two required fresh reviewers in parallel as explicit `sol-reviewer` and `deepseek-pro` task items with `isolated: true` at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA. Include the active per-epic and review-node lock paths/tokens in both assignments; the master must cancel the panel on ownership loss and release the review-node lock only after its combined result is durably checkpointed. Block rather than review in a shared checkout.
 
 1. `sol-reviewer` performs the primary independent source-only architectural critique of the full diff. It has no execution or mutation tools.
 2. `deepseek-pro` provides an independent source-only adversarial pass focused on subtle logic, security, ownership, concurrency, partial failure, migration, and hidden-coupling defects. It never executes or implements a fix.
