@@ -54,3 +54,6 @@ commands:
   enableOpencodeUser: false
   enableOpencodeProject: false
 personality: pragmatic
+task:
+  isolation:
+    mode: auto

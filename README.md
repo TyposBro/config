@@ -112,6 +112,8 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 
 This restores the global personality/AuDHD communication layer, role routing, model-pinned task agents (`sol` and `fable`), and the same canonical skill set used by Pi and Claude. It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
+Managed slash commands include `/ship`, `/fast`, `/design`, and `/epic`. `/epic <issue-url> [implement|review] [sha]` runs an isolated, issue-driven implementation → independent Fable review → remediation pipeline and stops at owner QA unless the initiating request explicitly authorizes consequential actions.
+
 ### Curated agent skills
 
 Run:
