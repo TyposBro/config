@@ -52,15 +52,14 @@
       "invocation": "user"
     }
   ],
-  "allowedExtras": [
+  "allowedExtras": [],
+  "rejected": [
+    "ask-matt",
     "caveman",
     "caveman-commit",
     "caveman-compress",
     "caveman-help",
-    "caveman-review"
-  ],
-  "rejected": [
-    "ask-matt",
+    "caveman-review",
     "code-review",
     "find-skills",
     "grill-me",

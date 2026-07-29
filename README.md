@@ -112,7 +112,7 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 
 This restores the global personality/AuDHD communication layer, role routing, model-pinned task agents (`sol` and `fable`), and the same canonical skill set used by Pi and Claude. It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
-Managed slash commands include `/ship`, `/fast`, `/design`, and `/epic`. `/epic <issue-url> [implement|review] [sha]` runs an isolated, issue-driven implementation → independent Fable review → remediation pipeline and stops at owner QA unless the initiating request explicitly authorizes consequential actions.
+Managed slash commands include `/ship`, `/fast`, `/design`, and `/epic`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, then resumes the first incomplete implementation → independent Fable review → remediation gate. It stops at owner QA unless the initiating request explicitly authorizes consequential actions.
 
 ### Curated agent skills
 
@@ -128,7 +128,7 @@ Validate the installed inventory without changing it:
 ~/config/agent-skills/setup.sh --check
 ```
 
-`agent-skills/manifest.json` is the source of truth for upstream pins, invocation policy, rejected skills, and allowed host-local extras. The Caveman suite is explicitly allowed as host-local rather than required on every machine.
+`agent-skills/manifest.json` is the source of truth for upstream pins, invocation policy, rejected skills, and any explicitly allowed host-local extras. No host-local skill exceptions are currently allowed, so every machine converges on the same inventory.
 
 The managed set is intentionally small:
 
