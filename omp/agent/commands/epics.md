@@ -21,7 +21,7 @@ Discover and read the active `/epic` command using OMP's resolution order: a rep
 
 One `/epics` invocation operates in one repository. Cross-repository portfolios require one invocation from each repository root because Git isolation is repository-scoped.
 
-Verify the required `deepseek-fast`, `deepseek-pro`, `sol`, `designer`, and `fable` agents are discoverable before dispatch. Missing implementation agents block affected nodes; unavailable Fable/Anthropic models block review rather than causing a provider-family substitution.
+Verify `deepseek-fast`, `deepseek-pro`, and `sol-reviewer` are discoverable before dispatch; `designer` and `opus-reviewer` are conditional specialists. Missing Flash blocks code-writing nodes. Missing either required reviewer blocks review. Opus unavailability is recorded and blocks only an unresolved high-risk disagreement; never substitute an unavailable model with a code writer.
 
 Compute a stable portfolio ID from the sorted canonical epic keys. On the lexicographically first valid epic, maintain one updatable comment with `<!-- omp-portfolio-flow:v1 -->`, portfolio ID, normalized lanes, current DAG edges, admitted/queued lanes, completed wave, per-lane gate/SHA/checkpoint, active task IDs, blockers, and update time. Corroborate it against live state on restart and update it after every settled wave; never append wave spam.
 
@@ -64,20 +64,20 @@ Recompute overlap after each implementation wave using actual PR changed-file li
 - Resolve the effective hard limit with `omp config get task.maxConcurrency` from the current repository before dispatch, then let OMP's session semaphore enforce it. Never claim a smaller prompt-only number is mechanically enforced.
 - Batch every currently runnable compatible wave. Keep shared batch context limited to portfolio invariants and put epic-specific contracts in each task. When languages or repository conventions materially differ, use separate batches in the same scheduling turn so they still run concurrently without polluted shared context.
 - Use isolated workspaces for every code-writing, integration, remediation, and review agent.
-- Before every spawn, revalidate the expected branch/SHA and atomically reserve its per-branch writer or per-SHA review lock under the shared Git directory. Permit exactly one active writer per issue branch, PR branch, integration branch, or dirty-worktree recovery artifact, and one review pair per epic/frozen SHA. Release each node lock only after its result is durably checkpointed.
+- Before every spawn, revalidate the expected branch/SHA and atomically reserve its per-branch writer or per-SHA review lock under the shared Git directory. Permit exactly one active Flash writer per issue branch, PR branch, integration branch, or dirty-worktree recovery artifact, and one core review panel per epic/frozen SHA. Release each node lock only after its result is durably checkpointed.
 - Never launch an epic-level supervisor that duplicates this control plane. Spawn bounded leaf agents directly so the parent session owns the global DAG and hard task semaphore.
 - A blocked or failed lane never cancels unrelated lanes. Record its blocker, then continue the graph.
 - Do not yield merely because one epic or one wave finished. Wait for all active jobs, consume their structured handoffs, update both portfolio and lane checkpoints, and schedule the next runnable wave.
 
 ## Agent routing
 
-- Exact bounded implementation: `deepseek-fast`.
-- Bounded implementation needing more reasoning: `deepseek-pro`.
-- High-blast-radius integration, auth, billing, data, migration, infrastructure, or cross-cutting correction: `sol`.
-- Unresolved product/UI direction: `designer` before implementation.
-- Independent SHA-frozen review: a `fable` static reviewer plus a separate read-only `sol` verification agent, combined exactly as the active `/epic` contract specifies.
+- Sole code writer: `deepseek-fast`. Use it for every implementation, test, migration, integration, conflict-resolution, and remediation edit. Sol decomposes work that is too large for one bounded Flash task; it never switches writers.
+- Product scope, architecture, high-blast-radius decisions, and final synthesis: the main Sol control plane, without application-code edits.
+- Unresolved product/UI direction: `designer` for read-only direction before Flash implementation.
+- Required independent SHA-frozen review: fresh `sol-reviewer` and `deepseek-pro` sessions in parallel.
+- Token-conscious secondary opinion: one narrow `opus-reviewer` pass only for high-risk surfaces, reviewer disagreement, supported P0/P1/P2 findings, or explicit user request.
 
-Every task assignment must name its epic lane, issue, exact branch/PR ownership, dependencies, non-goals, expected structured output, and prohibition on merge/deployment/manual issue closure. Use an invocation-specific strict `outputSchema` for non-Fable handoffs; preserve Fable's native schema and map it only through the combined review rules. Implementation workers skip project-wide validation; run shared validation once in that epic's integration gate.
+Every task assignment must name its epic lane, issue, exact branch/PR ownership, dependencies, non-goals, expected structured output, and prohibition on merge/deployment/manual issue closure. All code-writing assignments must use `deepseek-fast`; all other agents are read-only. Use invocation-specific strict `outputSchema` contracts for handoffs and preserve each reviewer's initial opinion before collaboration. Implementation workers skip project-wide validation; run shared validation once in that epic's integration gate.
 
 ## Lane execution
 
@@ -85,10 +85,10 @@ For each runnable lane:
 
 1. Dispatch independent incomplete child issues in the current DAG wave.
 2. Verify each returned issue → PR → head SHA mapping against GitHub and update the lane checkpoint.
-3. Delegate branch-changing integration and conflict resolution to one isolated lane integration agent; never mix multiple epics into one integration branch.
+3. Delegate branch-changing integration, conflict resolution, and corrective edits to one isolated `deepseek-fast` lane writer; never mix multiple epics into one integration branch.
 4. Independently verify the pushed integration SHA and required CI, then freeze it.
-5. Batch the Fable static reviewer and Sol verification agent for every independent lane ready at the same time; synthesize a combined SHA-scoped verdict without changing either raw result.
-6. Route combined `changes_required` findings to one writer per affected branch, rebuild that lane only, freeze the new SHA, and run a fresh review pair.
+5. Batch fresh `sol-reviewer` and `deepseek-pro` sessions for every independent lane ready at the same time. Freeze their initial outputs, evaluate the Opus triggers, and conditionally request one narrow independent Opus opinion using only the SHA, contract, and high-risk paths. After every invoked initial opinion is frozen, run one `hub` collaboration round and synthesize the combined SHA-scoped verdict.
+6. Route combined `changes_required` findings only to `deepseek-fast`, one writer per affected branch; rebuild that lane, freeze the new SHA, and run a fresh review panel.
 7. Allow at most three remediation/re-review cycles per lane, reading and incrementing the durable `omp-epic-flow:v2` count before each remediation spawn. A blocked lane does not consume another lane's cycle count.
 8. Run the single-epic final control-plane gate and update that lane's sole `omp-epic-flow:v2` checkpoint.
 
@@ -111,7 +111,7 @@ Return one row per requested URL, in input order, with:
 - final state: `BLOCKED`, `READY FOR OWNER QA`, or `READY FOR STAGED RELEASE`
 - final integration SHA
 - issue/PR coverage
-- combined reviewer verdict and both raw review results
+- combined reviewer verdict, all frozen initial opinions, and collaboration addenda
 - CI and smoke evidence
 - unresolved findings or external acceptance
 - safe dependency/merge order

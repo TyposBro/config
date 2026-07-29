@@ -28,7 +28,7 @@ Before dispatching work:
 - GitHub epics, sub-issues, PRs, and project statuses are the durable execution record. Do not create parallel local roadmaps or status Markdown.
 - Preserve the repository's existing architecture and naming. Fix causes, update every affected callsite, and remove obsolete paths; no shims or parallel systems unless the contract explicitly requires them.
 - Sol owns product scope, architecture, auth, billing, user data, migrations, infrastructure, integration, and production-risk decisions.
-- Use `deepseek-fast` for exact bounded reversible implementation. Use `deepseek-pro` for bounded work needing deeper reasoning. Use `designer` before implementation only when UI/UX or product direction is genuinely unresolved. Use Fable for independent review.
+- `deepseek-fast` is the sole code-writing agent for implementation, tests, migrations, integration conflict resolution, and remediation. Sol decomposes complex work into bounded Flash tasks. `sol-reviewer`, `deepseek-pro`, `opus-reviewer`, and `designer` remain read-only with respect to delivered code.
 - Parallelize only independent slices. Sequence shared foundations and dependent PRs explicitly.
 - Use isolated child workspaces. Never review a branch while it is changing.
 - Freeze an exact pushed commit SHA at each review boundary.
@@ -74,7 +74,7 @@ Reconciliation rules:
 - If all children are merged/done, verify the final gate and exit without creating work.
 - Existing CI success, comments, or project status never override a contradictory live diff, branch head, or unresolved finding.
 
-Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v2 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, combined review verdict, static-review model, remediation cycle count, unresolved findings, external blockers, lease owner/expiry, final state, and update time. Increment and persist the remediation cycle before spawning remediation so interruption cannot reset the cap. Update the checkpoint immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
+Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v2 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, combined review verdict, required Sol/DeepSeek review outputs, optional Opus opinion, collaboration addenda, remediation cycle count, unresolved findings, external blockers, lease owner/expiry, final state, and update time. Increment and persist the remediation cycle before spawning remediation so interruption cannot reset the cap. Update the checkpoint immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
 
 ## Phase A — implementation
 
@@ -82,11 +82,11 @@ Run only when reconciliation finds incomplete engineering work. Skip when the ne
 
 1. Map dependency waves and contracts before spawning agents.
 2. Move child issues through the repository's status flow as evidence supports each transition.
-3. Assign each independent child issue to the appropriate execution agent in an isolated workspace.
+3. Assign every independent child issue to `deepseek-fast` in an isolated workspace. If a child is too large for one Flash task, decompose it into dependency-ordered bounded Flash tasks rather than switching writers.
 4. Require complete issue-level implementation: affected contracts, callsites, migrations, behavior-focused tests where needed, smoke evidence, and one issue-scoped draft PR.
 5. Follow the repository's PR linking convention and keep PRs out of the GitHub Project unless that repository explicitly says otherwise.
-6. Integrate child heads into a dedicated review branch without merging to the default branch.
-7. Resolve conflicts, run repository-prescribed integrated validation, and wait for required CI.
+6. Delegate integration, code-level conflict resolution, and any required corrective edits to one `deepseek-fast` integration writer on the dedicated review branch; never merge to the default branch.
+7. After Flash settles, independently inspect the integration head, run repository-prescribed integrated validation, and wait for required CI. Sol may reject or repartition work but never patches the code itself.
 8. Produce a strict factual handoff:
    - `status`: `ready_for_review` or `blocked`
    - exact integration SHA
@@ -103,37 +103,40 @@ Do not start review until implementation jobs have settled, the integration SHA 
 
 ## Phase B — independent review
 
-Launch two fresh, independent agents in one batch at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA:
+Launch two required fresh reviewers in parallel at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA:
 
-1. A `fable` static reviewer in a clean isolated workspace. Use its native `overall_correctness`, `findings`, `explanation`, and `confidence` output contract; do not require it to run builds or tests that its read-only agent contract forbids. It may read the implementation diff and issue contracts, but receives no implementation transcript. Record the actual Anthropic model from task metadata. If both configured Anthropic models are unavailable, review is `blocked`; never substitute a non-Anthropic model.
-2. A `sol` verification agent in a separate clean isolated workspace. It is read-only with respect to source and Git: no edits, commits, pushes, remediation, merge, deployment, issue closure, project-status completion, or production mutation. It may run the repository-prescribed targeted tests, typechecks, contract checks, builds, and smoke scenarios. Give it an invocation-specific strict `outputSchema` containing reviewed SHA, per-issue PASS/FAIL/BLOCKED/N/A matrix, commands and observed results, external blockers, and safe dependency/merge order.
+1. `sol-reviewer` performs the primary independent architectural critique and executable verification. It reviews the full diff and may run repository-prescribed targeted tests, typechecks, builds, contract checks, and smoke scenarios without editing source.
+2. `deepseek-pro` provides an independent adversarial pass focused on subtle logic, security, ownership, concurrency, partial failure, migration, and hidden-coupling defects. It may run narrow read-only reproductions but never implements a fix.
 
-Both agents must:
+Give both reviewers the issue contracts, PRs, exact SHA, and factual handoff—not implementation transcripts or internal reasoning. Give each an invocation-specific strict `outputSchema` containing verdict, reviewed SHA, P0-P3 findings with `path:line`, evidence/reproduction, acceptance-criterion matrix, commands and observed results, blockers, correction required, safe dependency/merge order, and collaboration addendum. Each reviewer must send its frozen initial output to `Main` through `hub`, then wait without yielding or contacting peers.
 
-- use the exact frozen SHA and fail on divergence
-- review the entire base-to-frozen-SHA diff and prove every intended child head is included
-- map every child acceptance criterion to direct evidence or a precise blocker
-- audit correctness, security, ownership, concurrency, idempotency, partial failure, migration safety, privacy, platform policy, rollback, dependency direction, and unexpected scope
-- reproduce claimed pre-existing failures on the base branch before accepting them as baseline
-- audit stacked dependencies, closing/link metadata, project hygiene, and whether the integration PR is a merge candidate or review-only bundle
-- complete their whole assigned review after finding a defect
+Request one narrow `opus-reviewer` secondary opinion only when at least one trigger applies:
 
-Synthesize one combined verdict without weakening either result:
+- the diff touches auth, billing, identity, user data, migrations, infrastructure, deployment, security, privacy, platform policy, or another high-blast-radius contract
+- the required reviewers disagree on a finding or verdict
+- either required reviewer reports a supported P0/P1/P2 finding
+- the initiating request explicitly asks for Opus
 
-- `changes_required` when Fable reports any P0/P1/P2 finding or verification reports any FAIL
-- `blocked` when no failure is established but either required agent is unavailable or verification contains a required BLOCKED item
-- `pass` only when both agents reviewed the same SHA, Fable has no P0/P1/P2 finding, and every verification criterion is PASS or justified N/A
+After the two required initial opinions are frozen, evaluate the triggers. If Opus is needed, give it the exact SHA, issue contract, and relevant high-risk paths without revealing another reviewer's findings. Wait for Opus to send its independent frozen opinion to `Main`; disputed findings are disclosed only in the collaboration round. One Opus pass per SHA is the default token budget. Opus unavailability is recorded but blocks only when a high-risk factual disagreement cannot otherwise be resolved.
 
-P3 is advisory unless several findings expose one systemic defect. Preserve both raw structured outputs alongside the combined verdict.
+After all initial opinions are frozen, run one collaboration round through `hub`: send each waiting reviewer the other reviewers' concrete findings and ask it to confirm or refute them with evidence. Preserve initial outputs unchanged and record later concessions or disputes as addenda. Majority vote never dismisses a reproduced defect. After every available reviewer responds, instruct them to yield their initial output plus addendum so the jobs settle cleanly.
+
+Synthesize one combined verdict:
+
+- `changes_required` when any reviewer establishes a P0/P1/P2 defect or any required acceptance criterion FAILS
+- `blocked` when a required reviewer is unavailable, required verification is BLOCKED, or a material factual disagreement remains unresolved
+- `pass` only when both required reviewers examined the same SHA, every criterion is PASS or justified N/A, no supported P0/P1/P2 remains, and any invoked Opus review adds no blocker
+
+P3 is advisory unless several findings expose one systemic defect. Preserve all raw initial outputs and collaboration addenda alongside the combined verdict.
 
 ## Phase C — remediation and fresh re-review
 
 When the combined review returns `changes_required`:
 
-1. Launch a fresh remediation agent with only the frozen SHA, issue contracts, structured findings, affected PRs, and required proof.
-2. Fix every P0/P1/P2 at its source, add behavior coverage for plausible regressions, update the correct draft PRs, rebuild the integration branch, and return finding → fix → test → new SHA.
+1. Translate every supported P0/P1/P2 finding into bounded remediation contracts and launch only `deepseek-fast` writers with the frozen SHA, issue contracts, affected PR ownership, and required proof.
+2. Flash fixes every finding at its source, adds behavior coverage for plausible regressions, updates the correct draft PRs, rebuilds the integration branch, and returns finding → fix → test → new SHA. Sol never patches the remediation itself.
 3. Independently confirm the new SHA and CI.
-4. Launch a new fresh Fable static reviewer and Sol verification agent to recheck findings, review the remediation diff, rerun affected verification, and search for regressions.
+4. Launch fresh `sol-reviewer` and `deepseek-pro` sessions for the new SHA, then invoke one narrow `opus-reviewer` pass only when the trigger rules apply. Repeat the post-verdict collaboration round.
 
 Allow at most three remediation/re-review cycles using the durable checkpoint count. Then report unresolved P0/P1/P2 findings as BLOCKED; never weaken the standard, reset the count, or relabel unfinished work.
 
@@ -152,7 +155,7 @@ Before yielding, independently confirm:
 
 Record final evidence on the epic's existing verification/release-gate child issue. If external/device/deployment acceptance is materially required and no release-gate child exists, create one using that repository's epic/sub-issue/project convention.
 
-Update the single `omp-epic-flow:v2` checkpoint with the final SHA, both raw review outputs, combined verdict, remediation count, remaining blockers, and final state before yielding. Expire the GitHub lease and remove the local lock after the checkpoint update.
+Update the single `omp-epic-flow:v2` checkpoint with the final SHA, all raw review-panel outputs, collaboration addenda, combined verdict, remediation count, remaining blockers, and final state before yielding. Expire the GitHub lease and remove the local lock after the checkpoint update.
 
 Return exactly one final state:
 

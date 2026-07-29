@@ -110,9 +110,11 @@ OMP agent-harness setup is backed up/reproducible under `omp/`:
 ~/config/omp/setup.sh
 ```
 
-This restores the global personality/AuDHD communication layer, role routing, model-pinned task agents (`sol` and `fable`), and the same canonical skill set used by Pi and Claude. It removes the old Superpowers bootstrap and workflow assets. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+This restores the global personality/AuDHD communication layer, role routing, model-pinned agents, and the same canonical skill set used by Pi and Claude. Sol is the main control plane; DeepSeek V4 Flash is the sole application-code writer; fresh Sol and DeepSeek V4 Pro sessions are required reviewers; Claude Opus 5 is a narrow secondary opinion for high-risk or disputed changes. Claude Fable is not configured. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
-Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, then resumes the first incomplete implementation → independent static and executable verification → remediation gate. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds leaf-agent concurrency and shared Git locks serialize conflicting branches. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
+Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, resumes Flash-only implementation, then runs independent Sol/DeepSeek review, conditional Opus critique, reviewer collaboration, and Flash-only remediation. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds concurrency and shared Git locks serialize conflicts. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
+
+After running the installer, stop and relaunch every OMP session. Existing sessions retain the model roles, agents, and system prompt loaded at startup; installing files does not hot-reload them.
 
 ### Curated agent skills
 

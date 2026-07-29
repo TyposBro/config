@@ -20,6 +20,8 @@ rm -rf \
 rm -f \
 	"$TARGET/agents/gemini-pro.md" \
 	"$TARGET/agents/deepseek-advisor.md" \
+	"$TARGET/agents/sol.md" \
+	"$TARGET/agents/fable.md" \
 	"$TARGET/extensions/superpowers-bootstrap.ts"
 
 mkdir -p \
@@ -45,6 +47,8 @@ fi
 cat <<'MSG'
 ==> OMP agent harness setup restored.
     Managed: config.yml, APPEND_SYSTEM.md, shared skills link, agents, extensions, commands.
-    Routed workflow: Sol control plane, DeepSeek workers, Claude design/review.
+    Routed workflow: Sol control plane, DeepSeek Flash writing, Sol/DeepSeek review, conditional Claude Opus.
     Local-only state left untouched: models.yml, auth, sessions, DBs, blobs.
+    IMPORTANT: Stop and relaunch every existing OMP session before using this routing.
+    Running sessions retain the model roles, agent definitions, and system prompt loaded at startup.
 MSG

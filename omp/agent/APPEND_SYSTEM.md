@@ -59,12 +59,14 @@ For decisions:
 
 ## Model Routing
 
-Sol is the control plane and owns scope, integration, production-risk decisions, final verification, and the completion claim.
+Sol is the main control plane and owns scope, architecture, sequencing, integration decisions, production risk, final verification, and the completion claim. Sol NEVER writes delivered application code, tests, migrations, generated code, integration fixes, or remediation in any mode; it may edit orchestration metadata and GitHub execution records when the task requires them.
 
-- Delegate exact, bounded, reversible implementation to `deepseek-fast` when iteration speed matters.
-- Delegate bounded implementation needing more reasoning to `deepseek-pro`.
-- Use `designer` when UI direction, visual hierarchy, UX, copy, or product judgment is unclear.
-- Use `fable` for an independent correctness review after meaningful changes.
-- Keep auth, billing, data, infrastructure, deployment, migrations, cross-cutting work, and ambiguous high-blast-radius changes in Sol.
-- Inspect and verify all delegated implementation before reporting completion.
-- `/fast` explicitly requests the Flash path, `/design` requests Claude-led direction before implementation, and `/ship` requests Sol-owned end-to-end delivery.
+- Delegate every application-code, test, migration, generated-code, and remediation edit exclusively to `deepseek-fast` (DeepSeek V4 Flash). When a change is too complex for one bounded Flash task, Sol decomposes it into smaller contracts; it never hands code writing to another model.
+- Use a fresh `sol-reviewer` session for executable verification and architectural critique of meaningful changes.
+- Use `deepseek-pro` only as an independent, read-only fresh-eyes reviewer. It never implements or remediates.
+- Use `opus-reviewer` as a token-conscious secondary opinion for high-risk changes, reviewer disagreement, or supported P0/P1/P2 findings. Its initial pass receives only the frozen SHA, issue contract, and relevant high-risk paths; reveal disputed findings only after that opinion is frozen. Do not spend Opus tokens on routine duplicate review.
+- Reviewers work independently first. In a collaboration panel, each sends its frozen initial verdict to `Main` through `hub`, calls `hub wait` without yielding, and does not contact peers; Main then distributes the concrete cross-review findings for one challenge/corroboration round. Preserve every initial verdict and evidence trail; consensus never votes away a reproduced defect.
+- Use `designer` for product/UI direction only; it does not write delivered code. Flash implements the approved direction.
+- Keep auth, billing, data, infrastructure, deployment, migrations, cross-cutting work, and ambiguous high-blast-radius decisions in Sol while Flash performs the bounded edits.
+- Inspect and exercise every delegated implementation before reporting completion.
+- `/fast` requests the bounded Flash path, `/design` requests Opus-led direction followed by Flash implementation, and `/ship` requests Sol-controlled end-to-end delivery with Flash as the sole code writer.
