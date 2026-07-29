@@ -14,7 +14,8 @@ cleanup() {
 	rm -rf "$STAGE"
 }
 
-restore_previous() {
+restore_previous() (
+	set -e
 	rm -rf "$TARGET/agents" "$TARGET/commands" "$TARGET/extensions"
 	mkdir -p "$TARGET/agents" "$TARGET/commands" "$TARGET/extensions"
 	cp -R "$STAGE/previous/agents/." "$TARGET/agents/"
@@ -35,7 +36,7 @@ restore_previous() {
 	else
 		rm -f "$TARGET/WATCHDOG.md"
 	fi
-}
+)
 
 abort_publish() {
 	local status="${1:-1}"
@@ -43,10 +44,20 @@ abort_publish() {
 	if [ "$PUBLISHING" -eq 1 ]; then
 		set +e
 		restore_previous
-		PUBLISHING=0
-		printf '%s\n' \
-			"ERROR: OMP routing publication was interrupted and the previous managed inventory was restored." \
-			"Stop all OMP sessions, rerun this installer, and relaunch only after it succeeds." >&2
+		local rollback_status=$?
+		if [ "$rollback_status" -eq 0 ]; then
+			PUBLISHING=0
+			printf '%s\n' \
+				"ERROR: OMP routing publication was interrupted and the previous managed inventory was restored." \
+				"Stop all OMP sessions, rerun this installer, and relaunch only after it succeeds." >&2
+		else
+			PUBLISHING=0
+			trap - EXIT
+			printf '%s\n' \
+				"ERROR: OMP routing publication and automatic rollback both failed." \
+				"Recovery backup preserved at: $STAGE/previous" \
+				"Stop all OMP sessions and restore or rerun the installer before relaunching." >&2
+		fi
 	fi
 	exit "$status"
 }

@@ -77,7 +77,7 @@ Recompute overlap after each implementation wave using actual PR changed-file li
 - Required independent SHA-frozen review: fresh `sol-reviewer` and `deepseek-pro` sessions in parallel.
 - Token-conscious secondary opinion: one narrow `opus-reviewer` pass only for high-risk surfaces, reviewer disagreement, supported P0/P1/P2 findings, or explicit user request.
 
-Every task assignment must name its epic lane, issue, exact branch/PR ownership, dependencies, non-goals, expected structured output, and prohibition on merge/deployment/manual issue closure. All code-writing assignments must use `deepseek-fast`; all other agents are read-only. Use invocation-specific strict `outputSchema` contracts for handoffs and preserve each reviewer's initial opinion before collaboration. Implementation workers skip project-wide validation; run shared validation once in that epic's integration gate.
+Every task assignment must name its epic lane, issue, exact branch/PR ownership, dependencies, non-goals, expected structured output, and prohibition on merge/deployment/manual issue closure. Every branch-owning assignment must include the active master, lane, and node lock paths plus fencing tokens, require validation before each commit/push/PR mutation, and abort on ownership loss. All code-writing assignments must use `deepseek-fast`; all other agents are read-only. Use invocation-specific strict `outputSchema` contracts for handoffs and preserve each reviewer's initial opinion before collaboration. Implementation workers skip project-wide validation; run shared validation once in that epic's integration gate.
 
 ## Lane execution
 
