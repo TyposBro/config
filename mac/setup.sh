@@ -70,6 +70,9 @@ fi
 echo "==> Syncing OMP coding agent setup..."
 bash "$REPO/omp/setup.sh"
 
+echo "==> Syncing Codex coding agent setup..."
+bash "$REPO/codex/setup.sh"
+
 echo "==> Linking Claude skills from agent-memory..."
 bash "$REPO/claude/setup.sh"
 

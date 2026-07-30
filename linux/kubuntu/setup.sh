@@ -465,6 +465,9 @@ fi
 echo "==> Syncing OMP coding agent setup..."
 bash "$REPO/omp/setup.sh"
 
+echo "==> Syncing Codex coding agent setup..."
+bash "$REPO/codex/setup.sh"
+
 echo "==> Applying Kubuntu OMP provider policy..."
 omp config set modelRoles \
 	'{"default":"openai-codex/gpt-5.5:xhigh","slow":"openai-codex/gpt-5.5:xhigh","task":"deepseek/deepseek-v4-flash:high","plan":"openai-codex/gpt-5.5:xhigh","reviewer":"openai-codex/gpt-5.5:xhigh","oracle":"openai-codex/gpt-5.5:xhigh","explore":"openai-codex/gpt-5.6-sol:high","quick_task":"deepseek/deepseek-v4-flash:medium","commit":"deepseek/deepseek-v4-flash:medium","vision":"openai-codex/gpt-5.6-sol:high","designer":"openai-codex/gpt-5.6-sol:high","advisor":"deepseek/deepseek-v4-pro:xhigh","smol":"deepseek/deepseek-v4-flash:medium","title":"deepseek/deepseek-v4-flash:low"}'

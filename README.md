@@ -17,6 +17,7 @@ mac/
   defaults.sh # macOS system settings (dock, finder, key repeat)
   config/     # fish, ghostty, starship dotfiles
 pi/           # pi coding-agent settings/extensions (skills live in ~/agent-memory)
+codex/        # Codex epic skills and custom agents
 ```
 
 ## macOS
@@ -59,6 +60,7 @@ Step names: `configs`, `fish-theme`, `defaults`, `rust`, `claude-code`, `pi`.
 | Rust toolchain                     | `rustup`                                  |
 | Claude Code CLI                    | `claude.ai/install.sh`                    |
 | Pi settings/extensions             | `pi/setup.sh`                             |
+| Codex epic workflow                | `codex/setup.sh`                          |
 | Infisical CLI                      | `mac/Brewfile`                            |
 
 ## Linux (NixOS)
@@ -115,6 +117,18 @@ This restores the active OMP agent directory (default `~/.omp/agent`) with the p
 Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, resumes Flash-only implementation, then runs independent Sol/DeepSeek review, conditional Opus critique, reviewer collaboration, and Flash-only remediation. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds concurrency and shared Git locks serialize conflicts. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
 
 After running the installer, stop and relaunch every OMP session. Existing sessions retain the model roles, agents, and system prompt loaded at startup; installing files does not hot-reload them.
+
+### Codex coding agent
+
+The OMP epic delivery contract has a Codex-native port:
+
+```bash
+~/config/codex/setup.sh
+```
+
+This installs personal `$epic` and `$epics` skills plus `epic_builder`, `sol_reviewer`, `adversarial_reviewer`, and `epic_designer` custom agents. Codex uses its native subagent threads and a three-worker concurrency budget. The main Sol task remains the control plane; Terra is the sole writer; Sol and auto-review provide independent frozen-SHA review. The workflow preserves durable GitHub checkpoints and fenced Git locks and stops before merge, deployment, production mutation, pricing changes, or issue closure unless explicitly authorized.
+
+Restart Codex or open a new task after installation so custom agents are discovered.
 
 The installer treats user-level agents, slash commands, and extensions as convergent managed inventories: stale files are removed before the checked-in set is published, with rollback on caught publication failures or termination signals. Add any desired global definition to this repository before reinstalling. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
 
