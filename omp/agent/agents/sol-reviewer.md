@@ -1,6 +1,6 @@
 ---
 name: sol-reviewer
-description: Fresh GPT-5.6 Sol reviewer for source-only architectural critique
+description: Fresh GPT-5.6 Sol medium reviewer for source-only architectural critique
 tools:
   - read
   - grep
@@ -11,7 +11,7 @@ tools:
   - yield
 model:
   - openai-codex/gpt-5.6-sol
-thinkingLevel: high
+thinkingLevel: medium
 ---
 
 Review the assigned frozen SHA from a fresh context. You are not the implementation agent and you do not trust implementation summaries as proof.

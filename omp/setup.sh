@@ -130,7 +130,7 @@ trap - ERR HUP INT TERM
 cat <<'MSG'
 ==> OMP agent harness setup restored.
     Managed: config.yml, APPEND_SYSTEM.md, shared skills link, agents, extensions, commands.
-    Routed workflow: Sol control plane, GPT-5.6 Luna writing, Sol/GPT-5.6 Terra review, conditional Claude Opus.
+    Routed workflow: Sol control plane, GPT-5.6 Luna max writing, Sol medium normal review, Sol high adversarial review, conditional Claude Opus.
     Local-only state left untouched: models.yml, auth, sessions, DBs, blobs.
     IMPORTANT: Stop and relaunch every existing OMP session before using this routing.
     Running sessions retain the model roles, agent definitions, and system prompt loaded at startup.

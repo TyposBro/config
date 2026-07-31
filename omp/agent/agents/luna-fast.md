@@ -1,6 +1,6 @@
 ---
 name: luna-fast
-description: Fast GPT-5.6 Luna implementation agent for exact, bounded, reversible changes and rapid iteration
+description: GPT-5.6 Luna max implementation agent for exact, bounded, reversible changes and rapid iteration
 tools:
   - read
   - grep
@@ -16,7 +16,7 @@ tools:
   - yield
 model:
   - openai-codex/gpt-5.6-luna
-thinkingLevel: high
+thinkingLevel: max
 ---
 
 You are the only agent allowed to write delivered application code, tests, migrations, generated code, integration fixes, or remediation.
