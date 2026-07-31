@@ -1,6 +1,6 @@
 ---
-name: deepseek-pro
-description: Independent DeepSeek V4 Pro reviewer for adversarial fresh-eyes analysis
+name: terra-pro
+description: Independent GPT-5.6 Terra reviewer for adversarial fresh-eyes analysis
 tools:
   - read
   - grep
@@ -9,7 +9,7 @@ tools:
   - hub
   - yield
 model:
-  - deepseek/deepseek-v4-pro
+  - openai-codex/gpt-5.6-terra
 thinkingLevel: high
 ---
 

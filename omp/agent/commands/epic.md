@@ -17,7 +17,7 @@ This workflow is restart-safe after the previous master has stopped; it is not p
 
 Before dispatching work:
 
-1. Inspect repository-local `.omp` commands, agents, config, `APPEND_SYSTEM.md`, and effective `task.agentModelOverrides`. Require `deepseek-fast`, `sol-reviewer`, `deepseek-pro`, `designer`, and `opus-reviewer` to resolve to the managed source, pinned model, and declared tools; a repository-specific contract may add constraints but never weaken exclusive Flash writing, read-only review, isolation, or the frozen dual-review gate. Return `BLOCKED` on any mismatch.
+1. Inspect repository-local `.omp` commands, agents, config, `APPEND_SYSTEM.md`, and effective `task.agentModelOverrides`. Require `luna-fast`, `sol-reviewer`, `terra-pro`, `designer`, and `opus-reviewer` to resolve to the managed source, pinned model, and declared tools; a repository-specific contract may add constraints but never weaken exclusive Luna writing, read-only review, isolation, or the frozen dual-review gate. Return `BLOCKED` on any mismatch.
 2. Confirm the target issue belongs to the current Git repository. Stop on a repository mismatch rather than editing the wrong checkout.
 3. Read the nearest `AGENTS.md` and the repository's source-of-truth index, roadmap, architecture, engineering rules, and GitHub-project conventions. Follow the repository's own document order; do not invent a second one.
 4. Read the target epic, all child issues, current project fields/statuses, linked PRs, and `skill://github-project-org`.
@@ -29,7 +29,7 @@ Before dispatching work:
 - GitHub epics, sub-issues, PRs, and project statuses are the durable execution record. Do not create parallel local roadmaps or status Markdown.
 - Preserve the repository's existing architecture and naming. Fix causes, update every affected callsite, and remove obsolete paths; no shims or parallel systems unless the contract explicitly requires them.
 - Sol owns product scope, architecture, auth, billing, user data, migrations, infrastructure, integration, and production-risk decisions.
-- `deepseek-fast` is the sole code-writing agent for implementation, tests, migrations, integration conflict resolution, and remediation. Sol decomposes complex work into bounded Flash tasks. `sol-reviewer`, `deepseek-pro`, `opus-reviewer`, and `designer` remain read-only with respect to delivered code.
+- `luna-fast` is the sole code-writing agent for implementation, tests, migrations, integration conflict resolution, and remediation. Sol decomposes complex work into bounded Luna tasks. `sol-reviewer`, `terra-pro`, `opus-reviewer`, and `designer` remain read-only with respect to delivered code.
 - Parallelize only independent slices. Sequence shared foundations and dependent PRs explicitly.
 - Set `isolated: true` on every child task item. If the task schema or isolation backend is unavailable, return `BLOCKED`; never fall back to a shared checkout. Never review a branch while it is changing.
 - Freeze an exact pushed commit SHA at each review boundary.
@@ -76,7 +76,7 @@ Reconciliation rules:
 - If all children are merged/done, verify the final gate and exit without creating work.
 - Existing CI success, comments, or project status never override a contradictory live diff, branch head, or unresolved finding.
 
-Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v2 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, combined review verdict, required Sol/DeepSeek review outputs, optional Opus opinion, collaboration addenda, remediation cycle count, unresolved findings, external blockers, lease owner/expiry, final state, and update time. Increment and persist the remediation cycle before spawning remediation so interruption cannot reset the cap. Update the checkpoint immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
+Maintain one durable checkpoint on the verification issue, updating the existing comment rather than appending phase spam. The comment must contain the hidden marker `<!-- omp-epic-flow:v2 -->` and human-readable fields for epic URL, phase, integration SHA, child PR/head mapping, combined review verdict, required Sol/Luna/Terra review outputs, optional Opus opinion, collaboration addenda, remediation cycle count, unresolved findings, external blockers, lease owner/expiry, final state, and update time. Increment and persist the remediation cycle before spawning remediation so interruption cannot reset the cap. Update the checkpoint immediately before spawning a phase and after that phase settles. If no verification issue is justified yet, place the checkpoint on the epic and move it later without duplicating it.
 
 ## Phase A — implementation
 
@@ -84,11 +84,11 @@ Run only when reconciliation finds incomplete engineering work. Skip when the ne
 
 1. Map dependency waves and contracts before spawning agents.
 2. Move child issues through the repository's status flow as evidence supports each transition.
-3. Before each branch-owning spawn, create a writer-node lock under the shared Git directory using the complete Phase 0 acquisition, metadata, heartbeat, fencing, takeover, and ownership-checked release protocol. Then assign the issue to an explicit `deepseek-fast` task item with `isolated: true`, including the active per-epic master lock and writer-node lock paths plus both fencing tokens. The master's wait loop must heartbeat both locks while the worker is active; the worker must validate every supplied token before each commit, push, PR mutation, or other branch-changing action. Release the writer-node lock only after its result and branch/PR head are durably checkpointed. If a child is too large for one Flash task, decompose it into dependency-ordered bounded Flash tasks rather than switching writers.
+3. Before each branch-owning spawn, create a writer-node lock under the shared Git directory using the complete Phase 0 acquisition, metadata, heartbeat, fencing, takeover, and ownership-checked release protocol. Then assign the issue to an explicit `luna-fast` task item with `isolated: true`, including the active per-epic master lock and writer-node lock paths plus both fencing tokens. The master's wait loop must heartbeat both locks while the worker is active; the worker must validate every supplied token before each commit, push, PR mutation, or other branch-changing action. Release the writer-node lock only after its result and branch/PR head are durably checkpointed. If a child is too large for one Luna task, decompose it into dependency-ordered bounded Luna tasks rather than switching writers.
 4. Require complete issue-level implementation: affected contracts, callsites, migrations, behavior-focused tests where needed, smoke evidence, and one issue-scoped draft PR.
 5. Follow the repository's PR linking convention and keep PRs out of the GitHub Project unless that repository explicitly says otherwise.
-6. Delegate integration, code-level conflict resolution, and any required corrective edits to one `deepseek-fast` integration writer on the dedicated review branch; never merge to the default branch.
-7. After Flash settles, independently inspect the integration head, run repository-prescribed integrated validation, and wait for required CI. Sol may reject or repartition work but never patches the code itself.
+6. Delegate integration, code-level conflict resolution, and any required corrective edits to one `luna-fast` integration writer on the dedicated review branch; never merge to the default branch.
+7. After Luna settles, independently inspect the integration head, run repository-prescribed integrated validation, and wait for required CI. Sol may reject or repartition work but never patches the code itself.
 8. Produce a strict factual handoff:
    - `status`: `ready_for_review` or `blocked`
    - exact integration SHA
@@ -105,10 +105,10 @@ Do not start review until implementation jobs have settled, the integration SHA 
 
 ## Phase B — independent review
 
-Before launching, create one per-SHA review-node lock under the shared Git directory using the complete Phase 0 lease protocol. Then launch the two required fresh reviewers in parallel as explicit `sol-reviewer` and `deepseek-pro` task items with `isolated: true` at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA. Include the active per-epic and review-node lock paths/tokens in both assignments; the master's wait loop must heartbeat both locks while reviewers are active, cancel the panel on ownership loss, and release the review-node lock only after its combined result is durably checkpointed and its token is revalidated. Block rather than review in a shared checkout.
+Before launching, create one per-SHA review-node lock under the shared Git directory using the complete Phase 0 lease protocol. Then launch the two required fresh reviewers in parallel as explicit `sol-reviewer` and `terra-pro` task items with `isolated: true` at the frozen SHA only when no valid combined `pass` verdict exists for that exact SHA. Include the active per-epic and review-node lock paths/tokens in both assignments; the master's wait loop must heartbeat both locks while reviewers are active, cancel the panel on ownership loss, and release the review-node lock only after its combined result is durably checkpointed and its token is revalidated. Block rather than review in a shared checkout.
 
 1. `sol-reviewer` performs the primary independent source-only architectural critique of the full diff. It has no execution or mutation tools.
-2. `deepseek-pro` provides an independent source-only adversarial pass focused on subtle logic, security, ownership, concurrency, partial failure, migration, and hidden-coupling defects. It never executes or implements a fix.
+2. `terra-pro` provides an independent source-only adversarial pass focused on subtle logic, security, ownership, concurrency, partial failure, migration, and hidden-coupling defects. It never executes or implements a fix.
 
 Give both reviewers the issue contracts, PRs, exact SHA, and factual verification handoff—not implementation transcripts or internal reasoning. Give each an invocation-specific strict `outputSchema` containing verdict, reviewed SHA, P0-P3 findings with `path:line`, source evidence, acceptance-criterion matrix, blockers, correction required, safe dependency/merge order, and collaboration addendum. Each reviewer must send its frozen initial output to `Main` through `hub`, then call `hub wait` without yielding or contacting peers.
 
@@ -135,10 +135,10 @@ P3 is advisory unless several findings expose one systemic defect. Preserve all 
 
 When the combined review returns `changes_required`:
 
-1. Translate every supported P0/P1/P2 finding into bounded remediation contracts and launch only `deepseek-fast` writers with the frozen SHA, issue contracts, affected PR ownership, and required proof.
-2. Flash fixes every finding at its source, adds behavior coverage for plausible regressions, updates the correct draft PRs, rebuilds the integration branch, and returns finding → fix → test → new SHA. Sol never patches the remediation itself.
+1. Translate every supported P0/P1/P2 finding into bounded remediation contracts and launch only `luna-fast` writers with the frozen SHA, issue contracts, affected PR ownership, and required proof.
+2. Luna fixes every finding at its source, adds behavior coverage for plausible regressions, updates the correct draft PRs, rebuilds the integration branch, and returns finding → fix → test → new SHA. Sol never patches the remediation itself.
 3. Independently confirm the new SHA and CI.
-4. Launch fresh `sol-reviewer` and `deepseek-pro` sessions for the new SHA, then invoke one narrow `opus-reviewer` pass only when the trigger rules apply. Repeat the post-verdict collaboration round.
+4. Launch fresh `sol-reviewer` and `terra-pro` sessions for the new SHA, then invoke one narrow `opus-reviewer` pass only when the trigger rules apply. Repeat the post-verdict collaboration round.
 
 Allow at most three remediation/re-review cycles using the durable checkpoint count. Then report unresolved P0/P1/P2 findings as BLOCKED; never weaken the standard, reset the count, or relabel unfinished work.
 

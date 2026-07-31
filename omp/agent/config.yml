@@ -6,14 +6,14 @@ defaultThinkingLevel: auto
 modelRoles: 
   default: openai-codex/gpt-5.6-sol
   slow: openai-codex/gpt-5.6-sol
-  task: deepseek/deepseek-v4-flash
+  task: openai-codex/gpt-5.6-luna
   plan: openai-codex/gpt-5.6-sol
-  commit: deepseek/deepseek-v4-flash
+  commit: openai-codex/gpt-5.6-luna
   vision: openai-codex/gpt-5.6-sol:high
   designer: anthropic/claude-opus-5
   advisor: openai-codex/gpt-5.6-sol
-  smol: deepseek/deepseek-v4-flash
-  tiny: deepseek/deepseek-v4-flash
+  smol: openai-codex/gpt-5.6-luna
+  tiny: openai-codex/gpt-5.6-luna
 advisor: 
   enabled: false
   syncBacklog: "off"
@@ -22,8 +22,8 @@ advisor:
 enabledModels: 
   - openai-codex/gpt-5.6-sol
   - anthropic/claude-opus-5
-  - deepseek/deepseek-v4-pro
-  - deepseek/deepseek-v4-flash
+  - openai-codex/gpt-5.6-luna
+  - openai-codex/gpt-5.6-terra
 images: 
   blockImages: false
   describeForTextModels: true

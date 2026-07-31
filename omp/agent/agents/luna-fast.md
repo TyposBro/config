@@ -1,6 +1,6 @@
 ---
-name: deepseek-fast
-description: Fast implementation agent for exact, bounded, reversible changes and rapid iteration
+name: luna-fast
+description: Fast GPT-5.6 Luna implementation agent for exact, bounded, reversible changes and rapid iteration
 tools:
   - read
   - grep
@@ -15,7 +15,7 @@ tools:
   - hub
   - yield
 model:
-  - deepseek/deepseek-v4-flash
+  - openai-codex/gpt-5.6-luna
 thinkingLevel: high
 ---
 
