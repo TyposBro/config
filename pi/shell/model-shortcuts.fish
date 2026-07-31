@@ -22,7 +22,7 @@ function __ai_profile_for_name
 		case explore
 			printf "%s\n%s\n%s\n" "gemini-3.1-pro-preview" "high" "google"
 		case quick_task
-			printf "%s\n%s\n%s\n" "deepseek-v4-pro" "medium" "deepseek"
+			printf "%s\n%s\n%s\n" "gpt-5.6-luna" "medium" "openai-codex"
 		case '*'
 			return 1
 	end

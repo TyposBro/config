@@ -8,7 +8,7 @@
  *   /reviewer   -> openai-codex/gpt-5.5 + xhigh
  *   /oracle     -> openai-codex/gpt-5.5 + xhigh
  *   /explore    -> google/gemini-3.1-pro-preview + high
- *   /quick_task -> deepseek/deepseek-v4-pro + medium
+ *   /quick_task -> openai-codex/gpt-5.6-luna + medium
  */
 
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
@@ -54,8 +54,8 @@ const SHORTCUTS: Record<string, Shortcut> = {
 		thinking: "high",
 	},
 	quick_task: {
-		provider: "deepseek",
-		modelId: "deepseek-v4-pro",
+		provider: "openai-codex",
+		modelId: "gpt-5.6-luna",
 		thinking: "medium",
 	},
 };

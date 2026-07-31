@@ -29,7 +29,7 @@ git clone https://github.com/TyposBro/config.git ~/config
 ~/config/mac/setup.sh --clean
 ```
 
-Runs every step: brew bundle, symlink configs, fish theme, macOS defaults, Rust toolchain, Claude Code, pi setup, fish as default shell.
+Runs every step: brew bundle, symlink configs, fish theme, macOS defaults, Rust toolchain, Claude Code, pi setup, shared agent skills, canonical OMP routing, Codex setup, and fish as default shell. Shared skills run before OMP routing; both components are safe to re-run.
 
 ### Update / add a package
 
@@ -102,19 +102,21 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call this automatically on every run. Global harness skills are installed reproducibly by `agent-skills/setup.sh`: pinned third-party skills are checksum-verified, repo-owned skills override them, rejected skills are pruned, and unknown manually installed skills are preserved but reported by the checker. Pi and Claude discover the canonical set through `~/agent-memory/skills`.
+Kubuntu + macOS setup scripts call Pi setup automatically on every run, then run `agent-skills/setup.sh` before `omp/setup.sh`. The shared-skills installer owns the canonical global inventory: pinned third-party skills are checksum-verified, repo-owned skills override them, rejected skills are pruned, and unknown manually installed skills are preserved but reported by the checker. Pi and Claude discover the canonical set through `~/agent-memory/skills`; OMP setup requires that source to already exist and only links it into the target, without mutating shared/global skills.
 
 ### OMP coding agent
 
 OMP agent-harness setup is backed up/reproducible under `omp/`:
 
+Host setup scripts run the shared-skills prerequisite first. For a direct OMP install, ensure the canonical `~/agent-memory/skills` source exists, then run:
+
 ```bash
 ~/config/omp/setup.sh
 ```
 
-This restores the active OMP agent directory (default `~/.omp/agent`) with the personality/AuDHD communication layer, role routing, model-pinned agents, and the canonical Pi/Claude skill set. Sol is the main control plane; DeepSeek V4 Flash is the sole application-code writer; fresh Sol and DeepSeek V4 Pro sessions are required reviewers; Claude Opus 5 is one narrow secondary pass for high-risk surfaces, reviewer disagreement, supported P0/P1/P2 findings, or an explicit request. Claude Fable and generic writer fallbacks are disabled. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+This restores the active OMP agent directory (default `~/.omp/agent`) with the personality/AuDHD communication layer, role routing, and model-pinned agents. Sol is the main control plane; GPT-5.6 Luna is the sole application-code writer; fresh Sol and GPT-5.6 Terra sessions are required reviewers; `opus-reviewer` is one narrow secondary pass for high-risk surfaces, reviewer disagreement, supported P0/P1/P2 findings, or an explicit request. Generic writer fallbacks are disabled. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
 
-Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, resumes Flash-only implementation, then runs independent Sol/DeepSeek review, conditional Opus critique, reviewer collaboration, and Flash-only remediation. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds concurrency and shared Git locks serialize conflicts. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
+Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, resumes from the first incomplete gate, delegates implementation and remediation only to `luna-fast`, then runs independent `sol-reviewer` and `terra-pro` review, conditional `opus-reviewer` critique, and reviewer collaboration. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds concurrency and shared Git locks serialize conflicts. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
 
 After running the installer, stop and relaunch every OMP session. Existing sessions retain the model roles, agents, and system prompt loaded at startup; installing files does not hot-reload them.
 
@@ -130,7 +132,7 @@ This installs personal `$epic` and `$epics` skills plus `epic_builder`, `sol_rev
 
 Restart Codex or open a new task after installation so custom agents are discovered.
 
-The installer treats user-level agents, slash commands, and extensions as convergent managed inventories: stale files are removed before the checked-in set is published, with rollback on caught publication failures or termination signals. Add any desired global definition to this repository before reinstalling. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
+`omp/setup.sh` treats the checked-in OMP files as a convergent managed inventory. It snapshots the previous managed entries, writes a versioned release under `<target>/.omp-routing/releases/`, and atomically switches `<target>/.omp-routing/current` to an exact direct child release; legacy direct entries migrate to those stable links within the same transaction, and target-level config, agents, commands, extensions, and the shared-skills link follow that switch. Caught failures and termination signals roll the transaction back; failed rollback preserves recovery material for manual recovery. Provider credentials, auth, sessions, databases, blobs, and `models.yml` remain local-only. Host setup scripts run shared skills first, and OMP setup only publishes its target-scoped routing. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
 
 ### Curated agent skills
 

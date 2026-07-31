@@ -35,8 +35,8 @@ _ai_profile_for_name() {
       _AI_PROFILE_THINKING="high"
       ;;
     quick_task)
-      _AI_PROFILE_PROVIDER="deepseek"
-      _AI_PROFILE_MODEL="deepseek-v4-pro"
+      _AI_PROFILE_PROVIDER="openai-codex"
+      _AI_PROFILE_MODEL="gpt-5.6-luna"
       _AI_PROFILE_THINKING="medium"
       ;;
     *)

@@ -48,7 +48,7 @@ Build a durable, cross-device OMP environment with explicit model-pinned delegat
 ---
 
 ## Current Task
-Make OMP model routing durable across local + remote config, add reviewer/oracle/explore/quick_task role routing, and remove the ralph-loop extension.
+Make OMP model routing durable across local + remote config, with Luna implementation, Terra adversarial review, provider-aware Pi shortcuts, and reproducible managed inventories.
 
 ## Current Checklist
 - [x] Add OMP reviewer/oracle/explore/quick_task role routing.
@@ -61,8 +61,8 @@ Make OMP model routing durable across local + remote config, add reviewer/oracle
 - [x] Validate local and remote syntax, routing, and shortcut behavior.
 
 ## Current Completed Work
-- OMP roles now include `reviewer` and `oracle` on GPT-5.5 xhigh, `explore` on Gemini 3.1 Pro high, and `quick_task` on DeepSeek V4 Pro medium.
-- `config/omp/setup.sh` restores `config.yml`, `APPEND_SYSTEM.md`, `WATCHDOG.md`, `/loop`, `deepseek-advisor`, and `model-delegation-loop` without touching local `models.yml`.
+- Reproducible OMP modelRoles route default/slow/plan/vision work to `openai-codex/gpt-5.6-sol`, task/commit/smol/tiny work to `openai-codex/gpt-5.6-luna`, and keep `openai-codex/gpt-5.6-terra` available for adversarial review; Pi reviewer/oracle remain GPT-5.5 xhigh, explore remains Gemini 3.1 Pro high, and quick_task uses Luna medium.
+- The managed OMP inventory is `config.yml`, `APPEND_SYSTEM.md`, five agent definitions (`designer`, `luna-fast`, `opus-reviewer`, `sol-reviewer`, `terra-pro`), five command definitions (`design`, `epic`, `epics`, `fast`, `ship`), and no extensions; `config/omp/setup.sh` publishes it without copying runtime state.
 - `mac/setup.sh` and `linux/kubuntu/setup.sh` now run `omp/setup.sh`.
 - `pi/shell/model-shortcuts.sh`, `pi/shell/model-shortcuts.fish`, and `pi/extensions/model-shortcuts.ts` expose reviewer/oracle/explore/quick_task profiles with provider-aware routing.
 - `pi/setup.sh` deletes the stale generated `~/.pi/agent/extensions/ralph-loop` mirror now that the source extension is removed.

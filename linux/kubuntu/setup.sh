@@ -461,19 +461,14 @@ bash "$REPO/pi/setup.sh"
 if ! did pi; then
 	mark pi
 fi
+echo "==> Syncing shared agent skills..."
+bash "$REPO/agent-skills/setup.sh"
 
 echo "==> Syncing OMP coding agent setup..."
 bash "$REPO/omp/setup.sh"
 
 echo "==> Syncing Codex coding agent setup..."
 bash "$REPO/codex/setup.sh"
-
-echo "==> Applying Kubuntu OMP provider policy..."
-omp config set modelRoles \
-	'{"default":"openai-codex/gpt-5.5:xhigh","slow":"openai-codex/gpt-5.5:xhigh","task":"deepseek/deepseek-v4-flash:high","plan":"openai-codex/gpt-5.5:xhigh","reviewer":"openai-codex/gpt-5.5:xhigh","oracle":"openai-codex/gpt-5.5:xhigh","explore":"openai-codex/gpt-5.6-sol:high","quick_task":"deepseek/deepseek-v4-flash:medium","commit":"deepseek/deepseek-v4-flash:medium","vision":"openai-codex/gpt-5.6-sol:high","designer":"openai-codex/gpt-5.6-sol:high","advisor":"deepseek/deepseek-v4-pro:xhigh","smol":"deepseek/deepseek-v4-flash:medium","title":"deepseek/deepseek-v4-flash:low"}'
-omp config set enabledModels \
-	'["openai-codex/gpt-5.5","openai-codex/gpt-5.6-sol","anthropic/claude-fable-5","anthropic/claude-opus-5","deepseek/deepseek-v4-pro","deepseek/deepseek-v4-flash"]'
-rm -f "$HOME/.omp/agent/agents/gemini-pro.md"
 
 echo "==> Linking Claude skills from agent-memory..."
 bash "$REPO/claude/setup.sh"

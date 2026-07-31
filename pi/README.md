@@ -69,7 +69,7 @@ This repo includes quick provider/model/thinking profiles for pi and other CLIs:
 - `ai_reviewer [cli] [args...]` → `openai-codex/gpt-5.5` + `xhigh`
 - `ai_oracle [cli] [args...]` → `openai-codex/gpt-5.5` + `xhigh`
 - `ai_explore [cli] [args...]` → `google/gemini-3.1-pro-preview` + `high`
-- `ai_quick_task [cli] [args...]` → `deepseek/deepseek-v4-pro` + `medium`
+- `ai_quick_task [cli] [args...]` → `openai-codex/gpt-5.6-luna` + `medium`
 
 `cli` defaults to `pi`. You can pass `codex`, `opencode`, or `claude`; `codex` rejects non-`openai-codex` profiles.
 Examples:
