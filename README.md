@@ -102,13 +102,13 @@ Pi setup is backed up/reproducible under `pi/`:
 ~/config/pi/setup.sh
 ```
 
-Kubuntu + macOS setup scripts call Pi setup automatically on every run, then run `agent-skills/setup.sh` before `omp/setup.sh`. The shared-skills installer owns the canonical global inventory: pinned third-party skills are checksum-verified, repo-owned skills override them, rejected skills are pruned, and unknown manually installed skills are preserved but reported by the checker. Pi and Claude discover the canonical set through `~/agent-memory/skills`; OMP setup requires that source to already exist and only links it into the target, without mutating shared/global skills.
+Kubuntu + macOS setup scripts call Pi setup automatically on every run, then run `omp/setup.sh`; OMP setup installs the curated shared skills as part of its run. The shared-skills installer owns the canonical global inventory: pinned third-party skills are checksum-verified, repo-owned skills override them, rejected skills are pruned, and unknown manually installed skills are preserved but reported by the checker. Pi and Claude discover the canonical set through `~/agent-memory/skills`; OMP setup installs and uses the curated set within the same run.
 
 ### OMP coding agent
 
 OMP agent-harness setup is backed up/reproducible under `omp/`:
 
-Host setup scripts run the shared-skills prerequisite first. For a direct OMP install, ensure the canonical `~/agent-memory/skills` source exists, then run:
+Run the focused installer directly:
 
 ```bash
 ~/config/omp/setup.sh
@@ -132,7 +132,7 @@ This installs personal `$epic` and `$epics` skills plus `epic_builder`, `sol_rev
 
 Restart Codex or open a new task after installation so custom agents are discovered.
 
-`omp/setup.sh` treats the checked-in OMP files as a convergent managed inventory. It snapshots the previous managed entries, writes a versioned release under `<target>/.omp-routing/releases/`, and atomically switches `<target>/.omp-routing/current` to an exact direct child release; legacy direct entries migrate to those stable links within the same transaction, and target-level config, agents, commands, extensions, and the shared-skills link follow that switch. Caught failures and termination signals roll the transaction back; failed rollback preserves recovery material for manual recovery. Provider credentials, auth, sessions, databases, blobs, and `models.yml` remain local-only. Host setup scripts run shared skills first, and OMP setup only publishes its target-scoped routing. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
+`omp/setup.sh` stages the checked-in OMP config, installs curated shared skills, and replaces the managed `config.yml`, `APPEND_SYSTEM.md`, agents, commands, and extensions. If publication fails after it starts, caught failures roll back the previous managed inventory; provider credentials, auth, sessions, databases, blobs, and `models.yml` remain local-only and untouched. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
 
 ### Curated agent skills
 

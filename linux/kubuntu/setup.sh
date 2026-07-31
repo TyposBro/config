@@ -461,8 +461,6 @@ bash "$REPO/pi/setup.sh"
 if ! did pi; then
 	mark pi
 fi
-echo "==> Syncing shared agent skills..."
-bash "$REPO/agent-skills/setup.sh"
 
 echo "==> Syncing OMP coding agent setup..."
 bash "$REPO/omp/setup.sh"
