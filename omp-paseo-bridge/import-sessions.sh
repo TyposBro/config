@@ -30,6 +30,16 @@ command -v paseo >/dev/null || { echo "error: paseo CLI not on PATH"; exit 1; }
 echo "session dir: $SESSION_DIR"
 imported=0; skipped=0; failed=0
 
+# macOS ships no GNU coreutils `timeout`; run the import without it there.
+import_one() {
+  local id="$1" cwd="$2"
+  if command -v timeout >/dev/null 2>&1; then
+    timeout 120 paseo agent import "$id" --provider "$PROVIDER" --cwd "$cwd" 2>&1
+  else
+    paseo agent import "$id" --provider "$PROVIDER" --cwd "$cwd" 2>&1
+  fi
+}
+
 for f in "$SESSION_DIR"/*/*.jsonl; do
   [[ -f "$f" ]] || continue
   id="$(basename -- "$f" .jsonl | sed 's/.*_//')"
@@ -38,7 +48,7 @@ for f in "$SESSION_DIR"/*/*.jsonl; do
     echo "skip $id: no cwd in session file"; skipped=$((skipped + 1)); continue
   fi
   echo "importing $id ($cwd)"
-  if out="$(timeout 120 paseo agent import "$id" --provider "$PROVIDER" --cwd "$cwd" 2>&1)"; then
+  if out="$(import_one "$id" "$cwd")"; then
     imported=$((imported + 1))
   elif echo "$out" | grep -qi 'already imported'; then
     skipped=$((skipped + 1)); echo "  already imported"
