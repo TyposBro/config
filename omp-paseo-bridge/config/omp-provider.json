@@ -3,18 +3,12 @@
   "agents": {
     "providers": {
       "omp": {
-        "enabled": true,
-        "params": {
-          "sessionDir": "~/config/omp/agent/sessions"
-        }
+        "enabled": true
       },
       "omp-main": {
         "extends": "omp",
         "label": "Oh My Pi (main)",
-        "description": "OMP through Paseo's native adapter (rpc-ui). Role models come from omp's config.yml modelRoles; override with params.smolModel / slowModel / planModel.",
-        "params": {
-          "sessionDir": "~/config/omp/agent/sessions"
-        }
+        "description": "OMP through Paseo's native adapter (rpc-ui). Role models come from omp's config.yml modelRoles; override with params.smolModel / slowModel / planModel."
       }
     }
   }

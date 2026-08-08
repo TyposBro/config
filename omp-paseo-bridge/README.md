@@ -108,6 +108,10 @@ The skills live in `.agents/skills/` (canonical Agent Skills layout). Publish th
 npx skills add <owner>/<repo>
 ```
 
+## Replicating on another machine
+
+The kit is machine-adaptive: `install.sh` resolves `PI_CONFIG_DIR` (or falls back to `~/.omp`), derives `sessionDir` from the real omp data root, skips the opencode symlink when the binary is absent, and only creates `codex-go` when an `OPENCODE_GO_API_KEY` source exists (env or `~/agent-memory/hermes/.env`). On macOS (no systemd) start the daemon via the desktop app or `paseo daemon start`; then `./verify.sh` and `./import-sessions.sh`.
+
 ## Layout
 
 ```

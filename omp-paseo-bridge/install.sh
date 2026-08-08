@@ -50,6 +50,23 @@ else
   echo "         export PI_CONFIG_DIR=<dir> (e.g. config/omp) and re-run to inherit."
 fi
 
+# 1b. omp sessionDir: import-only path for terminal sessions, resolved from the real
+#     omp data root (PI_CONFIG_DIR, else default ~/.omp) so the same kit works on
+#     machines with a redirected omp home (Linux) and default layouts (macOS).
+if [[ -n "${PI_CONFIG_DIR:-}" ]]; then
+  case "$PI_CONFIG_DIR" in
+    /*) OMP_ROOT="$PI_CONFIG_DIR" ;;
+    *)  OMP_ROOT="$HOME/$PI_CONFIG_DIR" ;;
+  esac
+else
+  OMP_ROOT="$HOME/.omp"
+fi
+SESSION_DIR="~${OMP_ROOT#$HOME}/agent/sessions"
+jq --arg s "$SESSION_DIR" \
+   '.agents.providers.omp.params.sessionDir = $s | .agents.providers["omp-main"].params.sessionDir = $s' \
+   "$DYN" > "$DYN.tmp" && mv "$DYN.tmp" "$DYN"
+echo "env: omp sessionDir=$SESSION_DIR"
+
 # 2. opencode: binary lives in ~/.opencode/bin, which is not on the Paseo daemon PATH.
 if [[ -x "$HOME/.opencode/bin/opencode" ]]; then
   mkdir -p "$HOME/.local/bin"
