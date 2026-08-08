@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "agents": {
+    "providers": {
+      "omp": {
+        "enabled": true
+      },
+      "omp-main": {
+        "extends": "omp",
+        "label": "Oh My Pi (main)",
+        "description": "OMP through Paseo's native adapter (rpc-ui). Role models come from omp's config.yml modelRoles; override with params.smolModel / slowModel / planModel."
+      }
+    }
+  }
+}

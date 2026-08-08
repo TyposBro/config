@@ -35,6 +35,11 @@ omp/cache/
 omp/logs/
 omp/gpu_cache.json
 omp/plugins/
+omp/run/
+omp/install-id
+omp/remote-host/
+omp/ssh-control/
+omp/puppeteer/
 
 # Local MCP server installs keep source and lockfiles here, not dependency trees.
 mcp/*/node_modules/

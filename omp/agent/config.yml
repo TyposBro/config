@@ -1,0 +1,13 @@
+symbolPreset: nerd
+theme: 
+  dark: titanium
+  light: light
+setupVersion: 1
+modelRoles: 
+  default: opencode-go/deepseek-v4-flash:max
+defaultThinkingLevel: auto
+hideThinkingBlock: true
+browser: 
+  headless: true
+dev: 
+  autoqaConsent: denied
