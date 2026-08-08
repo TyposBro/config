@@ -51,6 +51,19 @@ In the composer, type `/` — `omp-review`, `omp-vibe`, `omp-committee`, `omp-ad
 
 Everything else in omp is engine-level and already works under Paseo (Paseo drives `omp --mode rpc-ui`): all 31 tools, LSP, DAP, time-traveling stream rules, extensions, web_search, browser/computer. Model roles map to Paseo via `params` (below) or the Command-Center model picker. `/collab` is redundant — Paseo's phone/web/relay access is the same feature. Only TUI-only bits (`/fresh`, hotkeys) need a terminal; run raw `omp` in a Paseo workspace terminal tab if you ever need them.
 
+## Provider model visibility (why your models were missing)
+
+Paseo spawns agent CLIs with the **daemon's environment**, not your interactive shell's. If your shell redirects a CLI's config/auth via an env var or a PATH entry, Paseo misses it:
+
+| Provider | Root cause | Fix (applied by `install.sh`) |
+|---|---|---|
+| omp | shell exports `PI_CONFIG_DIR` (e.g. `config/omp`); daemon doesn't → spawned omp uses `~/.omp` and shows only its auth (DeepSeek official) | provider `env.PI_CONFIG_DIR` inherited from the installing shell (pass it explicitly if your shell lacks it: `PI_CONFIG_DIR=config/omp ./install.sh`) |
+| opencode | binary lives at `~/.opencode/bin`, not on the daemon PATH → provider "unavailable" | symlink `~/.opencode/bin/opencode` → `~/.local/bin/opencode` |
+| codex | working routes are `--profile`-based (deepseek / opencode-go-deepseek); Paseo launches plain `app-server` → only the base default (direct DeepSeek) is visible | base `codex` provider stays (ban-compliant); `codex-go` profile added via Paseo's documented `OPENAI_BASE_URL`+`OPENAI_API_KEY` endpoint override (key read from `OPENCODE_GO_API_KEY` env or `~/agent-memory/hermes/.env` at install time — never stored in this repo) |
+| pi | no `pi` binary installed on this machine (`~/.pi` has only worktrees); nothing to bridge — omp *is* your pi | n/a; install `pi` only if you actually use the vanilla CLI |
+
+After install, verify: `paseo provider ls` (all available), `paseo provider models omp` (opencode-go / codex / antigravity / deepseek).
+
 ## Tuning
 
 Model roles (`smol`/`slow`/`plan`) come from omp's own `config.yml` `modelRoles` by default. To pin them per Paseo profile, edit `config/omp-provider.json` before installing:

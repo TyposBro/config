@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-# Verifies the omp <-> Paseo bridge: binaries, config, installed skills.
+# Verifies the omp <-> Paseo bridge: binaries, config, injected env, installed skills.
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PASEO_HOME_DIR="${PASEO_HOME:-$HOME/.paseo}"
@@ -12,21 +12,14 @@ ok=0; fail=0
 pass() { echo "  ok:   $1"; ok=$((ok + 1)); }
 bad()  { echo "  FAIL: $1"; fail=$((fail + 1)); }
 
-echo "== omp =="
-if command -v omp >/dev/null 2>&1; then
-  v="$(omp --version 2>/dev/null || echo '?')"
-  pass "omp on PATH ($v)"
-else
-  bad "omp not on PATH"
-fi
-
-echo "== paseo =="
-if command -v paseo >/dev/null 2>&1; then
-  v="$(paseo --version 2>/dev/null || echo '?')"
-  pass "paseo on PATH ($v)"
-else
-  bad "paseo CLI not on PATH (desktop app bundles its own daemon; CLI is optional)"
-fi
+echo "== binaries =="
+for c in omp paseo codex opencode; do
+  if command -v "$c" >/dev/null 2>&1; then
+    pass "$c on PATH ($(command -v "$c"))"
+  else
+    bad "$c not on PATH"
+  fi
+done
 
 echo "== config ($CONFIG) =="
 if [[ -f "$CONFIG" ]]; then pass "config exists"; else bad "config missing"; fi
@@ -34,6 +27,20 @@ jq -e '.agents.providers.omp.enabled == true' "$CONFIG" >/dev/null 2>&1 \
   && pass "omp provider enabled" || bad "omp provider not enabled"
 jq -e '.agents.providers["omp-main"] != null' "$CONFIG" >/dev/null 2>&1 \
   && pass "omp-main profile present" || bad "omp-main profile missing"
+if [[ -n "${PI_CONFIG_DIR:-}" ]]; then
+  jq -e --arg d "$PI_CONFIG_DIR" '.agents.providers.omp.env.PI_CONFIG_DIR == $d' "$CONFIG" >/dev/null 2>&1 \
+    && pass "omp inherits PI_CONFIG_DIR=$PI_CONFIG_DIR" || bad "omp PI_CONFIG_DIR env missing"
+else
+  echo "  skip: PI_CONFIG_DIR not set in this shell (omp uses its default dir)"
+fi
+if [[ -L "$HOME/.local/bin/opencode" ]] \
+  && [[ "$(readlink "$HOME/.local/bin/opencode")" == "$HOME/.opencode/bin/opencode" ]]; then
+  pass "opencode symlink on daemon PATH"
+else
+  bad "opencode symlink missing (run ./install.sh)"
+fi
+jq -e '.agents.providers["codex-go"] != null' "$CONFIG" >/dev/null 2>&1 \
+  && pass "codex-go profile present" || bad "codex-go profile missing"
 
 echo "== skills =="
 for dir in "$HERE"/.agents/skills/*/; do

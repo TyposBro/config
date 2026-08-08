@@ -8,7 +8,10 @@
       "omp-main": {
         "extends": "omp",
         "label": "Oh My Pi (main)",
-        "description": "OMP through Paseo's native adapter (rpc-ui). Role models come from omp's config.yml modelRoles; override with params.smolModel / slowModel / planModel."
+        "description": "OMP through Paseo's native adapter (rpc-ui). Role models come from omp's config.yml modelRoles; override with params.smolModel / slowModel / planModel.",
+        "params": {
+          "sessionDir": "~/config/omp/agent/sessions"
+        }
       }
     }
   }
