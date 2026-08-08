@@ -54,6 +54,17 @@ paseo agent import <session-id> --provider omp --cwd <path>
 
 Sessions live in `~/.paseo`-configured `params.sessionDir` (here `~/config/omp/agent/sessions`), one `<timestamp>_<session-id>.jsonl` per session grouped by cwd directory. The daemon dedupes by native session id, so re-running the script is safe.
 
+## Rename imported sessions (workspaces)
+
+Paseo auto-titles workspaces from the git branch, so imported sessions all show up as `main`. Rename every `main` workspace to its first agent's title (the session's first message):
+
+```sh
+node rename-workspaces.mjs --dry-run   # preview
+node rename-workspaces.mjs             # apply
+```
+
+Works against any paseo daemon (fork or official) by driving the WebSocket RPCs directly (`fetch_workspaces`, `fetch_agents`, `workspace.title.set`; needs the full client hello with `appVersion` + capabilities for the agent directory). Node ≥ 22. Re-running only touches workspaces still named `main`.
+
 ## What's in the pack
 
 | Skill | omp feature it bridges |
