@@ -3,7 +3,10 @@
   "agents": {
     "providers": {
       "omp": {
-        "enabled": true
+        "enabled": true,
+        "params": {
+          "sessionDir": "~/config/omp/agent/sessions"
+        }
       },
       "omp-main": {
         "extends": "omp",

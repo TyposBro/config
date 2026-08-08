@@ -36,6 +36,24 @@ In the composer, type `/` — `omp-review`, `omp-vibe`, `omp-committee`, `omp-ad
 ./uninstall.sh               # removes omp/omp-main providers + omp-* skills; leaves Paseo skills and your config backups
 ```
 
+## Import your existing omp sessions
+
+Continue terminal omp sessions from Paseo (they import with title, cwd, and model; full history loads on resume):
+
+```sh
+./import-sessions.sh            # imports every session under the omp sessionDir (idempotent)
+paseo ls -a                     # see imported agents
+paseo send <agent-id> "continue"  # resume one
+```
+
+Or use the app's import picker (it calls the same `listImportableSessions` API), or the CLI directly:
+
+```sh
+paseo agent import <session-id> --provider omp --cwd <path>
+```
+
+Sessions live in `~/.paseo`-configured `params.sessionDir` (here `~/config/omp/agent/sessions`), one `<timestamp>_<session-id>.jsonl` per session grouped by cwd directory. The daemon dedupes by native session id, so re-running the script is safe.
+
 ## What's in the pack
 
 | Skill | omp feature it bridges |
