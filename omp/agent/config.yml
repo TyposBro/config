@@ -1,13 +1,36 @@
 symbolPreset: nerd
-theme: 
+theme:
   dark: titanium
   light: light
 setupVersion: 1
-modelRoles: 
-  default: opencode-go/deepseek-v4-flash:max
+modelRoles:
+  default: openai/gpt-5.6
+  smol: opencode-go/deepseek-v4-flash
+  slow: opencode-go/deepseek-v4-flash
+  vision: openai/gpt-5.6-luna
+  plan: openai/gpt-5.6
+  task: opencode-go/deepseek-v4-flash
+  designer: opencode-go/deepseek-v4-flash
+  commit: opencode-go/deepseek-v4-flash
+modelTags:
+  plan: { name: "Planner", color: "cyan" }
+  commit: { name: "Committer", color: "green" }
+  designer: { name: "Designer", color: "violet" }
+  vision: { name: "Vision", color: "magenta" }
+task:
+  agentModelOverrides:
+    scout: opencode-go/deepseek-v4-flash
+    task: opencode-go/deepseek-v4-flash
+    sonic: opencode-go/deepseek-v4-flash
+    designer: opencode-go/deepseek-v4-flash
+    librarian: opencode-go/deepseek-v4-flash
+    reviewer: opencode-go/deepseek-v4-flash
+    security-reviewer: opencode-go/deepseek-v4-flash
+prewalk:
+  enabled: true
 defaultThinkingLevel: auto
 hideThinkingBlock: true
-browser: 
+browser:
   headless: true
-dev: 
+dev:
   autoqaConsent: denied
