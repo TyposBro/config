@@ -1,0 +1,51 @@
+{
+  "adapters": {
+    "js-debug-adapter": {
+      "command": "js-debug-adapter",
+      "connectMode": "socket",
+      "fileTypes": [".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs"],
+      "rootMarkers": ["package.json", "tsconfig.json", "jsconfig.json"]
+    },
+    "js-debug-bun": {
+      "command": "js-debug-adapter",
+      "connectMode": "socket",
+      "fileTypes": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"],
+      "rootMarkers": ["bun.lock", "bun.lockb"],
+      "launchDefaults": {
+        "request": "launch",
+        "type": "pwa-node",
+        "runtimeExecutable": "bun",
+        "stopOnEntry": true
+      },
+      "attachDefaults": {
+        "request": "attach",
+        "type": "pwa-node"
+      }
+    },
+    "lldb-dap": {
+      "command": "/home/typosbro/.local/bin/lldb-dap",
+      "languages": ["swift", "c", "cpp"],
+      "fileTypes": [".swift", ".c", ".cpp", ".cc", ".h", ".hpp"],
+      "rootMarkers": ["Package.swift", ".git"],
+      "launchDefaults": {
+        "request": "launch"
+      }
+    },
+    "debugpy": {
+      "command": "/home/typosbro/.venvs/debugpy/bin/python",
+      "args": ["-m", "debugpy.adapter"],
+      "languages": ["python"],
+      "fileTypes": [".py"],
+      "rootMarkers": [".git", "pyproject.toml", "requirements.txt", "setup.py"],
+      "launchDefaults": {
+        "request": "launch",
+        "type": "python",
+        "stopOnEntry": true
+      },
+      "attachDefaults": {
+        "request": "attach",
+        "type": "python"
+      }
+    }
+  }
+}

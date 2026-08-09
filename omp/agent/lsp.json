@@ -1,0 +1,44 @@
+{
+  "idleTimeoutMs": 300000,
+  "servers": {
+    "typescript-language-server": {
+      "command": "typescript-language-server",
+      "args": ["--stdio"],
+      "fileTypes": [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"],
+      "rootMarkers": ["package.json", "tsconfig.json", "node_modules"],
+      "settings": {
+        "typescript": {
+          "inlayHints": {
+            "parameterNames": { "enabled": "literals" },
+            "parameterTypes": { "enabled": true },
+            "variableTypes": { "enabled": false }
+          }
+        }
+      }
+    },
+    "kotlin-lsp": {
+      "command": "kotlin-language-server",
+      "warmupTimeoutMs": 120000,
+      "fileTypes": [".kt", ".kts"],
+      "rootMarkers": ["build.gradle.kts", "build.gradle", "settings.gradle.kts", "pom.xml", ".git"]
+    },
+    "sourcekit-lsp": {
+      "command": "sourcekit-lsp",
+      "fileTypes": [".swift"],
+      "rootMarkers": ["Package.swift", ".git", "*.xcodeproj", "*.xcworkspace"]
+    },
+    "biome": {
+      "command": "biome",
+      "args": ["lsp-proxy"],
+      "fileTypes": [".ts", ".tsx", ".js", ".jsx", ".json", ".jsonc"],
+      "rootMarkers": ["biome.json", "biome.jsonc"],
+      "isLinter": true
+    },
+    "prismals": {
+      "command": "prisma-language-server",
+      "args": ["--stdio"],
+      "fileTypes": [".prisma"],
+      "rootMarkers": ["schema.prisma", "prisma"]
+    }
+  }
+}

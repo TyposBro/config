@@ -1,4 +1,0 @@
-interface:
-  display_name: "Epic Portfolio"
-  short_description: "Run several GitHub epics with bounded concurrency"
-  default_prompt: "Use $epics to reconcile and schedule several GitHub epics in one repository."
