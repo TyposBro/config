@@ -18,6 +18,7 @@ modelTags:
   designer: { name: "Designer", color: "violet" }
   vision: { name: "Vision", color: "magenta" }
 task:
+  eager: always
   agentModelOverrides:
     scout: opencode-go/deepseek-v4-flash
     task: opencode-go/deepseek-v4-flash
