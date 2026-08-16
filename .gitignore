@@ -30,6 +30,7 @@ omp/agent/sessions/
 omp/agent/blobs/
 omp/agent/mcp.json
 omp/agent/terminal-sessions/
+omp/agent/cache/
 omp/agent/last-changelog-version
 omp/cache/
 omp/logs/
