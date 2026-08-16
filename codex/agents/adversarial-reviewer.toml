@@ -1,6 +1,6 @@
 name = "adversarial_reviewer"
 description = "Independent read-only reviewer for subtle logic, concurrency, security, and partial-failure defects."
-model = "codex-auto-review"
+model = "deepseek-v4-flash"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """

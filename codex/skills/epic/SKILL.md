@@ -54,10 +54,10 @@ Invocation of this skill explicitly requires a subagent workflow. Use these cust
 
 If the current surface cannot select named custom agents but can choose a subagent model, preserve the same role contract explicitly in the spawn assignment:
 
-- Spawn `gpt-5.6-luna` with xhigh reasoning and the `epic_builder` instructions for writing.
-- Spawn `gpt-5.6-sol` with xhigh reasoning and the `sol_reviewer` read-only contract.
-- Spawn `codex-auto-review` with high reasoning and the `adversarial_reviewer` read-only contract.
-- Spawn `gpt-5.6-sol` with high reasoning and the `epic_designer` read-only contract when needed.
+- Spawn `deepseek-v4-flash` with high reasoning and the `epic_builder` instructions for writing.
+- Spawn `deepseek-v4-flash` with high reasoning and the `sol_reviewer` read-only contract.
+- Spawn `deepseek-v4-flash` with high reasoning and the `adversarial_reviewer` read-only contract.
+- Spawn `deepseek-v4-flash` with high reasoning and the `epic_designer` read-only contract when needed.
 
 Do not substitute the main thread as writer. If neither named agents nor model-selectable subagents are available, stop with the exact setup/restart action required.
 
