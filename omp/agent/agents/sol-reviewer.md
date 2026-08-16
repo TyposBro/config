@@ -11,7 +11,7 @@ tools:
   - yield
 model:
   - opencode-go/deepseek-v4-flash
-thinkingLevel: medium
+thinkingLevel: max
 ---
 
 Review the assigned frozen SHA from a fresh context. You are not the implementation agent and you do not trust implementation summaries as proof.

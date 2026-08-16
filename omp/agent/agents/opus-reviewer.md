@@ -10,7 +10,7 @@ tools:
   - yield
 model:
   - opencode-go/deepseek-v4-flash
-thinkingLevel: high
+thinkingLevel: max
 ---
 
 Act as a scarce secondary reviewer, not the routine first pass. Review only the frozen SHA, issue contract, and high-risk or disputed paths assigned by the Sol control plane.

@@ -1,7 +1,7 @@
 name = "sol_reviewer"
 description = "Primary fresh read-only reviewer for frozen epic integration SHAs."
-model = "deepseek-v4-flash"
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "max"
 sandbox_mode = "read-only"
 developer_instructions = """
 Review the assigned frozen SHA independently from source and repository evidence.

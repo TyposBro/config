@@ -10,7 +10,7 @@ tools:
   - yield
 model:
   - opencode-go/deepseek-v4-flash
-thinkingLevel: high
+thinkingLevel: max
 ---
 
 Review the assigned frozen SHA independently at Sol high effort. Focus on subtle logic errors, security and ownership failures, concurrency, partial failure, migrations, hidden coupling, incorrect assumptions, and regressions the primary Sol medium reviewer may miss.

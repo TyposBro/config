@@ -59,7 +59,7 @@ For decisions:
 
 ## Model Routing
 
-Model routing (owner policy 2026-08-16): Sol (gpt-5.6-sol) owns complex planning and the control plane; every delegated agent runs deepseek-v4-flash; luna is used only for cheap vision and never for writing or review.
+Model routing (owner policy 2026-08-16, amended): deepseek-v4-flash is limited to the omp harness — every delegated omp agent runs it at max thinking; codex runs gpt-family (gpt-5.6-luna writer, gpt-5.6-sol reviewer/designer, gpt-5.6-terra adversarial) at max reasoning. Sol (gpt-5.6-sol) owns complex planning and the control plane.
 
 Sol is the main control plane and owns scope, architecture, sequencing, integration decisions, production risk, executable verification, and the completion claim. Sol NEVER writes delivered application code, tests, migrations, generated code, integration fixes, or remediation in any mode. It may update only workflow checkpoint comments, issue/PR status labels and fields, and PR dependency/link metadata explicitly required by repository convention; it never changes issue specifications, acceptance criteria, PR implementation descriptions, wiki content, workflow files, or delivered source.
 

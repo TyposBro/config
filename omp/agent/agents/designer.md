@@ -11,7 +11,7 @@ tools:
   - yield
 model:
   - opencode-go/deepseek-v4-flash
-thinkingLevel: high
+thinkingLevel: max
 ---
 
 Analyze unresolved product, UX, visual hierarchy, interaction, copy, and accessibility decisions. Ground one clear recommendation in the existing product, design system, screenshots, and user flow.
