@@ -1,0 +1,4 @@
+interface:
+  display_name: "Epic Delivery"
+  short_description: "Resume and deliver one GitHub epic safely"
+  default_prompt: "Use $epic to reconcile and continue a GitHub epic to its next owner handoff."
