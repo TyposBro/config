@@ -35,8 +35,6 @@ task:
     librarian: opencode-go/deepseek-v4-flash
     reviewer: opencode-go/deepseek-v4-flash
     security-reviewer: opencode-go/deepseek-v4-flash
-prewalk: 
-  enabled: true
 defaultThinkingLevel: auto
 hideThinkingBlock: true
 browser: 
