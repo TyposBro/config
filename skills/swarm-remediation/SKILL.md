@@ -1,6 +1,6 @@
 ---
 name: swarm-remediation
-description: Autonomous swarm orchestrator for codebase health, refactoring, and technical debt. Runs the Titans Council audit, partitions findings into disjoint work slices, dispatches parallel subagent workers in isolated worktrees, runs independent adversarial reviews, and sequentially integrates verified patches. Use when asked to "fix all issues", "run swarm remediation", "heal codebase", "auto-fix audit", or invoking skill:swarm-remediation or /swarm-remediation.
+description: Autonomous swarm orchestrator for codebase health, refactoring, and technical debt. Runs the Titans Council audit, partitions findings into disjoint work slices, dispatches parallel worker subagents in isolated worktrees, runs independent adversarial reviews, and sequentially integrates verified patches. Universal and model-agnostic. Use when asked to "fix all issues", "run swarm remediation", "heal codebase", "auto-fix audit", or invoking skill:swarm-remediation or /swarm-remediation.
 user-invocable: true
 ---
 
@@ -12,12 +12,23 @@ You **never** edit application code directly in the orchestrator thread; you orc
 
 ---
 
+## Universal Role Contracts (Harness & Model Agnostic)
+
+This protocol uses generic functional roles that map cleanly to any agent harness (OpenCode, Claude Code, Aider, OMP, Codex, Pi) and any frontier model (Claude, GPT, DeepSeek, Gemini, Llama, Qwen):
+
+1. **Auditor Subagent:** Read-only inspection & static analysis specialist. Runs `/cto-audit` and returns structured punch lists.
+2. **Worker Subagent:** Implementation specialist with file-write and test-execution capabilities. Operates in an isolated branch/worktree.
+3. **Reviewer Subagent:** Read-only adversarial reviewer. Critiques git diffs against Clean Architecture principles without editing files.
+4. **Director / Orchestrator:** Air-gapped control plane. Partitions DAG slices, dispatches subagents, and manages sequential integration.
+
+---
+
 ## The 6-Phase Swarm Execution Pipeline
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │ Phase 1: INQUISITOR AUDIT                              │
-│ • Runs /cto-audit to generate P0-P2 findings matrix.   │
+│ • Spawns Auditor Subagent to run /cto-audit.           │
 └─────────────────────────┬──────────────────────────────┘
                           │
 ┌─────────────────────────▼──────────────────────────────┐
@@ -28,20 +39,20 @@ You **never** edit application code directly in the orchestrator thread; you orc
                           │
 ┌─────────────────────────▼──────────────────────────────┐
 │ Phase 3: PARALLEL WORKTREE WORKERS                     │
-│ • Spawns `epic-builder` / `luna-fast` subagents.       │
+│ • Spawns isolated Worker Subagents per slice.          │
 │ • Enforces Red-Green test requirement & local gates.   │
 └─────────────────────────┬──────────────────────────────┘
                           │
 ┌─────────────────────────▼──────────────────────────────┐
 │ Phase 4: DUAL ADVERSARIAL REVIEW                       │
-│ • Spawns `sol-reviewer` & `adversarial-reviewer`.      │
+│ • Spawns independent Reviewer Subagents.               │
 │ • Rejects hacky fixes (`as any`, swallowed errors).    │
 └─────────────────────────┬──────────────────────────────┘
                           │
 ┌─────────────────────────▼──────────────────────────────┐
 │ Phase 5: SEQUENTIAL REBASE & MERGE                     │
 │ • Merges verified slices one-by-one onto target branch.│
-│ • Runs full verification (`pnpm check:all`) per merge. │
+│ • Runs full verification suite per merge.              │
 └─────────────────────────┬──────────────────────────────┘
                           │
 ┌─────────────────────────▼──────────────────────────────┐
@@ -53,8 +64,8 @@ You **never** edit application code directly in the orchestrator thread; you orc
 ---
 
 ## Phase 1: Inquisitor Audit
-1. Run the `/cto-audit` protocol across the target repository or module.
-2. Structure the findings into a machine-readable array of remediation units:
+1. Spawn an **Auditor Subagent** to run the `/cto-audit` protocol.
+2. Ingest the machine-readable findings matrix:
    * **ID:** `FIX-01`, `FIX-02`, etc.
    * **Severity:** `P0` (Critical/Data Leak), `P1` (Architectural Erosion), `P2` (Local Smells).
    * **Target Files:** Explicit list of files modified.
@@ -75,21 +86,20 @@ You **never** edit application code directly in the orchestrator thread; you orc
 
 ## Phase 3: Parallel Worker Swarm Execution
 For each independent work slice in the current wave:
-1. Spawn a subagent using the `task` tool:
-   * **Subagent Type:** `epic-builder` or `luna-fast`.
+1. Spawn a **Worker Subagent** using the harness's subagent tool:
+   * **Subagent Role:** Code-writing implementation worker.
    * **Prompt Requirements:**
      - Must operate in an isolated branch/worktree (`swarm/<slice-name>`).
      - **Test-First Rule:** Write a reproduction unit/integration test demonstrating the bug before fixing it.
      - **Strict Invariants:** Zero escape hatches (`as any`, `@ts-ignore`, `catch(() => {})`).
-     - **Local Gate:** Must verify locally with `pnpm check:all` (or workspace test/lint/typecheck commands) before returning.
+     - **Local Gate:** Must verify locally with full project check command (`pnpm check:all` or equivalent) before returning.
 2. Keep maximum active concurrent subagents $\le 4$ to prevent CPU/memory exhaustion.
 
 ---
 
 ## Phase 4: Dual Adversarial Review Gate
 Before any worker's branch is accepted:
-1. Spawn an independent read-only reviewer via `task`:
-   * **Subagent Type:** `adversarial-reviewer` or `sol-reviewer`.
+1. Spawn a **Reviewer Subagent** using the harness's read-only review role:
    * **Review Criteria:**
      - Did the worker actually fix the root cause, or just patch a symptom?
      - Did the worker introduce shallow pass-through methods (Ousterhout violation) or ambient state (Hickey violation)?
@@ -102,7 +112,7 @@ Before any worker's branch is accepted:
 1. Maintain a clean target integration branch (`swarm-integrated-fix`).
 2. Integrate approved worker branches one-by-one:
    * Fast-forward or rebase worker branch onto target branch.
-   * Execute full verification suite (`pnpm check:all`).
+   * Execute full verification suite (`pnpm check:all` or equivalent).
    * If green, commit integration step.
    * If broken due to unexpected cross-slice interaction, revert that slice and queue it for resolution.
 
@@ -116,13 +126,10 @@ Deliver a crisp executive summary to the CEO:
 
 ---
 
-## Recurring Scheduled Automation (Paseo Cron)
-
-To run this swarm automatically on a weekly/monthly cadence:
-Use `paseo_create_schedule` with this configuration:
-* **Cron:** `0 2 * * 0` (Every Sunday at 02:00 AM)
-* **Prompt:**
+## Recurring Scheduled Automation
+To run this swarm on a recurring schedule (via cron, daemon, or CI runner):
+* **Cadence:** Weekly or monthly (e.g. `0 2 * * 0`).
+* **Trigger Prompt:**
   ```text
-  Run /swarm-remediation across the repository. Convene the Titans Council audit, partition all P0-P2 findings into isolated worktrees, dispatch parallel worker subagents, run adversarial reviews, verify with pnpm check:all, and open a clean PR with the unified before/after scorecard.
+  Run /swarm-remediation across the repository. Convene the Titans Council audit, partition all findings into isolated worktrees, dispatch parallel worker subagents, run adversarial reviews, verify with full check suite, and open a clean PR with the before/after scorecard.
   ```
-* **Isolation:** `worktree`

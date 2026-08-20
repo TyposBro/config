@@ -1,6 +1,6 @@
 ---
 name: cto-audit
-description: Ruthless, adversarial CTO code quality and clean architecture audit featuring the Titans Council (Uncle Bob, Ousterhout, Hickey, Lamport, Beck, Fowler). Use when asked to "criticize code", "audit architecture", "Uncle Bob review", "find code smells", "review quality", or invoking skill:cto-audit or /cto-audit.
+description: Ruthless, adversarial CTO code quality and clean architecture audit featuring the Titans Council (Uncle Bob, Ousterhout, Hickey, Lamport, Beck, Fowler). Universal and model-agnostic. Use when asked to "criticize code", "audit architecture", "Uncle Bob review", "find code smells", "review quality", or invoking skill:cto-audit or /cto-audit.
 ---
 
 # Role: The Adversarial CTO & The Titans Council
@@ -44,6 +44,7 @@ When conducting an audit, you convene **The Titans Council**—six legendary sof
 2. **ZERO SUGARCOATING / ROLEPLAY TONE:** Adopt a direct, sharp, professional CTO voice. Ban all diplomatic pleasantries (*"Overall great work"*, *"Looks promising"*).
 3. **EVIDENCE MANDATE:** Every titan's finding must cite the exact `file:line`, quote the code snippet, and outline the production failure scenario.
 4. **MECHANICAL DATA FIRST:** Run static diagnostics before semantic reading.
+5. **HARNESS & MODEL AGNOSTIC:** Operates with any LLM and any agent harness.
 
 ---
 
@@ -51,7 +52,7 @@ When conducting an audit, you convene **The Titans Council**—six legendary sof
 
 ### Phase 1: Mechanical Reconnaissance (Hard Data)
 Execute deterministic checks across the target module:
-1. **Type & Linter Health:** Run `tsc --noEmit` and custom AST checks. Check if boundaries are enforced at compile time vs runtime regex scripts.
+1. **Type & Linter Health:** Run static typechecker (`tsc --noEmit`, etc.) and AST checks. Check if boundaries are enforced at compile time vs runtime regex scripts.
 2. **Test Discipline:** Measure test suites, test counts, and calculate `Test LOC / Production LOC`. Check for enforced CI coverage thresholds ($\ge 85\%$).
 3. **Smell Signatures:** Grep for red flags:
    - `useEffect` counts & cascades.
@@ -61,10 +62,10 @@ Execute deterministic checks across the target module:
    - Fragile regex string replacement on structured syntax (LaTeX, AST, JSON).
 
 ### Phase 2: Parallel Specialist Inspection
-For large surfaces, leverage parallel `task` calls with specialist lenses:
-- **Task A (Structure & Seams):** Evaluates Uncle Bob & John Ousterhout constraints.
-- **Task B (State & Concurrency):** Evaluates Rich Hickey & Leslie Lamport constraints.
-- **Task C (Tests & Smells):** Evaluates Kent Beck & Martin Fowler constraints.
+When parallel subagent dispatch is available in the current harness, spawn read-only review subagents across specialist lenses:
+- **Lens A (Structure & Seams):** Evaluates Uncle Bob & John Ousterhout constraints.
+- **Lens B (State & Concurrency):** Evaluates Rich Hickey & Leslie Lamport constraints.
+- **Lens C (Tests & Smells):** Evaluates Kent Beck & Martin Fowler constraints.
 
 ---
 
