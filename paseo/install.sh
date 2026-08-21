@@ -7,36 +7,102 @@ set -euo pipefail
 #   3. Normalizes ~/.paseo/config.json if invalid daemon keys are present.
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PASEO_APP="/Applications/Paseo.app"
-APP_DIST="${PASEO_APP}/Contents/Resources/app-dist"
-INDEX_HTML="${APP_DIST}/index.html"
-ORIG_HTML="${APP_DIST}/index.html.orig"
 THEME_CSS="${HERE}/opencode-theme.css"
 PASEO_CONFIG="${PASEO_HOME:-$HOME/.paseo}/config.json"
 
+find_app_dist() {
+  if [[ -n "${PASEO_APP_DIST:-}" && -d "$PASEO_APP_DIST" ]]; then
+    echo "$PASEO_APP_DIST"
+    return 0
+  fi
+  if [[ -n "${PASEO_APP:-}" ]]; then
+    for sub in "Contents/Resources/app-dist" "resources/app-dist" "app-dist"; do
+      if [[ -d "${PASEO_APP}/${sub}" ]]; then
+        echo "${PASEO_APP}/${sub}"
+        return 0
+      fi
+    done
+    if [[ -d "$PASEO_APP" && -f "$PASEO_APP/index.html" ]]; then
+      echo "$PASEO_APP"
+      return 0
+    fi
+  fi
+
+  local candidates=(
+    # macOS
+    "/Applications/Paseo.app/Contents/Resources/app-dist"
+    "$HOME/Applications/Paseo.app/Contents/Resources/app-dist"
+    # Linux
+    "/opt/Paseo/resources/app-dist"
+    "/opt/paseo/resources/app-dist"
+    "/usr/lib/paseo/resources/app-dist"
+    "/usr/lib/Paseo/resources/app-dist"
+    "/usr/share/paseo/resources/app-dist"
+    "/usr/share/Paseo/resources/app-dist"
+    "$HOME/.local/share/Paseo/resources/app-dist"
+    "$HOME/.local/share/paseo/resources/app-dist"
+    # Windows (Git Bash / MSYS / Cygwin / WSL)
+    "${PROGRAMFILES:-/c/Program Files}/Paseo/resources/app-dist"
+    "${LOCALAPPDATA:-/c/Users/${USER:-}/AppData/Local}/Programs/Paseo/resources/app-dist"
+    "/c/Program Files/Paseo/resources/app-dist"
+    "/c/Program Files (x86)/Paseo/resources/app-dist"
+    "/mnt/c/Program Files/Paseo/resources/app-dist"
+  )
+
+  for cand in "${candidates[@]}"; do
+    if [[ -d "$cand" && -f "$cand/index.html" ]]; then
+      echo "$cand"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
 echo "==> Checking Paseo Desktop installation..."
-if [[ ! -d "$PASEO_APP" || ! -f "$INDEX_HTML" ]]; then
-  echo "error: Paseo Desktop not found at $PASEO_APP" >&2
+if ! APP_DIST="$(find_app_dist)"; then
+  echo "error: Paseo Desktop installation not found. Set PASEO_APP_DIST or PASEO_APP environment variable." >&2
   exit 1
+fi
+
+INDEX_HTML="${APP_DIST}/index.html"
+ORIG_HTML="${APP_DIST}/index.html.orig"
+
+echo "==> Found Paseo Desktop web assets at: $APP_DIST"
+
+SUDO=""
+if [[ ! -w "$APP_DIST" || (! -w "$INDEX_HTML" && -f "$INDEX_HTML") ]]; then
+  if [[ $EUID -ne 0 ]]; then
+    if command -v sudo >/dev/null 2>&1; then
+      SUDO="sudo"
+    else
+      echo "error: $APP_DIST requires elevated permissions but sudo is not available." >&2
+      exit 1
+    fi
+  fi
 fi
 
 # 1. Backup original index.html if not already backed up
 if [[ ! -f "$ORIG_HTML" ]]; then
   echo "==> Creating backup: $ORIG_HTML"
-  cp "$INDEX_HTML" "$ORIG_HTML"
+  $SUDO cp "$INDEX_HTML" "$ORIG_HTML"
 fi
 
 # 2. Copy theme stylesheet & background assets
 echo "==> Copying Moonlit Pine & OpenCode theme assets to $APP_DIST"
-cp "$THEME_CSS" "${APP_DIST}/opencode-theme.css"
+$SUDO cp "$THEME_CSS" "${APP_DIST}/opencode-theme.css"
 if [[ -f "${HERE}/moonlit-pine.jpg" ]]; then
-  cp "${HERE}/moonlit-pine.jpg" "${APP_DIST}/moonlit-pine.jpg"
+  $SUDO cp "${HERE}/moonlit-pine.jpg" "${APP_DIST}/moonlit-pine.jpg"
 fi
 
 # 3. Inject stylesheet into index.html idempotently
 if ! grep -q "id=\"opencode-theme-css\"" "$INDEX_HTML"; then
   echo "==> Injecting stylesheet link into index.html..."
-  sed -i '' 's|</head>|<link rel="stylesheet" href="/opencode-theme.css" id="opencode-theme-css"></head>|' "$INDEX_HTML"
+  if sed --version >/dev/null 2>&1; then
+    $SUDO sed -i 's|</head>|<link rel="stylesheet" href="/opencode-theme.css" id="opencode-theme-css"></head>|' "$INDEX_HTML"
+  else
+    $SUDO sed -i '' 's|</head>|<link rel="stylesheet" href="/opencode-theme.css" id="opencode-theme-css"></head>|' "$INDEX_HTML"
+  fi
 else
   echo "==> Stylesheet link already present in index.html"
 fi
@@ -57,4 +123,4 @@ if command -v npx >/dev/null 2>&1; then
 fi
 
 echo "==> Moonlit Pine & OpenCode Theme successfully applied to Paseo Desktop!"
-echo "    If Paseo is currently open, reload the window (Cmd+R) or restart the app."
+echo "    If Paseo is currently open, reload the window (Cmd+R / Ctrl+R) or restart the app."
