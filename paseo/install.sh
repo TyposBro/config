@@ -8,7 +8,6 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 THEME_CSS="${HERE}/opencode-theme.css"
-ZEN_JS="${HERE}/opencode-zen.js"
 PASEO_CONFIG="${PASEO_HOME:-$HOME/.paseo}/config.json"
 
 find_app_dist() {
@@ -89,17 +88,14 @@ if [[ ! -f "$ORIG_HTML" ]]; then
   $SUDO cp "$INDEX_HTML" "$ORIG_HTML"
 fi
 
-# 2. Copy theme stylesheet, background assets & Zen spotlight script
+# 2. Copy theme stylesheet & background assets
 echo "==> Copying Moonlit Pine & OpenCode theme assets to $APP_DIST"
 $SUDO cp "$THEME_CSS" "${APP_DIST}/opencode-theme.css"
-if [[ -f "$ZEN_JS" ]]; then
-  $SUDO cp "$ZEN_JS" "${APP_DIST}/opencode-zen.js"
-fi
 if [[ -f "${HERE}/moonlit-pine.jpg" ]]; then
   $SUDO cp "${HERE}/moonlit-pine.jpg" "${APP_DIST}/moonlit-pine.jpg"
 fi
 
-# 3. Inject stylesheet & Zen spotlight script into index.html idempotently
+# 3. Inject stylesheet into index.html idempotently
 if ! grep -q "id=\"opencode-theme-css\"" "$INDEX_HTML"; then
   echo "==> Injecting stylesheet link into index.html..."
   if sed --version >/dev/null 2>&1; then
@@ -109,17 +105,6 @@ if ! grep -q "id=\"opencode-theme-css\"" "$INDEX_HTML"; then
   fi
 else
   echo "==> Stylesheet link already present in index.html"
-fi
-
-if ! grep -q "id=\"opencode-zen-js\"" "$INDEX_HTML"; then
-  echo "==> Injecting Zen spotlight script into index.html..."
-  if sed --version >/dev/null 2>&1; then
-    $SUDO sed -i 's|</body>|<script src="/opencode-zen.js" id="opencode-zen-js" defer></script></body>|' "$INDEX_HTML"
-  else
-    $SUDO sed -i '' 's|</body>|<script src="/opencode-zen.js" id="opencode-zen-js" defer></script></body>|' "$INDEX_HTML"
-  fi
-else
-  echo "==> Zen spotlight script already present in index.html"
 fi
 
 # 4. Clean ~/.paseo/config.json if invalid keys exist

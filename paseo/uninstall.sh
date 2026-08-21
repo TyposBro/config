@@ -83,11 +83,6 @@ if [[ -f "${APP_DIST}/opencode-theme.css" ]]; then
   $SUDO rm -f "${APP_DIST}/opencode-theme.css"
 fi
 
-if [[ -f "${APP_DIST}/opencode-zen.js" ]]; then
-  echo "==> Removing opencode-zen.js..."
-  $SUDO rm -f "${APP_DIST}/opencode-zen.js"
-fi
-
 if [[ -f "${APP_DIST}/moonlit-pine.jpg" ]]; then
   echo "==> Removing moonlit-pine.jpg..."
   $SUDO rm -f "${APP_DIST}/moonlit-pine.jpg"
