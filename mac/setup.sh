@@ -76,6 +76,10 @@ bash "$REPO/codex/setup.sh"
 echo "==> Linking Claude skills from agent-memory..."
 bash "$REPO/claude/setup.sh"
 
+echo "==> Applying Paseo OpenCode Theme & Styling..."
+bash "$REPO/paseo/install.sh"
+
+
 FISH_PATH="$(command -v fish)"
 if [ "$(dscl . -read "/Users/$(whoami)" UserShell | awk '{print $2}')" != "$FISH_PATH" ]; then
 	echo "==> Setting fish as default shell..."

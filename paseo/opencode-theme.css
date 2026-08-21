@@ -1,0 +1,465 @@
+/**
+ * Moonlit Pine (月下松岚) & OpenCode Zen Theme for Paseo
+ * - Official Moonlit Pine color palette (#0c1118, #151c25, #202a35, #8095a5, #edf1f3)
+ * - Atmospheric Moonlit Pine Wallpaper Layer (focus: 82% 42%, workspace opacity: 0.22)
+ * - Single Unified Header Bar (Eliminates double-row browser tab bar)
+ * - Zen-Browser Style Vertical Tabs in Sidebar
+ * - Subagents & Tasks moved into clean floating status chips
+ * - Single-Card Floating Composer with frost silver glow
+ * - Full Semantic AST Markdown Color Coding
+ */
+
+:root {
+  /* Moonlit Pine Official Colors */
+  --moonlit-bg: #0c1118;
+  --moonlit-sidebar: #080c12;
+  --moonlit-panel: rgba(21, 28, 37, 0.90);
+  --moonlit-panel-alt: rgba(32, 42, 53, 0.94);
+  --moonlit-panel-solid: #151c25;
+  --moonlit-panel-hover: #202a35;
+  --moonlit-border: rgba(128, 149, 165, 0.26);
+  --moonlit-border-hover: rgba(164, 175, 181, 0.50);
+  
+  --moonlit-text: #edf1f3;
+  --moonlit-muted: #9aa5ad;
+  --moonlit-subtle: #6c7882;
+  
+  --moonlit-accent: #8095a5;    /* Slate Silver Accent */
+  --moonlit-glow: #a4afb5;      /* Moonlit Silver Glow */
+  --moonlit-amber: #e5c07b;     /* Warm Amber Bold */
+  --moonlit-cyan: #88c0d0;      /* Frost Pine Code */
+  --moonlit-green: #a6e3a1;     /* Additions */
+  --moonlit-red: #e06c75;       /* Removals */
+  --moonlit-yellow: #e5c07b;    /* Italic / Warnings */
+  --moonlit-mauve: #cba6f7;     /* Purple tokens */
+  
+  --moonlit-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --moonlit-font-mono: "JetBrains Mono", "SF Mono", Menlo, Monaco, Consolas, monospace;
+}
+
+/* ==========================================================================
+   1. Base Viewport & Moonlit Pine Wallpaper
+   ========================================================================== */
+html,
+body {
+  background-color: var(--moonlit-bg) !important;
+  color: var(--moonlit-text) !important;
+  font-family: var(--moonlit-font-sans) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+#root {
+  background-color: transparent !important;
+}
+
+/* Atmospheric Moonlit Pine Wallpaper Layer */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("/moonlit-pine.jpg");
+  background-size: cover;
+  background-position: 82% 42%;
+  background-repeat: no-repeat;
+  opacity: 0.22;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Remove default focus rings that draw ugly outer lines */
+*:focus,
+*:focus-visible {
+  outline: none !important;
+}
+
+/* ==========================================================================
+   2. Single Unified Header Bar (Eliminates Browser Tab Row)
+   ========================================================================== */
+[data-testid="workspace-tabs-scroll"],
+[data-testid="workspace-tabs-row"] {
+  display: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+div:has(> [data-testid="workspace-tabs-scroll"]),
+div:has(> [data-testid="workspace-tabs-row"]) {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* Top Header Bar */
+[data-testid="workspace-header-title"] {
+  color: var(--moonlit-text) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+[data-testid="workspace-header-subtitle"] {
+  color: var(--moonlit-muted) !important;
+  font-size: 12.5px !important;
+}
+
+/* Header Action Buttons */
+[data-testid="workspace-open-in-editor-primary"],
+[data-testid="workspace-scripts-button"],
+[data-testid="workspace-header-new-agent"],
+[data-testid="workspace-header-menu-trigger"] {
+  background-color: var(--moonlit-panel-alt) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 8px !important;
+  padding: 4px 10px !important;
+  color: var(--moonlit-text) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all 0.15s ease !important;
+}
+
+[data-testid="workspace-open-in-editor-primary"]:hover,
+[data-testid="workspace-scripts-button"]:hover,
+[data-testid="workspace-header-new-agent"]:hover,
+[data-testid="workspace-header-menu-trigger"]:hover {
+  background-color: var(--moonlit-panel-hover) !important;
+  border-color: var(--moonlit-border-hover) !important;
+  color: var(--moonlit-glow) !important;
+}
+
+/* ==========================================================================
+   3. Zen Vertical Tabs in Sidebar
+   ========================================================================== */
+[data-testid="sidebar-project-list"],
+[data-testid="sidebar-project-workspace-list-scroll"],
+[data-testid="sidebar-status-list-scroll"] {
+  background-color: var(--moonlit-sidebar) !important;
+  padding: 6px 8px !important;
+}
+
+/* Vertical Tab Items */
+[data-testid="sidebar-project-list"] [role="button"],
+[data-testid="sidebar-project-workspace-list-scroll"] [role="button"],
+[data-testid="sidebar-status-list-scroll"] [role="button"] {
+  border-radius: 8px !important;
+  margin: 2px 0 !important;
+  padding: 6px 10px !important;
+  color: var(--moonlit-muted) !important;
+  transition: background-color 0.12s ease, border-color 0.12s ease !important;
+}
+
+[data-testid="sidebar-project-list"] [role="button"]:hover,
+[data-testid="sidebar-project-workspace-list-scroll"] [role="button"]:hover,
+[data-testid="sidebar-status-list-scroll"] [role="button"]:hover {
+  background-color: var(--moonlit-panel) !important;
+  color: var(--moonlit-text) !important;
+}
+
+/* Active Vertical Tab */
+[data-testid="sidebar-project-list"] [role="button"][aria-selected="true"],
+[data-testid="sidebar-project-workspace-list-scroll"] [role="button"][aria-selected="true"],
+[data-testid="sidebar-status-list-scroll"] [role="button"][aria-selected="true"] {
+  background-color: var(--moonlit-panel-alt) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  color: var(--moonlit-text) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ==========================================================================
+   4. Floating Tasks & Subagents Cards
+   ========================================================================== */
+[data-testid="subagents-track"],
+[aria-label="Tasks"],
+[aria-label="tasks"],
+div[role="region"][aria-label*="task" i] {
+  margin-bottom: 8px !important;
+  max-width: 820px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+[data-testid="subagents-track"] > div > div,
+[aria-label="Tasks"] > div > div,
+[aria-label="tasks"] > div > div {
+  border-radius: 10px !important;
+  border: 1px solid var(--moonlit-border) !important;
+  background-color: var(--moonlit-panel-alt) !important;
+  backdrop-filter: blur(14px) !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ==========================================================================
+   5. Clean Single-Card Floating Composer
+   ========================================================================== */
+div:has(> [data-testid="message-input-root"]) {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+[data-testid="message-input-root"] {
+  max-width: 820px !important;
+  width: calc(100% - 32px) !important;
+  margin: 0 auto 16px auto !important;
+  background-color: var(--moonlit-panel) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55) !important;
+  padding: 10px 14px !important;
+  outline: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+[data-testid="message-input-root"]:focus-within {
+  border-color: var(--moonlit-glow) !important;
+  box-shadow: 0 0 0 1px var(--moonlit-glow), 0 14px 40px rgba(128, 149, 165, 0.25) !important;
+}
+
+/* Textarea */
+[data-testid="message-input-root"] textarea {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: var(--moonlit-text) !important;
+  font-family: var(--moonlit-font-sans) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  padding: 4px 0 !important;
+}
+
+[data-testid="message-input-root"] textarea::placeholder {
+  color: var(--moonlit-subtle) !important;
+}
+
+/* Attached Items */
+[data-testid="composer-attachment-tray"] {
+  padding-bottom: 6px !important;
+  margin-bottom: 6px !important;
+  border-bottom: 1px solid var(--moonlit-border-subtle) !important;
+  gap: 6px !important;
+}
+
+[data-testid="composer-image-attachment-pill"],
+[data-testid="composer-file-attachment-pill"] {
+  border-radius: 6px !important;
+  border: 1px solid var(--moonlit-border) !important;
+  background-color: var(--moonlit-panel-alt) !important;
+}
+
+/* Toolbar Buttons inside Composer */
+[data-testid="agent-provider-selector"],
+[data-testid="agent-thinking-selector"],
+[data-testid="agent-controls-features"],
+[data-testid="message-input-attach-button"] {
+  background-color: var(--moonlit-panel-alt) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 7px !important;
+  padding: 4px 9px !important;
+  font-size: 12px !important;
+  color: var(--moonlit-text) !important;
+  transition: all 0.12s ease !important;
+}
+
+[data-testid="agent-provider-selector"]:hover,
+[data-testid="agent-thinking-selector"]:hover,
+[data-testid="agent-controls-features"]:hover,
+[data-testid="message-input-attach-button"]:hover {
+  background-color: var(--moonlit-panel-hover) !important;
+  border-color: var(--moonlit-border-hover) !important;
+  color: var(--moonlit-glow) !important;
+}
+
+/* ==========================================================================
+   6. Centered Chat Stream
+   ========================================================================== */
+[data-testid="assistant-message"],
+[data-testid="user-message"],
+[data-testid="user_message"] {
+  max-width: 820px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+[data-testid="assistant-message"] {
+  line-height: 1.65 !important;
+  color: var(--moonlit-text) !important;
+  padding: 8px 0 !important;
+}
+
+[data-testid="user-message"],
+[data-testid="user_message"] {
+  background-color: var(--moonlit-panel-alt) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+  padding: 10px 16px !important;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+/* Thinking Box */
+[data-testid="thinking-block"],
+[data-testid="thinking-container"] {
+  background-color: var(--moonlit-panel-alt) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 8px !important;
+  margin: 8px 0 !important;
+}
+
+/* ==========================================================================
+   7. Moonlit Pine Semantic AST Markdown Highlighting
+   ========================================================================== */
+
+/* Headings (H1 - H6) -> Moonlit Silver / Mauve Glow */
+[data-paseo-markdown-tag="h1"],
+[data-paseo-markdown-tag="h1"] *,
+[data-paseo-markdown-tag="h2"],
+[data-paseo-markdown-tag="h2"] *,
+[data-paseo-markdown-tag="h3"],
+[data-paseo-markdown-tag="h3"] *,
+[data-paseo-markdown-tag="h4"],
+[data-paseo-markdown-tag="h4"] *,
+[data-paseo-markdown-tag="h5"],
+[data-paseo-markdown-tag="h5"] *,
+[data-paseo-markdown-tag="h6"],
+[data-paseo-markdown-tag="h6"] *,
+h1, h2, h3, h4, h5, h6 {
+  color: var(--moonlit-glow) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+}
+
+[data-paseo-markdown-tag="h1"] { font-size: 1.4rem !important; margin: 1rem 0 0.5rem 0 !important; }
+[data-paseo-markdown-tag="h2"] { font-size: 1.2rem !important; margin: 0.85rem 0 0.4rem 0 !important; }
+[data-paseo-markdown-tag="h3"] { font-size: 1.05rem !important; margin: 0.75rem 0 0.35rem 0 !important; }
+
+/* Bold / Strong -> Warm Amber Highlight */
+[data-paseo-markdown-tag="strong"],
+[data-paseo-markdown-tag="strong"] *,
+strong,
+b {
+  color: var(--moonlit-amber) !important;
+  font-weight: 600 !important;
+}
+
+/* Italic / Emphasis -> Soft Yellow */
+[data-paseo-markdown-tag="em"],
+[data-paseo-markdown-tag="em"] *,
+em,
+i {
+  color: var(--moonlit-yellow) !important;
+  font-style: italic !important;
+}
+
+/* Inline Code -> Frost Cyan Pine */
+[data-paseo-markdown-tag="code"],
+[data-paseo-markdown-tag="code"] * {
+  color: var(--moonlit-cyan) !important;
+  font-family: var(--moonlit-font-mono) !important;
+  font-size: 0.9em !important;
+}
+
+[data-paseo-markdown-tag="code"] {
+  background-color: rgba(136, 192, 208, 0.10) !important;
+  border: 1px solid rgba(136, 192, 208, 0.25) !important;
+  border-radius: 5px !important;
+  padding: 1.5px 5.5px !important;
+  margin: 0 2px !important;
+  display: inline-block !important;
+}
+
+/* List Item Markers -> Slate Silver Accent */
+[data-paseo-markdown-list-marker="true"],
+[data-paseo-markdown-list-marker="true"] * {
+  color: var(--moonlit-accent) !important;
+  font-weight: 700 !important;
+  font-family: var(--moonlit-font-mono) !important;
+}
+
+/* Blockquotes */
+[data-paseo-markdown-tag="blockquote"] {
+  border-left: 3px solid var(--moonlit-accent) !important;
+  background-color: rgba(128, 149, 165, 0.08) !important;
+  border-radius: 0 8px 8px 0 !important;
+  padding: 8px 14px !important;
+  margin: 10px 0 !important;
+}
+
+/* Horizontal Dividers */
+[data-paseo-markdown-tag="hr"] {
+  border: none !important;
+  border-bottom: 1px solid var(--moonlit-border) !important;
+  margin: 16px 0 !important;
+  opacity: 0.8 !important;
+}
+
+/* Code Blocks */
+[data-paseo-markdown-tag="pre"],
+pre {
+  background-color: var(--moonlit-panel-solid) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+  font-family: var(--moonlit-font-mono) !important;
+}
+
+/* Tables */
+[data-paseo-markdown-tag="table"] {
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  background-color: var(--moonlit-panel-solid) !important;
+  margin: 12px 0 !important;
+}
+
+[data-paseo-markdown-tag="th"] {
+  background-color: var(--moonlit-panel-alt) !important;
+  color: var(--moonlit-glow) !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid var(--moonlit-border) !important;
+  padding: 8px 12px !important;
+}
+
+[data-paseo-markdown-tag="td"] {
+  border-bottom: 1px solid var(--moonlit-border) !important;
+  padding: 8px 12px !important;
+  color: var(--moonlit-text) !important;
+}
+
+/* ==========================================================================
+   8. Moonlit Slate Scrollbars
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 149, 165, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(164, 175, 181, 0.65);
+}
