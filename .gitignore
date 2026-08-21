@@ -26,6 +26,8 @@ pi/backups/
 # OMP provider credentials are machine-local secrets.
 omp/agent/models.yml
 omp/agent/*.db*
+omp/*.db*
+omp/wt/
 omp/agent/sessions/
 omp/agent/blobs/
 omp/agent/mcp.json
