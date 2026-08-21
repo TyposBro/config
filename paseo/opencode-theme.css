@@ -77,7 +77,7 @@ body::before {
 }
 
 /* ==========================================================================
-   2. Single Unified Header Bar (Eliminates Browser Tab Row)
+   2. Single Unified Header Bar (Zen Slim Header)
    ========================================================================== */
 [data-testid="workspace-tabs-scroll"],
 [data-testid="workspace-tabs-row"] {
@@ -101,17 +101,26 @@ div:has(> [data-testid="workspace-tabs-row"]) {
   border: none !important;
 }
 
-/* Top Header Bar */
+/* Ultra-Slim Header Bar (Saves vertical space like Zen/Arc) */
+header,
+[data-testid="workspace-header"],
+div:has(> [data-testid="workspace-header-title"]) {
+  min-height: 38px !important;
+  max-height: 40px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
 [data-testid="workspace-header-title"] {
   color: var(--moonlit-text) !important;
-  font-size: 13.5px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em !important;
 }
 
 [data-testid="workspace-header-subtitle"] {
   color: var(--moonlit-muted) !important;
-  font-size: 12.5px !important;
+  font-size: 11.5px !important;
 }
 
 /* Header Action Buttons */
@@ -121,8 +130,10 @@ div:has(> [data-testid="workspace-tabs-row"]) {
 [data-testid="workspace-header-menu-trigger"] {
   background-color: var(--moonlit-panel-alt) !important;
   border: 1px solid var(--moonlit-border) !important;
-  border-radius: 8px !important;
-  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  padding: 2px 8px !important;
+  font-size: 11.5px !important;
+  height: 26px !important;
   color: var(--moonlit-text) !important;
   backdrop-filter: blur(10px) !important;
   transition: all 0.15s ease !important;
@@ -144,16 +155,17 @@ div:has(> [data-testid="workspace-tabs-row"]) {
 [data-testid="sidebar-project-workspace-list-scroll"],
 [data-testid="sidebar-status-list-scroll"] {
   background-color: var(--moonlit-sidebar) !important;
-  padding: 6px 8px !important;
+  padding: 4px 6px !important;
 }
 
 /* Vertical Tab Items */
 [data-testid="sidebar-project-list"] [role="button"],
 [data-testid="sidebar-project-workspace-list-scroll"] [role="button"],
 [data-testid="sidebar-status-list-scroll"] [role="button"] {
-  border-radius: 8px !important;
-  margin: 2px 0 !important;
-  padding: 6px 10px !important;
+  border-radius: 6px !important;
+  margin: 1px 0 !important;
+  padding: 5px 8px !important;
+  font-size: 12.5px !important;
   color: var(--moonlit-muted) !important;
   transition: background-color 0.12s ease, border-color 0.12s ease !important;
 }
@@ -182,8 +194,8 @@ div:has(> [data-testid="workspace-tabs-row"]) {
 [aria-label="Tasks"],
 [aria-label="tasks"],
 div[role="region"][aria-label*="task" i] {
-  margin-bottom: 8px !important;
-  max-width: 820px !important;
+  margin-bottom: 6px !important;
+  max-width: min(1200px, 94vw) !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
@@ -192,16 +204,16 @@ div[role="region"][aria-label*="task" i] {
 [data-testid="subagents-track"] > div > div,
 [aria-label="Tasks"] > div > div,
 [aria-label="tasks"] > div > div {
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   border: 1px solid var(--moonlit-border) !important;
   background-color: var(--moonlit-panel-alt) !important;
   backdrop-filter: blur(14px) !important;
-  padding: 6px 10px !important;
+  padding: 4px 8px !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
 }
 
 /* ==========================================================================
-   5. Clean Single-Card Floating Composer
+   5. Compact Arc/Zen Widescreen Floating Composer
    ========================================================================== */
 div:has(> [data-testid="message-input-root"]) {
   border: none !important;
@@ -211,34 +223,36 @@ div:has(> [data-testid="message-input-root"]) {
 }
 
 [data-testid="message-input-root"] {
-  max-width: 820px !important;
-  width: calc(100% - 32px) !important;
-  margin: 0 auto 16px auto !important;
+  max-width: min(1200px, 94vw) !important;
+  width: calc(100% - 24px) !important;
+  margin: 0 auto 8px auto !important;
   background-color: var(--moonlit-panel) !important;
   backdrop-filter: blur(20px) !important;
   border: 1px solid var(--moonlit-border) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55) !important;
-  padding: 10px 14px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+  padding: 6px 10px !important;
   outline: none !important;
   transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
 [data-testid="message-input-root"]:focus-within {
   border-color: var(--moonlit-glow) !important;
-  box-shadow: 0 0 0 1px var(--moonlit-glow), 0 14px 40px rgba(128, 149, 165, 0.25) !important;
+  box-shadow: 0 0 0 1px var(--moonlit-glow), 0 8px 30px rgba(128, 149, 165, 0.25) !important;
 }
 
-/* Textarea */
+/* Textarea - Low profile */
 [data-testid="message-input-root"] textarea {
   background: transparent !important;
   border: none !important;
   outline: none !important;
   color: var(--moonlit-text) !important;
   font-family: var(--moonlit-font-sans) !important;
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-  padding: 4px 0 !important;
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+  min-height: 24px !important;
+  max-height: 160px !important;
+  padding: 2px 0 !important;
 }
 
 [data-testid="message-input-root"] textarea::placeholder {
@@ -247,17 +261,19 @@ div:has(> [data-testid="message-input-root"]) {
 
 /* Attached Items */
 [data-testid="composer-attachment-tray"] {
-  padding-bottom: 6px !important;
-  margin-bottom: 6px !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 4px !important;
   border-bottom: 1px solid var(--moonlit-border-subtle) !important;
-  gap: 6px !important;
+  gap: 4px !important;
 }
 
 [data-testid="composer-image-attachment-pill"],
 [data-testid="composer-file-attachment-pill"] {
-  border-radius: 6px !important;
+  border-radius: 5px !important;
   border: 1px solid var(--moonlit-border) !important;
   background-color: var(--moonlit-panel-alt) !important;
+  padding: 2px 6px !important;
+  font-size: 11px !important;
 }
 
 /* Toolbar Buttons inside Composer */
@@ -267,9 +283,10 @@ div:has(> [data-testid="message-input-root"]) {
 [data-testid="message-input-attach-button"] {
   background-color: var(--moonlit-panel-alt) !important;
   border: 1px solid var(--moonlit-border) !important;
-  border-radius: 7px !important;
-  padding: 4px 9px !important;
-  font-size: 12px !important;
+  border-radius: 6px !important;
+  padding: 2px 7px !important;
+  font-size: 11.5px !important;
+  height: 24px !important;
   color: var(--moonlit-text) !important;
   transition: all 0.12s ease !important;
 }
@@ -283,22 +300,35 @@ div:has(> [data-testid="message-input-root"]) {
   color: var(--moonlit-glow) !important;
 }
 
+/* Send / Stop Button */
+[data-testid="message-input-submit-button"],
+[data-testid="message-input-stop-button"] {
+  border-radius: 6px !important;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+}
+
 /* ==========================================================================
-   6. Centered Chat Stream
+   6. Widescreen Maximized Chat Stream (Arc / Zen Style)
    ========================================================================== */
 [data-testid="assistant-message"],
 [data-testid="user-message"],
-[data-testid="user_message"] {
-  max-width: 820px !important;
+[data-testid="user_message"],
+[data-testid="session-activity-row"],
+[data-testid="activity-row"] {
+  max-width: min(1200px, 94vw) !important;
   width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
 [data-testid="assistant-message"] {
-  line-height: 1.65 !important;
+  line-height: 1.58 !important;
   color: var(--moonlit-text) !important;
-  padding: 8px 0 !important;
+  padding: 4px 0 !important;
 }
 
 [data-testid="user-message"],
@@ -306,11 +336,20 @@ div:has(> [data-testid="message-input-root"]) {
   background-color: var(--moonlit-panel-alt) !important;
   backdrop-filter: blur(14px) !important;
   border: 1px solid var(--moonlit-border) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3) !important;
-  padding: 10px 16px !important;
-  margin-top: 10px !important;
-  margin-bottom: 10px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25) !important;
+  padding: 6px 12px !important;
+  margin-top: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+/* Compact Activity & Tool Executions (e.g. Worked for X, Ran commands) */
+[data-testid="session-activity-row"],
+[data-testid="activity-row"] {
+  padding: 2px 0 !important;
+  margin: 2px 0 !important;
+  font-size: 12px !important;
+  opacity: 0.9 !important;
 }
 
 /* Thinking Box */
@@ -319,8 +358,9 @@ div:has(> [data-testid="message-input-root"]) {
   background-color: var(--moonlit-panel-alt) !important;
   backdrop-filter: blur(12px) !important;
   border: 1px solid var(--moonlit-border) !important;
-  border-radius: 8px !important;
-  margin: 8px 0 !important;
+  border-radius: 7px !important;
+  margin: 4px 0 !important;
+  padding: 4px 8px !important;
 }
 
 /* ==========================================================================
