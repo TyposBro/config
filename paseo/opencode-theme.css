@@ -503,3 +503,165 @@ pre {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(164, 175, 181, 0.65);
 }
+
+/* ==========================================================================
+   9. Zen / Arc Spotlight Command Palette (Ctrl+T / Cmd+T)
+   ========================================================================== */
+#zen-spotlight-root {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding-top: 14vh !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#zen-spotlight-root.visible {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
+#zen-spotlight-backdrop {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(6, 9, 14, 0.72) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+#zen-spotlight-dialog {
+  position: relative !important;
+  width: 680px !important;
+  max-width: 92vw !important;
+  background-color: var(--moonlit-panel-solid) !important;
+  border: 1px solid var(--moonlit-border-hover) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(128, 149, 165, 0.2) !important;
+  overflow: hidden !important;
+  transform: scale(0.96) translateY(-10px) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#zen-spotlight-root.visible #zen-spotlight-dialog {
+  transform: scale(1) translateY(0) !important;
+}
+
+#zen-spotlight-input-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  padding: 14px 18px !important;
+  border-bottom: 1px solid var(--moonlit-border) !important;
+  gap: 12px !important;
+  background: rgba(32, 42, 53, 0.5) !important;
+}
+
+#zen-spotlight-icon {
+  color: var(--moonlit-glow) !important;
+  flex-shrink: 0 !important;
+}
+
+#zen-spotlight-input {
+  flex: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: var(--moonlit-text) !important;
+  font-size: 16px !important;
+  font-family: var(--moonlit-font-sans) !important;
+  font-weight: 500 !important;
+}
+
+#zen-spotlight-input::placeholder {
+  color: var(--moonlit-subtle) !important;
+}
+
+#zen-spotlight-badge {
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  background: rgba(128, 149, 165, 0.15) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 5px !important;
+  color: var(--moonlit-accent) !important;
+  font-family: var(--moonlit-font-mono) !important;
+}
+
+#zen-spotlight-results {
+  padding: 10px 12px 14px 12px !important;
+  max-height: 380px !important;
+  overflow-y: auto !important;
+}
+
+.zen-spotlight-section-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--moonlit-subtle) !important;
+  letter-spacing: 0.06em !important;
+  padding: 6px 8px 4px 8px !important;
+}
+
+.zen-spotlight-item {
+  display: flex !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  gap: 12px !important;
+  transition: background-color 0.12s ease !important;
+  margin-bottom: 2px !important;
+}
+
+.zen-spotlight-item:hover,
+.zen-spotlight-item.active {
+  background-color: var(--moonlit-panel-hover) !important;
+}
+
+.zen-item-icon {
+  font-size: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+.zen-item-content {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.zen-item-title {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: var(--moonlit-text) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.zen-item-subtitle {
+  font-size: 11.5px !important;
+  color: var(--moonlit-muted) !important;
+  margin-top: 1px !important;
+}
+
+.zen-item-key {
+  font-size: 11px !important;
+  color: var(--moonlit-accent) !important;
+  background: rgba(21, 28, 37, 0.8) !important;
+  border: 1px solid var(--moonlit-border) !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+  font-family: var(--moonlit-font-mono) !important;
+}
+
+/* ==========================================================================
+   10. Zen Vertical Tabs Polish
+   ========================================================================== */
+/* Left accent line on active vertical tab */
+[data-testid="sidebar-project-list"] [role="button"][aria-selected="true"],
+[data-testid="sidebar-project-workspace-list-scroll"] [role="button"][aria-selected="true"],
+[data-testid="sidebar-status-list-scroll"] [role="button"][aria-selected="true"] {
+  border-left: 3px solid var(--moonlit-glow) !important;
+  padding-left: 8px !important;
+}

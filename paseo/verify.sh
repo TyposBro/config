@@ -71,6 +71,11 @@ if ! grep -q "id=\"opencode-theme-css\"" "$INDEX_HTML"; then
   exit 1
 fi
 
+if [[ -f "${APP_DIST}/opencode-zen.js" ]] && ! grep -q "id=\"opencode-zen-js\"" "$INDEX_HTML"; then
+  echo "error: index.html missing opencode-zen-js script tag" >&2
+  exit 1
+fi
+
 echo "==> Verifying Paseo daemon status..."
 if command -v paseo >/dev/null 2>&1; then
   paseo daemon status --json >/dev/null 2>&1 && echo "==> Paseo daemon is active and valid."
