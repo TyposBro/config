@@ -1,70 +1,69 @@
 ---
 name: epics
-description: Reconcile and schedule several independent GitHub epics or issues in parallel through bounded Codex subagents, shared dependency analysis, and per-epic delivery gates. Use when the user invokes $epics, supplies multiple issue URLs, or requests a multi-epic portfolio control plane.
+description: Reconcile and schedule several independent GitHub epics or issues through bounded capability-based workers, shared dependency analysis, and per-epic delivery gates. Use when the user invokes a portfolio epic command, supplies multiple issue URLs, or requests multi-epic orchestration.
+user-invocable: true
 ---
 
 # Epic Portfolio
 
-Act as the portfolio control plane over several `$epic` lanes. Do not create nested epic supervisors and do not edit delivered application code in the main thread.
+Act as one portfolio control plane over several `epic` lanes. Do not create nested control planes and do not edit delivered application code in the portfolio context.
+
+This workflow is harness-, provider-, and model-agnostic. Reuse the installed `epic` skill's capability roles and invariants; do not hardcode agent names, model families, providers, command paths, or task APIs.
 
 ## Normalize
 
-Extract complete GitHub issue URLs from the request. Canonicalize to `owner/repository#number`, remove duplicates while preserving input order, and reject non-issue URLs.
+Extract complete GitHub issue URLs from the request. Canonicalize each to `owner/repository#number`, remove duplicates while preserving input order, and reject non-issue URLs.
 
-Require every target to belong to the current Git repository.
+One invocation operates in one current Git repository. Reject targets belonging to another repository.
 
-Read the installed `epic` skill and its state contract. Apply its tiering, reconciliation, implementation, review, remediation, safety, lease, and handoff rules independently to every lane.
-
-Read [references/portfolio-contract.md](references/portfolio-contract.md) before dispatching work.
+Read the installed `epic` skill, its state contract, and [references/portfolio-contract.md](references/portfolio-contract.md) before dispatching work. Apply the epic safety, reconciliation, tiering, ownership, review, remediation, and final-gate rules independently to every lane.
 
 ## Reconcile all lanes first
 
-Acquire a portfolio lease via `scripts/epic-lock.sh`, then reconcile every epic before spawning workers:
-
-- Canonical key and issue URL;
-- Execution tier (Fast Tier for single/leaf issues vs Full Epic Tier for multi-issue trees);
-- Sub-issues and explicit dependencies;
-- Existing branches, PRs, SHAs, checks, reviews, and dirty worktrees;
-- Current gate, next runnable node, and blockers.
-
-Maintain one `<!-- epics-flow:v1 -->` (or `<!-- codex-epics-flow:v1 -->` / `<!-- omp-portfolio-flow:v1 -->`) comment on the first epic. Corroborate against live Git/GitHub state on restart.
+1. Acquire the generic portfolio lease.
+2. Reconcile every target from live Git and authenticated GitHub state before spawning workers.
+3. Determine each lane's tier, children, dependencies, branch and PR state, frozen SHA, current gate, next runnable node, dirty worktrees, and blockers.
+4. Acquire required epic leases in canonical sorted order. If a lease is unavailable, mark that lane blocked without cancelling independent lanes.
+5. Create or update one generic portfolio checkpoint on the first canonical epic.
 
 ## Build the global dependency graph
 
-Create nodes for issue implementation, integration, SHA review, remediation, and final gates. Add dependency edges when epics share a sub-issue, PR, branch, migration, schema, central configuration, or modified files.
+Create nodes for issue implementation, integration, frozen-SHA review, remediation, and final gates. Add edges when lanes share or may share:
 
-Prefer serialization when overlap is plausible. Recompute conflicts after each implementation wave from actual changed-file lists.
+- a child issue, branch, PR, or integration head;
+- a migration, schema, generated artifact, lockfile, or central configuration;
+- auth, billing, identity, user-data, ownership, deployment, or platform contracts;
+- changed files or a direct producer/consumer API.
+
+Serialize plausible overlap. Recompute edges after each implementation wave from actual changed-file lists. Never implement one shared foundation twice.
 
 ## Schedule bounded waves
 
-- Admit at most 4 epic lanes concurrently.
-- Keep no more than 3 spawned subagents active at once across all lanes.
-- Batch currently runnable, independent nodes.
-- Permit 1 writer per branch and 1 review panel per epic/SHA.
-- A blocked lane never cancels independent lanes.
+- Admit at most four lanes concurrently unless the repository sets a lower limit.
+- Keep at most the host/repository worker cap active, with three as the default ceiling.
+- Batch only currently runnable independent nodes.
+- Allow one implementer per branch and one review panel per epic/SHA.
+- Parallel execution is optional; role independence and frozen inputs are required.
+- A blocked lane does not cancel independent lanes.
 - Update checkpoints after every settled wave.
-- Continue scheduling until every requested lane reaches a terminal handoff.
+- Continue until every requested lane reaches a terminal handoff.
 
 ## Execute each lane
 
-For each runnable lane:
+For each runnable lane, invoke the installed `epic` contract rather than restating a harness-specific workflow:
 
-1. **Fast Tier lanes**: Dispatch single `epic_builder` → integrated validation → single `sol_reviewer` → deliver.
-2. **Full Epic Tier lanes**:
-   - Dispatch independent child issues to `epic_builder`.
-   - Verify PR heads live on GitHub via `gh`.
-   - Dispatch integration writer on dedicated review branch; freeze integration SHA.
-   - Run parallel `sol_reviewer` and `adversarial_reviewer` subagents on frozen SHA.
-   - Route findings to `epic_builder` (max 3 remediation cycles; prompt owner on stubborn impasse).
-   - Run the final gate and update lane checkpoint.
+- **Fast lane**: one isolated implementer, integrated validation, one fresh primary reviewer, then final gate.
+- **Full lane**: dependency waves, isolated implementers, one integration owner, integrated validation, frozen SHA, fresh primary and adversarial reviewers, bounded remediation, then final gate.
 
-Actual merge, deployment, production mutation, and issue closure remain unauthorized unless explicitly approved.
+Select workers by the role capabilities and risk rules in the epic skill. A historical agent name or configured model may satisfy a role, but it is never part of the durable contract.
+
+Actual merge, deployment, production mutation, pricing change, branch deletion, and issue closure remain unauthorized unless the initiating user explicitly approved them.
 
 ## Final handoff
 
-Return a summary table for all lanes:
+Return:
 
 | Epic / Issue | Tier | Final State | Final SHA | PRs | Verdict | Next Owner Action |
 | --- | --- | --- | --- | --- | --- | --- |
 
-Report cross-epic dependencies and safe merge order, durably update the portfolio checkpoint, and release owned locks.
+Report cross-epic dependencies, residual risks, and safe merge order. Durably update the generic portfolio checkpoint, release owned epic leases, then release the portfolio lease.

@@ -1,21 +1,12 @@
 # Epic State Contract
 
-## Contents
-
-- Safety boundary
-- Lease protocol
-- Durable checkpoint
-- Child states
-- Evidence and review invariants
-- Dirty-worktree recovery
-
 ## Safety boundary
 
-The initiating request authorizes work inside the named epic: read Git/GitHub state, create or update issue branches and draft PRs, run local validation, push non-default branches, and update the epic's existing workflow checkpoint.
+Invoking the epic workflow authorizes work inside the named issue tree: read Git and authenticated GitHub state, create or update non-default issue branches and draft PRs, run local validation, push those branches, and update the existing workflow checkpoint.
 
-It does not implicitly authorize merging, deploying, publishing, mutating production, changing pricing, manually closing issues, deleting branches/worktrees, or overwriting existing work.
+It does not implicitly authorize merging, deploying, publishing, mutating production, changing pricing, manually closing issues, deleting branches or worktrees, or overwriting existing work.
 
-## Lease protocol
+## Generic lease protocol
 
 Resolve the shared Git directory:
 
@@ -23,50 +14,58 @@ Resolve the shared Git directory:
 git rev-parse --path-format=absolute --git-common-dir
 ```
 
-Store locks under `<git-common-dir>/codex-epic-locks/`. Use `scripts/epic-lock.sh` for `acquire`, `verify`, `heartbeat`, and `release`.
+Store leases only under `<git-common-dir>/epic-locks/` and operate them with `scripts/epic-lock.sh`:
 
-Use keys:
+```text
+epic-lock.sh acquire <lock-dir> [token] [ttl-seconds]
+epic-lock.sh verify <lock-dir> <token> [ttl-seconds]
+epic-lock.sh heartbeat <lock-dir> <token> [ttl-seconds]
+epic-lock.sh release <lock-dir> <token> [ttl-seconds]
+```
 
-- Epic: `<owner>-<repository>-<issue>`
-- Portfolio: `portfolio-<stable-id>`
-- Writer: `<epic-key>-writer-<issue-or-branch>`
-- Review: `<epic-key>-review-<sha>`
+Keys:
 
-After acquiring a lock, preserve its returned fencing token. Validate every applicable portfolio/epic/node token immediately before commit, push, PR mutation, checkpoint mutation, project-field mutation, or branch-changing action.
+- Epic: `<owner>-<repository>-<issue>.lock`
+- Portfolio: `portfolio-<stable-id>.lock`
 
-The main wait loop must heartbeat every active lock at least once per third of the lease TTL. On ownership loss, interrupt affected agents, record `blocked`, and perform no further mutation for that node.
+The control plane holds the epic lease for the run. A portfolio controller acquires its portfolio lease, then each required epic lease in canonical sorted order before dispatch; on partial acquisition failure it releases what it acquired and reports the blocked lane.
 
-Release only after the result and current SHA are durably checkpointed.
+Preserve the returned fencing token locally. Heartbeat active leases at least once per third of the TTL and verify ownership before push, PR mutation, checkpoint mutation, project-field mutation, or another branch-changing action. On ownership loss, stop the affected lane and report `blocked`. Never publish lease tokens in GitHub comments, logs intended for handoff, or worker prompts that do not mutate the protected branch.
 
-## Durable checkpoint
+Release a lease only after the latest result and SHA are durably checkpointed.
 
-Keep one updatable GitHub comment containing:
+## Generic durable checkpoint
+
+Keep one updatable GitHub comment on the issue containing:
 
 ```markdown
-<!-- codex-epic-flow:v1 -->
+<!-- epic-flow:v2 -->
 epic: <url>
+tier: <fast|full>
 phase: <reconcile|implement|integrate|review|remediate|final>
 integration_sha: <sha-or-none>
 children:
   - <issue> | <state> | <pr-or-none> | <head-sha-or-none>
+active_nodes:
+  - <issue-or-integration> | <implementer|primary-reviewer|adversarial-reviewer|advisor> | <branch-or-sha>
 review:
   sha: <sha-or-none>
-  sol: <pass|changes_required|blocked|not_run>
+  primary: <pass|changes_required|blocked|not_run>
   adversarial: <pass|changes_required|blocked|not_run>
+  escalation: <pass|changes_required|blocked|not_run>
   combined: <pass|changes_required|blocked|not_run>
 remediation_cycles: <0-3>
 unresolved_findings:
   - <finding-or-none>
 external_blockers:
   - <blocker-or-none>
-lease:
-  owner: <token-or-none>
-  expires_at: <unix-seconds-or-none>
 final_state: <BLOCKED|READY FOR OWNER QA|READY FOR STAGED RELEASE|in_progress>
 updated_at: <ISO-8601>
 ```
 
-Update this comment instead of appending phase spam. Git/GitHub live state overrides a stale checkpoint. Review evidence is valid only for its exact SHA.
+Recognize legacy `epic-flow`, `opencode-epic-flow`, `omp-epic-flow`, and `codex-epic-flow` markers during reconciliation. Do not maintain several comments. On the next mutation, update the existing comment in place to `<!-- epic-flow:v2 -->` and role-based review fields.
+
+Live Git and GitHub state overrides stale checkpoint data. Review evidence is valid only for its exact SHA.
 
 ## Child states
 
@@ -85,23 +84,30 @@ Use only:
 - `merged_done`
 - `blocked`
 
+## Capability and ownership invariants
+
+- Choose workers by capability and risk, never by a required model, provider, harness, or historical agent name.
+- One implementer owns one branch at a time. Do not review a branch while it is changing.
+- The control plane may schedule and validate but does not edit delivered application code.
+- A reviewer has read-only access and a fresh context that did not implement the reviewed SHA.
+- Full-tier primary and adversarial reviews use separate fresh contexts. Different model families are optional, not required.
+- If the host cannot provide isolation or fresh read-only review, the affected gate is `blocked`; a same-context self-review is not independent evidence.
+
 ## Evidence and review invariants
 
-- Treat acceptance criteria and non-goals as the contract.
-- Treat pushed commits and current PR metadata as authoritative over abandoned transcripts.
-- Do not review a branch while a writer owns it.
-- Freeze a pushed SHA before review.
-- Require two fresh independent reviews of the same SHA.
-- Preserve each initial opinion before cross-review discussion.
+- Acceptance criteria and explicit non-goals are the contract.
+- Pushed commits and current PR metadata override abandoned transcripts or stale summaries.
+- Freeze a pushed SHA before review; a new SHA requires fresh review.
+- Give reviewers the contract, exact SHA, diff, and factual validation results—not implementation reasoning.
+- Preserve each initial review before any cross-review discussion.
 - Do not dismiss a reproduced defect by majority vote.
-- Any supported P0/P1/P2 means `changes_required`.
-- A new SHA requires a new review panel.
-- Increment remediation count before dispatch so interruption cannot reset the cap.
+- Any supported P0/P1/P2 defect means `changes_required`.
+- Increment the remediation counter before dispatch so interruption cannot reset the cap.
 - Maximum remediation/re-review cycles: three.
-- Existing CI success cannot override contradictory source evidence or an unmet criterion.
+- Existing CI success cannot override contradictory source evidence or an unmet acceptance criterion.
 
 ## Dirty-worktree recovery
 
 Never reset, clean, stash, delete, or overwrite a dirty worktree.
 
-Record its path, branch, HEAD, tracked diff summary, and untracked inventory. If ownership is unambiguous, have a bounded writer reconstruct the work in an isolated workspace on the same issue branch, preserving the original worktree until recovered commits are pushed and verified. Ambiguous ownership is `blocked`.
+Record its path, branch, HEAD, tracked diff summary, and untracked inventory. If ownership is unambiguous, give an isolated implementer a bounded recovery contract on the same issue branch and preserve the original worktree until recovered commits are pushed and verified. Ambiguous ownership is `blocked`.

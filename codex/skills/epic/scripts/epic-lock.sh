@@ -18,7 +18,7 @@ ttl="${4:-900}"
 
 [ -n "$command_name" ] && [ -n "$lock_dir" ] || usage
 case "$lock_dir" in
-	*/codex-epic-locks/*.lock) ;;
+	*/opencode-epic-locks/*.lock|*/codex-epic-locks/*.lock|*/omp-epic-locks/*.lock|*/epic-locks/*.lock) ;;
 	*) die "refusing unexpected lock path: $lock_dir" ;;
 esac
 case "$ttl" in

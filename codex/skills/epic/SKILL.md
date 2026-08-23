@@ -1,93 +1,101 @@
 ---
 name: epic
-description: Reconcile, resume, implement, independently review, and hand off one GitHub epic or bounded issue. Supports both Fast Tier (single-issue / bounded fix) and Full Epic Tier (multi-issue DAG + dual review + frozen SHA) through isolated Codex subagents. Use when the user invokes $epic, supplies an issue URL, or asks Codex to act as the control plane for epic delivery.
+description: Reconcile, resume, implement, independently review, and hand off one GitHub epic or bounded issue. Supports a fast single-issue path and a dependency-aware multi-issue path. Use when the user invokes an epic command, supplies one issue URL, or asks the current coding harness to control epic delivery.
+user-invocable: true
 ---
 
 # Epic Delivery
 
-Act as the control plane. Reconstruct durable state, select execution tier, schedule bounded work, verify evidence, and return an honest handoff state. Do not edit delivered application code in the main thread.
+Act as the control plane. Reconstruct durable state, select the smallest safe execution tier, schedule bounded work, verify evidence, and return an honest handoff state. Keep product scope, sequencing, integration decisions, and the final completion claim in the initiating session. Do not edit delivered application code in the control-plane context.
+
+This workflow is harness-, provider-, and model-agnostic. Never require a named agent, model family, provider, command path, or harness-specific task API. Bind work to capability roles at runtime.
 
 ## Parse the request
 
-Accept:
+Invocation adapters may expose `/epic`, `$epic`, another command syntax, or natural language. Interpret the payload as:
 
 ```text
-$epic <issue-url> [auto|fast|full|implement|review] [frozen-sha]
+<issue-url> [auto|fast|full|implement|review] [frozen-sha]
 ```
 
-- `auto` (default): Reconstruct durable state and continue from the first incomplete gate. Auto-selects Fast Tier for single issues or Full Epic Tier for epics with sub-issues.
-- `fast`: Fast Tier for bounded/single issues: 1 writer (`epic_builder`), 1 reviewer (`sol_reviewer`), direct integrated validation.
-- `full`: Full Epic Tier: multi-agent dependency graph, dedicated integration branch, frozen SHA, dual independent review (`sol_reviewer` + `adversarial_reviewer`), and bounded remediation.
-- `implement` / `review`: Constrain to implementation or review phase without duplicating completed work. In review mode, freeze the supplied SHA or current pushed integration head.
+- `auto` (default): reconcile live state and continue from the first incomplete gate; choose `fast` for one bounded issue and `full` for an epic with dependent children.
+- `fast`: one bounded implementation lane, integrated validation, and one fresh independent review.
+- `full`: dependency graph, bounded implementation waves, integration SHA freeze, two fresh independent reviews, and bounded remediation.
+- `implement` / `review`: constrain the next eligible phase without repeating completed work. Review uses the supplied SHA or freezes the current pushed integration head.
 
 Require one complete GitHub issue URL belonging to the current Git repository.
 
 ## Load the contract
 
-Read [references/state-contract.md](references/state-contract.md) before changing GitHub, branches, worktrees, or checkpoints. Use [scripts/epic-lock.sh](scripts/epic-lock.sh) for acquiring and releasing leases.
+Read [references/state-contract.md](references/state-contract.md) before changing GitHub state, branches, worktrees, leases, or checkpoints. Use [scripts/epic-lock.sh](scripts/epic-lock.sh) for local lease operations.
 
-Read the repository's nearest `AGENTS.md`, source-of-truth index, roadmap, architecture rules, engineering rules, GitHub conventions, and validation commands. Treat issue acceptance criteria and non-goals as the implementation contract.
+Read the repository's governing instructions, architecture and engineering rules, GitHub conventions, issue acceptance criteria, non-goals, and prescribed validation commands. Repository constraints may strengthen this workflow but may not weaken its safety or review invariants.
 
-Use the GitHub connector when available; otherwise use the authenticated `gh` CLI. Never use unauthenticated web search as evidence for private repository state.
+Use an authenticated GitHub integration available in the host. Never use unauthenticated web search as evidence for private repository state.
+
+## Bind capability roles
+
+Resolve these roles from the host's available agents and tools before dispatch:
+
+- **Implementer**: can write in an isolated workspace, follow the repository contract, update every affected callsite, and return changed paths plus observed checks.
+- **Primary reviewer**: fresh context, read-only source access, acceptance-criteria and regression focus.
+- **Adversarial reviewer**: separate fresh context, read-only source access, failure-mode, security, ownership, concurrency, migration, and partial-failure focus.
+- **Design advisor**: optional, read-only, used only when product or UI direction is unresolved.
+
+Agent names, model names, providers, reasoning labels, and host APIs are adapter concerns, not workflow invariants. Select the cheapest role-capable worker consistent with risk. High-blast-radius or ambiguous work requires the host's stronger implementation or review capability; bounded mechanical work may use a cheaper worker.
+
+Prefer native isolated delegation. If the host cannot provide an isolated implementer or a fresh read-only reviewer, report the missing capability as `BLOCKED`; do not fake independence in the control-plane context. Parallel execution is optional—independence and frozen inputs are required.
 
 ## Phase 0 — Reconcile before dispatch
 
 Perform on every invocation:
 
 1. Refresh remote refs without modifying worktrees.
-2. Read the epic/issue, linked children, dependencies, project fields, comments, linked PRs, checks, reviews, branch heads, and merge state.
-3. Inspect local and remote issue branches plus `git worktree list --porcelain`.
-4. Locate the newest checkpoint (`<!-- epic-flow:v1 -->`, `<!-- codex-epic-flow:v1 -->`, or legacy markers) and corroborate against live state.
-5. Determine execution tier:
-   - **Fast Tier**: Single issue without sub-issues, or explicit `fast` mode.
-   - **Full Epic Tier**: Multi-issue epic with sub-issues/dependencies, or explicit `full` mode.
-6. Acquire the epic lease via `scripts/epic-lock.sh`. Refuse a live running owner; clean stale dead locks automatically.
-7. Select the first incomplete dependency gate.
+2. Read the issue or epic, linked children, dependencies, project state, comments, linked PRs, checks, reviews, branch heads, and merge state.
+3. Inspect local and remote issue branches and all worktrees.
+4. Locate the newest generic or legacy epic checkpoint and corroborate it against live Git and GitHub state. Migrate the next update to the generic checkpoint schema.
+5. Choose the execution tier and construct dependency gates.
+6. Acquire the generic epic lease under the shared Git directory.
+7. Select the first incomplete gate.
 
-Reuse existing issue branches and PRs. Never delete, reset, clean, stash, or overwrite a dirty worktree.
+Reuse existing issue branches and PRs. Never reset, clean, stash, delete, or overwrite a dirty worktree.
 
-## Execution Tiers
+## Fast tier
 
-### Fast Tier (Single / Bounded Issue)
+1. Give one implementer a bounded contract in an isolated workspace and exclusive ownership of its branch.
+2. Verify the pushed issue-branch head and PR from live GitHub state.
+3. Run repository-prescribed integrated validation and exercise the changed behavior.
+4. Give one fresh primary reviewer the frozen pushed SHA, issue contract, diff, and factual validation handoff.
+5. If the reviewer finds a supported P0/P1/P2 defect, give one bounded remediation contract to an implementer, verify a new SHA, and obtain a fresh review.
+6. Proceed to the final gate.
 
-1. Dispatch bounded contract to `epic_builder` in an isolated worktree.
-2. `epic_builder` implements changes, runs focused tests, and pushes to an issue PR branch.
-3. In main thread, run repository-prescribed integrated validation on the PR branch.
-4. Spawn one fresh read-only `sol_reviewer` for acceptance criteria & safety.
-5. If issues are found, dispatch 1 remediation pass to `epic_builder`.
-6. Proceed directly to Final Gate.
+## Full tier
 
-### Full Epic Tier (Multi-Issue Epic)
+1. **Graph**: map child issues and integration into dependency waves. Serialize nodes that share contracts, migrations, schemas, generated artifacts, lockfiles, central configuration, branches, or likely files.
+2. **Implement**: dispatch only independent nodes in the same wave. Use at most the host/repository concurrency cap, with three active workers as the default ceiling. Give each implementer one branch, explicit dependencies, acceptance criteria, non-goals, and expected evidence.
+3. **Integrate**: after child heads are verified, give one implementer exclusive ownership of the integration branch. Do not merge child branches from the control-plane context.
+4. **Validate and freeze**: inspect the integrated diff, run prescribed validation and the changed behavior, wait for required CI, push, and freeze one immutable integration SHA.
+5. **Review**: give the same frozen SHA independently to the primary and adversarial reviewers. Preserve both initial verdicts before sharing findings or synthesizing a combined verdict.
+6. **Escalate**: use a fresh design or review advisor only for unresolved product direction, high-risk surfaces, or evidence-backed reviewer disagreement.
+7. **Remediate**: translate supported findings into bounded implementer contracts. Increment the durable remediation count before dispatch, verify the new SHA, and obtain fresh reviews. Maximum three remediation/re-review cycles.
 
-1. **Graph Construction**: Map child issues into dependency waves. Serialize work sharing contracts, migrations, schemas, lockfiles, or central config. Parallelize only independent nodes (max 3 concurrent agents).
-2. **Subagents**:
-   - `epic_builder`: sole writer (`gpt-5.6-luna` with max reasoning).
-   - `sol_reviewer`: primary fresh read-only review (`gpt-5.6-sol` with max reasoning).
-   - `adversarial_reviewer`: independent failure-mode review (`gpt-5.6-terra` with max reasoning).
-   - `epic_designer`: optional read-only product/UI direction (`gpt-5.6-sol`).
-3. **Implementation Waves**:
-   - Dispatch independent child contracts to `epic_builder`.
-   - Verify returned issue → PR → head SHA mapping from live GitHub state.
-   - Dispatch one `epic_builder` to update the dedicated integration branch.
-4. **Integrated Validation & Freeze**:
-   - In main thread, inspect diff, run validation, and wait for required CI.
-   - Push and freeze one immutable integration SHA before review.
-5. **Dual Independent Review**:
-   - Spawn fresh `sol_reviewer` and `adversarial_reviewer` in parallel on the frozen SHA.
-   - Compare findings. If high-risk contracts or disputes exist, escalate.
-6. **Remediation**:
-   - On `changes_required`, increment durable remediation count (max 3 cycles).
-   - Translate findings into contracts for `epic_builder`, verify new SHA, and re-review.
-   - If blocked by ambiguous spec after 2 cycles, escalate to owner interactively.
+Review outcomes:
 
-## Final Gate
+- `pass`: acceptance criteria met and no supported P0/P1/P2 defect remains.
+- `changes_required`: at least one supported P0/P1/P2 defect remains.
+- `blocked`: required capability, evidence, owner decision, or external dependency is unavailable.
+
+## Final gate
 
 Confirm:
-- Final immutable SHA verified and mergeable in documented order.
-- Child issue/PR coverage complete with required CI and smoke evidence.
-- Reviewer verdict is `pass` (or explicitly approved by owner).
-- No unauthorized merge, deployment, production mutation, pricing change, or issue closure occurred.
 
-Update the durable checkpoint, release owned locks, and return:
-- `READY FOR OWNER QA` (or `READY FOR STAGED RELEASE` / `BLOCKED`)
-- Final SHA, PR table, reviewer verdict, validation evidence, external acceptance checklist, safe merge order, and exactly one next owner action.
+- The final pushed SHA is immutable, verified, and mergeable in documented order.
+- Every child issue maps to an implementation result, PR, and current head SHA.
+- Required CI, repository validation, and changed-behavior evidence are present.
+- The required reviewer verdict is `pass`, or the owner explicitly accepted a named residual risk.
+- No unauthorized merge, deployment, production mutation, pricing change, branch deletion, or issue closure occurred.
+
+Update the generic durable checkpoint, release owned leases, and return:
+
+- `READY FOR OWNER QA`, `READY FOR STAGED RELEASE`, or `BLOCKED`;
+- final SHA, issue/PR table, reviewer verdict, observed validation, residual risks, safe merge order, and exactly one next owner action.
