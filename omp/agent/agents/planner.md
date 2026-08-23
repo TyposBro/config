@@ -11,7 +11,7 @@ tools:
   - todo
   - yield
 model:
-  - "@plan"
+  - "@task"
 thinkingLevel: auto
 ---
 

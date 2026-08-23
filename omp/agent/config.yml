@@ -1,40 +1,75 @@
-symbolPreset: nerd
-theme: 
-  dark: titanium
-  light: light
 setupVersion: 1
-modelRoles: 
-  smol: openai-codex/gpt-5.3-codex-spark:xhigh
-  slow: openai-codex/gpt-5.6-luna:max
-  default: openai-codex/gpt-5.6-luna
-modelTags: 
-  plan: 
-    name: Planner
+symbolPreset: nerd
+theme:
+  dark: dark-catppuccin
+  light: light
+
+modelRoles:
+  default: openai-codex/gpt-5.6-sol:medium
+  plan: openai-codex/gpt-5.6-sol:high
+  slow: openai-codex/gpt-5.6-sol:high
+  smol: openai-codex/gpt-5.6-luna:xhigh
+  tiny: openai-codex/gpt-5.6-luna:low
+  commit: openai-codex/gpt-5.6-luna:high
+  task: openai-codex/gpt-5.6-terra:xhigh
+  designer: openai-codex/gpt-5.6-terra:xhigh
+  vision: openai-codex/gpt-5.6-terra:xhigh
+  review: openai-codex/gpt-5.6-terra:max
+  advisor: openai-codex/gpt-5.6-terra:max
+
+modelTags:
+  plan:
+    name: CTO plan
     color: cyan
-  commit: 
-    name: Committer
+  task:
+    name: Terra implementation
     color: green
-  designer: 
-    name: Designer
+  review:
+    name: Terra review
     color: violet
-  vision: 
-    name: Vision
-    color: magenta
-task: 
-  eager: always
-  isolation: 
-    mode: auto
-  agentModelOverrides: 
-    scout: opencode-go/deepseek-v4-flash
-    task: opencode-go/deepseek-v4-flash
-    sonic: opencode-go/deepseek-v4-flash
-    designer: opencode-go/deepseek-v4-flash
-    librarian: opencode-go/deepseek-v4-flash
-    reviewer: opencode-go/deepseek-v4-flash
-    security-reviewer: opencode-go/deepseek-v4-flash
+
+cycleOrder:
+  - smol
+  - default
+  - slow
+
 defaultThinkingLevel: auto
 hideThinkingBlock: true
-browser: 
+
+advisor:
+  enabled: false
+  subagents: false
+prewalk:
+  enabled: false
+
+task:
+  eager: default
+  maxConcurrency: 8
+  maxRecursionDepth: 1
+  enableEffort: false
+  enableLsp: true
+  isolation:
+    mode: none
+  showResolvedModelBadge: true
+  prewalk: false
+  disabledAgents:
+    - planner
+    - luna-fast
+    - sol-reviewer
+    - terra-pro
+    - opus-reviewer
+  agentModelOverrides:
+    task: "@task"
+    designer: "@designer"
+    reviewer: "@review"
+    security-reviewer: "@review"
+    scout: "@smol"
+    librarian: "@smol"
+    sonic: "@smol"
+
+display:
+  showTokenUsage: true
+browser:
   headless: true
-dev: 
-  autoqaConsent: denied
+dev:
+  autoqaConsent: granted

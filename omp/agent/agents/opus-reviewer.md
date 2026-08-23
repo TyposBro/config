@@ -1,6 +1,6 @@
 ---
 name: opus-reviewer
-description: Token-conscious DeepSeek V4 Flash reviewer for high-risk or disputed changes
+description: Terra secondary reviewer for high-risk or disputed changes
 tools:
   - read
   - grep
@@ -9,7 +9,7 @@ tools:
   - hub
   - yield
 model:
-  - opencode-go/deepseek-v4-flash
+  - "@review"
 thinkingLevel: max
 ---
 

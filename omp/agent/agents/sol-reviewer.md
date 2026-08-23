@@ -1,6 +1,6 @@
 ---
 name: sol-reviewer
-description: Fresh DeepSeek V4 Flash medium reviewer for source-only architectural critique
+description: Terra primary reviewer for source-only architectural critique
 tools:
   - read
   - grep
@@ -10,7 +10,7 @@ tools:
   - hub
   - yield
 model:
-  - opencode-go/deepseek-v4-flash
+  - "@review"
 thinkingLevel: max
 ---
 

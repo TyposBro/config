@@ -1,6 +1,6 @@
 ---
 name: terra-pro
-description: Independent DeepSeek V4 Flash high reviewer for adversarial fresh-eyes analysis
+description: Terra independent reviewer for adversarial fresh-eyes analysis
 tools:
   - read
   - grep
@@ -9,7 +9,7 @@ tools:
   - hub
   - yield
 model:
-  - opencode-go/deepseek-v4-flash
+  - "@review"
 thinkingLevel: max
 ---
 
