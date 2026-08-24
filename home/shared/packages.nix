@@ -29,6 +29,15 @@
     ast-grep                                # AST codemods (xd://ast_edit — sg)
     python3Packages.debugpy                 # DAP adapter for Python (xd://debug)
 
+    # Shell & config LSP — typed bash/yml/toml/md (xd://lsp for agents)
+    nodePackages.bash-language-server       # LSP for *.sh/*.zsh — catches shell mistakes before bash runs
+    shellcheck                              # linter for bash (also powers LSP diagnostics)
+    shfmt                                   # formatter for bash
+    taplo                                   # LSP for *.toml
+    nodePackages.yaml-language-server       # LSP for *.yml/*.yaml (lefthook, maestro, workflows)
+    marksman                                # LSP for *.md
+    just                                    # typed command runner — replaces ad-hoc bash recipes
+
     # Media
     mpv
     tesseract

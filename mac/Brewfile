@@ -24,7 +24,13 @@ brew "cocoapods"
 brew "ast-grep" # AST — xd://ast_edit (sg)
 brew "pyright"  # LSP — Python (feelflow/backend) xd://lsp
 brew "pipx"     # DAP — debugpy via pipx
-
+brew "bash-language-server" # LSP — bash/zsh xd://lsp (typed bash)
+brew "shellcheck"           # linter for bash
+brew "shfmt"                # formatter for bash
+brew "taplo"                # LSP — toml
+brew "yaml-language-server" # LSP — yml/yaml
+brew "marksman"             # LSP — markdown
+brew "just"                 # typed command runner
 # Rust — after install, run: rustup default stable && rustup component add clippy rust-analyzer
 brew "rustup"
 
