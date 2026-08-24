@@ -22,7 +22,12 @@
     bun
     pkgs-unstable.watchman
     nodePackages.typescript
-    nodePackages.typescript-language-server
+    nodePackages.typescript-language-server # LSP for TS (expo/arbee/spiko) — xd://lsp
+
+    # LSP / AST / DAP — for omp/opencode/codex harnesses
+    pyright                                 # LSP for Python (feelflow/backend)
+    ast-grep                                # AST codemods (xd://ast_edit — sg)
+    python3Packages.debugpy                 # DAP adapter for Python (xd://debug)
 
     # Media
     mpv

@@ -21,6 +21,9 @@ brew "ruby"
 brew "git-lfs"
 brew "git-filter-repo"
 brew "cocoapods"
+brew "ast-grep" # AST — xd://ast_edit (sg)
+brew "pyright"  # LSP — Python (feelflow/backend) xd://lsp
+brew "pipx"     # DAP — debugpy via pipx
 
 # Rust — after install, run: rustup default stable && rustup component add clippy rust-analyzer
 brew "rustup"
