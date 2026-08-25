@@ -1,7 +1,7 @@
 setupVersion: 1
 symbolPreset: nerd
 theme:
-  dark: opencode
+  dark: dark-tokyo-night
   light: light
 
 modelRoles:
