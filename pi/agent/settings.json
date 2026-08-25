@@ -1,12 +1,14 @@
 {
-  "lastChangelogVersion": "0.74.0",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.5",
+  "lastChangelogVersion": "0.83.0",
+  "defaultProvider": "google",
+  "defaultModel": "gemini-3.7-flash",
   "defaultThinkingLevel": "high",
-  "packages": [],
-  "transport": "websocket",
+  "theme": "catppuccin-mocha",
   "hideThinkingBlock": true,
   "quietStartup": true,
+  "packages": [
+    "git:https://github.com/hasit/pi-community-themes"
+  ],
   "terminal": {
     "showImages": false
   }

@@ -6,7 +6,7 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MARK_DIR="$HOME/.local/state/config-pi"
 PI_PACKAGE="@earendil-works/pi-coding-agent"
-PI_VERSION="0.74.0"
+PI_VERSION="0.83.0"
 
 mkdir -p "$MARK_DIR"
 

@@ -11,8 +11,9 @@ MEMORY="${AGENT_MEMORY_ROOT:-$HOME/agent-memory}"
 }
 
 bash "$ROOT/omp/setup.sh"
+bash "$ROOT/pi/setup.sh"
 bash "$ROOT/opencode/setup.sh"
 bash "$ROOT/codex/setup.sh"
 bash "$ROOT/paseo/setup-providers.sh"
 
-echo "Shared Sol/Terra/Luna workflow installed for OMP, OpenCode, Codex CLI, and Paseo."
+echo "Shared Sol/Terra/Luna workflow installed for OMP, Pi, OpenCode, Codex CLI, and Paseo."

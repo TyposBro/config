@@ -35,6 +35,7 @@ cycleOrder:
 
 defaultThinkingLevel: auto
 hideThinkingBlock: true
+proseOnlyThinking: true
 
 advisor:
   enabled: false
@@ -69,7 +70,15 @@ task:
 
 display:
   showTokenUsage: true
+  hideToolActivity: true
+  smoothStreaming: true
 browser:
   headless: true
 dev:
   autoqaConsent: granted
+composer:
+  shape: box
+tui:
+  tight: true
+statusLine:
+  preset: minimal
