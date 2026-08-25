@@ -1,7 +1,7 @@
 setupVersion: 1
 symbolPreset: nerd
 theme:
-  dark: dark-catppuccin
+  dark: opencode
   light: light
 
 modelRoles:

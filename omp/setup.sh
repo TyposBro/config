@@ -12,7 +12,7 @@ mkdir -p "$TARGET"
 
 cp "$HERE/agent/config.yml" "$TARGET/config.yml.tmp"
 mv "$TARGET/config.yml.tmp" "$TARGET/config.yml"
-for asset in agents commands hooks; do
+for asset in agents commands hooks themes; do
   [[ -d "$HERE/agent/$asset" ]] || continue
   mkdir -p "$TARGET/$asset"
   cp "$HERE/agent/$asset/"* "$TARGET/$asset/"
