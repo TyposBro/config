@@ -118,6 +118,50 @@ if [ -d "$DIR/extensions" ]; then
 	done
 fi
 
+if [ -d "$DIR/themes" ]; then
+	echo "==> Syncing custom themes..."
+	mkdir -p "$HOME/.pi/agent/themes"
+	cp -r "$DIR/themes/"* "$HOME/.pi/agent/themes/"
+fi
+
+echo "==> Applying OpenCode-style clean Markdown heading patch to pi-tui..."
+node -e '
+const fs = require("fs");
+const path = require("path");
+
+function findAndPatch(dir) {
+  if (!fs.existsSync(dir)) return;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      findAndPatch(full);
+    } else if (entry.name === "markdown.js" && full.includes("@earendil-works/pi-tui")) {
+      try {
+        let content = fs.readFileSync(full, "utf8");
+        if (content.includes("headingLevel >= 3 ? headingStyleFn(headingPrefix) + headingText : headingText")) {
+          content = content.replace(
+            "headingLevel >= 3 ? headingStyleFn(headingPrefix) + headingText : headingText",
+            "headingText"
+          );
+          fs.writeFileSync(full, content, "utf8");
+          console.log("    Patched:", full);
+        }
+      } catch {}
+    }
+  }
+}
+
+for (const p of [
+  process.env.HOME + "/.local/share/fnm",
+  process.env.HOME + "/.fnm",
+  "/opt/homebrew/lib/node_modules",
+  "/usr/local/lib/node_modules"
+]) {
+  findAndPatch(p);
+}
+' || true
+
 cat <<'EOF'
 ==> Pi setup done.
     Managed global rules: ~/.pi/agent/AGENTS.md

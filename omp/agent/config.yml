@@ -80,5 +80,7 @@ composer:
   shape: box
 tui:
   tight: true
+  textSizing: true
+  renderMermaid: true
 statusLine:
   preset: minimal

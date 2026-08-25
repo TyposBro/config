@@ -3,7 +3,7 @@
   "defaultProvider": "google",
   "defaultModel": "gemini-3.7-flash",
   "defaultThinkingLevel": "high",
-  "theme": "catppuccin-mocha",
+  "theme": "opencode",
   "hideThinkingBlock": true,
   "quietStartup": true,
   "packages": [
