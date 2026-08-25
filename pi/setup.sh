@@ -124,7 +124,7 @@ if [ -d "$DIR/themes" ]; then
 	cp -r "$DIR/themes/"* "$HOME/.pi/agent/themes/"
 fi
 
-echo "==> Applying OpenCode-style clean Markdown heading patch to pi-tui..."
+echo "==> Applying OpenCode-style clean Markdown renderer patches to pi-tui..."
 node -e '
 const fs = require("fs");
 const path = require("path");
@@ -139,11 +139,44 @@ function findAndPatch(dir) {
     } else if (entry.name === "markdown.js" && full.includes("@earendil-works/pi-tui")) {
       try {
         let content = fs.readFileSync(full, "utf8");
+        let modified = false;
         if (content.includes("headingLevel >= 3 ? headingStyleFn(headingPrefix) + headingText : headingText")) {
           content = content.replace(
             "headingLevel >= 3 ? headingStyleFn(headingPrefix) + headingText : headingText",
             "headingText"
           );
+          modified = true;
+        }
+        if (content.includes("lines.push(this.theme.codeBlockBorder(`\\`\\`\\`${token.lang || \"\"}`));")) {
+          content = content.replace(
+            /case "code":\s*\{[\s\S]*?break;\s*\}/,
+            `case "code": {
+                const indent = this.theme.codeBlockIndent ?? "  ";
+                const langLabel = token.lang ? " " + token.lang + " " : " ";
+                const bLen = Math.max(16, Math.min(width - 4, 60));
+                lines.push(this.theme.codeBlockBorder("╭─" + langLabel + "─".repeat(Math.max(0, bLen - langLabel.length - 2))));
+                if (this.theme.highlightCode) {
+                    const highlightedLines = this.theme.highlightCode(token.text, token.lang);
+                    for (const hlLine of highlightedLines) {
+                        lines.push(\`\${indent}\${hlLine}\`);
+                    }
+                }
+                else {
+                    const codeLines = token.text.split("\\n");
+                    for (const codeLine of codeLines) {
+                        lines.push(\`\${indent}\${this.theme.codeBlock(codeLine)}\`);
+                    }
+                }
+                lines.push(this.theme.codeBlockBorder("╰" + "─".repeat(Math.max(0, bLen - 1))));
+                if (nextTokenType && nextTokenType !== "space") {
+                    lines.push("");
+                }
+                break;
+            }`
+          );
+          modified = true;
+        }
+        if (modified) {
           fs.writeFileSync(full, content, "utf8");
           console.log("    Patched:", full);
         }

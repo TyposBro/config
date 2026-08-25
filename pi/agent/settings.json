@@ -6,6 +6,8 @@
   "theme": "opencode",
   "hideThinkingBlock": true,
   "quietStartup": true,
+  "outputPad": 2,
+  "editorPaddingX": 1,
   "packages": [
     "git:https://github.com/hasit/pi-community-themes"
   ],

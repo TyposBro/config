@@ -1,14 +1,17 @@
 font-family = JetBrainsMono Nerd Font
-font-size = 17
+font-size = 15
 font-feature = +liga
 
 theme = Catppuccin Mocha
-background-opacity = 0.92
+background = #11111b
+background-opacity = 0.96
 cursor-style = bar
 cursor-style-blink = true
 
-window-padding-x = 10
-window-padding-y = 10
+adjust-cell-height = 14%
+window-padding-x = 16
+window-padding-y = 14
+window-padding-balance = true
 window-decoration = true
 gtk-tabs-location = bottom
 gtk-single-instance = true
