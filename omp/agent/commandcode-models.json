@@ -156,6 +156,13 @@
       "maxTokens": 65536
     },
     {
+      "id": "z-ai/glm-5.3-flash",
+      "name": "GLM-5.3 Flash (CC)",
+      "reasoning": false,
+      "contextWindow": 1048576,
+      "maxTokens": 65536
+    },
+    {
       "id": "zai-org/GLM-5.3",
       "name": "GLM-5.3 (CC)",
       "reasoning": false,
@@ -205,6 +212,20 @@
       "maxTokens": 65536
     },
     {
+      "id": "minimax/minimax-m3-free",
+      "name": "MiniMax M3 (CC)",
+      "reasoning": false,
+      "contextWindow": 1000000,
+      "maxTokens": 65536
+    },
+    {
+      "id": "minimax/minimax-m2.7-free",
+      "name": "MiniMax M2.7 (CC)",
+      "reasoning": false,
+      "contextWindow": 197000,
+      "maxTokens": 65536
+    },
+    {
       "id": "MiniMaxAI/MiniMax-M2.5",
       "name": "MiniMax M2.5 (CC)",
       "reasoning": false,
@@ -237,6 +258,13 @@
       "name": "Qwen 3.8 27B (CC)",
       "reasoning": false,
       "contextWindow": 262144,
+      "maxTokens": 65536
+    },
+    {
+      "id": "Qwen/Qwen3.8-Flash",
+      "name": "Qwen 3.8 Flash (CC)",
+      "reasoning": false,
+      "contextWindow": 1000000,
       "maxTokens": 65536
     },
     {
@@ -293,6 +321,13 @@
       "name": "Tencent Hy3 (CC)",
       "reasoning": false,
       "contextWindow": 262144,
+      "maxTokens": 65536
+    },
+    {
+      "id": "tencent/hy4-preview",
+      "name": "Tencent Hy4 Preview (CC)",
+      "reasoning": false,
+      "contextWindow": 1048576,
       "maxTokens": 65536
     },
     {
@@ -356,13 +391,6 @@
       "name": "Inkling Small (CC)",
       "reasoning": false,
       "contextWindow": 1000000,
-      "maxTokens": 65536
-    },
-    {
-      "id": "stealth/ox-alpha",
-      "name": "Ox Alpha (CC)",
-      "reasoning": false,
-      "contextWindow": 1048576,
       "maxTokens": 65536
     },
     {

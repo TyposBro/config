@@ -1,14 +1,13 @@
-setupVersion: 1
+setupVersion: 2
 symbolPreset: nerd
-theme:
+theme: 
   dark: dark-tokyo-night
   light: light
-
-modelRoles:
-  default: openai-codex/gpt-5.6-sol:medium
+modelRoles: 
+  default: openai-codex/gpt-5.6-luna
   plan: openai-codex/gpt-5.6-sol:high
   slow: openai-codex/gpt-5.6-sol:high
-  smol: openai-codex/gpt-5.6-luna:xhigh
+  smol: commandcode/gpt-5.6-luna:auto
   tiny: openai-codex/gpt-5.6-luna:low
   commit: openai-codex/gpt-5.6-luna:high
   task: openai-codex/gpt-5.6-terra:xhigh
@@ -16,50 +15,44 @@ modelRoles:
   vision: openai-codex/gpt-5.6-terra:xhigh
   review: openai-codex/gpt-5.6-terra:max
   advisor: openai-codex/gpt-5.6-terra:max
-
-modelTags:
-  plan:
+modelTags: 
+  plan: 
     name: CTO plan
     color: cyan
-  task:
+  task: 
     name: Terra implementation
     color: green
-  review:
+  review: 
     name: Terra review
     color: violet
-
-cycleOrder:
+cycleOrder: 
   - smol
   - default
   - slow
-
 defaultThinkingLevel: auto
 hideThinkingBlock: true
 proseOnlyThinking: true
-
-advisor:
+advisor: 
   enabled: false
-  subagents: false
-prewalk:
+prewalk: 
   enabled: false
-
-task:
+task: 
   eager: default
   maxConcurrency: 8
   maxRecursionDepth: 1
   enableEffort: false
   enableLsp: true
-  isolation:
+  isolation: 
     mode: none
   showResolvedModelBadge: true
   prewalk: false
-  disabledAgents:
+  disabledAgents: 
     - planner
     - luna-fast
     - sol-reviewer
     - terra-pro
     - opus-reviewer
-  agentModelOverrides:
+  agentModelOverrides: 
     task: "@task"
     designer: "@designer"
     reviewer: "@review"
@@ -67,20 +60,21 @@ task:
     scout: "@smol"
     librarian: "@smol"
     sonic: "@smol"
-
-display:
+  agentAdvisor: 
+    task: "off"
+display: 
   showTokenUsage: true
   hideToolActivity: true
   smoothStreaming: true
-browser:
+browser: 
   headless: true
-dev:
+dev: 
   autoqaConsent: granted
-composer:
+composer: 
   shape: box
-tui:
+tui: 
   tight: true
   textSizing: true
   renderMermaid: true
-statusLine:
+statusLine: 
   preset: minimal
