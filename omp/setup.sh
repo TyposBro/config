@@ -18,6 +18,12 @@ for asset in agents commands hooks themes; do
   cp "$HERE/agent/$asset/"* "$TARGET/$asset/"
 done
 
+# Remove legacy named roles. Epic workflows bind the built-in resolver's
+# capability agents instead of depending on harness-specific aliases.
+for stale_agent in luna-fast opus-reviewer planner sol-reviewer terra-pro; do
+  rm -f "$TARGET/agents/$stale_agent.md"
+done
+
 
 link_policy() {
   local target="$1"

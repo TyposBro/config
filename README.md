@@ -114,9 +114,9 @@ Run the focused installer directly:
 ~/config/omp/setup.sh
 ```
 
-This restores the active OMP agent directory (default `~/.omp/agent`) with the personality/AuDHD communication layer, role routing, and model-pinned agents. Sol is the main control plane; GPT-5.6 Luna is the sole application-code writer; fresh Sol and GPT-5.6 Terra sessions are required reviewers; `opus-reviewer` is one narrow secondary pass for high-risk surfaces, reviewer disagreement, supported P0/P1/P2 findings, or an explicit request. Generic writer fallbacks are disabled. Provider credentials, auth, sessions, DBs, blobs, and `models.yml` stay local.
+This restores the active OMP agent directory (default `~/.omp/agent`) with the shared CTO workflow and capability-based role routing. Sol remains the main control plane. The built-in `task` role handles implementation through `@task`; `reviewer` and `security-reviewer` provide fresh review through `@review`; `designer` stays read-only. Provider credentials, auth, sessions, databases, blobs, and `models.yml` stay local.
 
-Managed slash commands include `/ship`, `/fast`, `/design`, `/epic`, and `/epics`. `/epic <issue-url> [auto|implement|review] [sha]` defaults to `auto`: it reconciles GitHub PRs/checkpoints plus local and remote branches/worktrees, resumes from the first incomplete gate, delegates implementation and remediation only to `luna-fast`, then runs independent `sol-reviewer` and `terra-pro` review, conditional `opus-reviewer` critique, and reviewer collaboration. `/epics <issue-url>...` applies the same lane contract to several epics in one repository, admitting up to four independent lanes while OMP's task semaphore bounds concurrency and shared Git locks serialize conflicts. Both workflows stop at owner QA unless the initiating request explicitly authorizes consequential actions.
+Managed slash commands are `/epic` and `/epics`. They load the installed provider-independent skills and map implementer, reviewer, adversarial-reviewer, and optional design-advisor roles to agents exposed by the current resolver. No workflow depends on legacy `luna-fast`, `sol-reviewer`, `terra-pro`, or `opus-reviewer` aliases, resolver fingerprint attestation, or worker-side CAS/fencing features the host does not expose.
 
 After running the installer, stop and relaunch every OMP session. Existing sessions retain the model roles, agents, and system prompt loaded at startup; installing files does not hot-reload them.
 
@@ -132,7 +132,7 @@ This installs personal `$epic` and `$epics` skills plus `epic_builder`, `sol_rev
 
 Restart Codex or open a new task after installation so custom agents are discovered.
 
-`omp/setup.sh` stages the checked-in OMP config, installs curated shared skills, and replaces the managed `config.yml`, `APPEND_SYSTEM.md`, agents, commands, and extensions. If publication fails after it starts, caught failures roll back the previous managed inventory; provider credentials, auth, sessions, databases, blobs, and `models.yml` remain local-only and untouched. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`. Unmanaged profiles are not covered by this routing contract.
+`omp/setup.sh` installs the checked-in OMP config, commands, themes, and supported custom agents; removes deprecated named-role files; and links `APPEND_SYSTEM.md` to the canonical shared CTO workflow in `~/agent-memory/shared/cto-workflow.md`. Provider credentials, auth, sessions, databases, blobs, and `models.yml` remain local-only and untouched. Named profiles have separate agent directories; install each explicitly with `PI_CODING_AGENT_DIR=~/.omp/profiles/<name>/agent ~/config/omp/setup.sh`.
 
 ### Curated agent skills
 

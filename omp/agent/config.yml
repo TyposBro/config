@@ -4,10 +4,10 @@ theme:
   dark: dark-tokyo-night
   light: light
 modelRoles: 
-  default: openai-codex/gpt-5.6-luna
+  default: openai-codex/gpt-5.6-sol
   plan: openai-codex/gpt-5.6-sol:high
   slow: openai-codex/gpt-5.6-sol:high
-  smol: commandcode/gpt-5.6-luna:auto
+  smol: openai-codex/gpt-5.6-luna:auto
   tiny: openai-codex/gpt-5.6-luna:low
   commit: openai-codex/gpt-5.6-luna:high
   task: openai-codex/gpt-5.6-terra:xhigh
@@ -43,15 +43,11 @@ task:
   enableEffort: false
   enableLsp: true
   isolation: 
-    mode: none
+    mode: auto
   showResolvedModelBadge: true
   prewalk: false
   disabledAgents: 
     - planner
-    - luna-fast
-    - sol-reviewer
-    - terra-pro
-    - opus-reviewer
   agentModelOverrides: 
     task: "@task"
     designer: "@designer"
