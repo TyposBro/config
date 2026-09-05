@@ -28,7 +28,7 @@ rm ~/.local/state/config-kubuntu/<step>
 ~/config/linux/kubuntu/setup.sh
 ```
 
-Step names: `apt`, `ssh-server`, `power-ac-always-on`, `swap-16g`, `nvidia-dgpu`, `flathub`, `perfect-eq`, `ghostty`, `zen`, `fonts-nerd`, `konsole-nerd-font`, `starship`, `fnm`, `bun`, `rust`, `deno`, `lazygit`, `glab`, `cloudflared`, `awscli`, `gcloud`, `terraform-tools`, `vscode`, `brave`, `docker`, `protonvpn`, `snap-apps`, `bitwarden`, `claude-code`, `opencode`, `codex`, `t3-code`, `tectonic`, `configs`, `git-config`, `fish-theme`, `ssh-key`, `gh-ssh`, `glab-ssh`, `kde-terminal`.
+Step names: `apt`, `ssh-server`, `power-ac-always-on`, `swap-16g`, `nvidia-dgpu`, `flathub`, `perfect-eq`, `ghostty`, `zen`, `fonts-nerd`, `konsole-nerd-font`, `starship`, `fnm`, `bun`, `rust`, `deno`, `lazygit`, `glab`, `cloudflared`, `awscli`, `gcloud`, `terraform-tools`, `vscode`, `brave`, `docker`, `protonvpn`, `snap-apps`, `bitwarden`, `claude-code`, `opencode`, `codex`, `t3-code`, `tectonic`, `configs`, `git-config`, `fish-theme`, `ssh-key`, `gh-ssh`, `glab-ssh`, `kde-terminal`, `kde-orchis-rice`.
 
 ## After install
 

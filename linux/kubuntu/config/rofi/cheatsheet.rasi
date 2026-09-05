@@ -1,0 +1,41 @@
+/**
+ * Catppuccin Mocha Cheatsheet Theme
+ * Styled to replicate Image 2 modal
+ **/
+
+* {
+    bg-col:       #181825;
+    bg-sub:       #1e1e2e;
+    border-col:   #cba6f7;
+    fg-col:       #cdd6f4;
+    font:         "JetBrainsMono Nerd Font Mono 10";
+}
+
+window {
+    width:            1060px;
+    height:           640px;
+    border:           2px;
+    border-color:     @border-col;
+    border-radius:    14px;
+    background-color: @bg-col;
+    padding:          16px;
+    location:         center;
+    anchor:           center;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ message ];
+}
+
+message {
+    background-color: transparent;
+    border:           0px;
+    padding:          4px;
+}
+
+textbox {
+    background-color: transparent;
+    text-color:       @fg-col;
+    font:             "JetBrainsMono Nerd Font Mono 10";
+}

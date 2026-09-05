@@ -1,0 +1,14 @@
+{
+    "output": {
+        "blocklist": [],
+        "convolver": {
+            "input-gain": -5.8,
+            "ir-width": 100,
+            "kernel-name": "Sony MDR-7506 AutoEq (Oratory1990)",
+            "output-gain": 0.0
+        },
+        "plugins_order": [
+            "convolver"
+        ]
+    }
+}

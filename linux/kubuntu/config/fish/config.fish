@@ -21,6 +21,9 @@ if status is-interactive
     end
 
     # Env
+    if test -r $HOME/.config/gemini/api-key
+        set -gx GEMINI_API_KEY (string trim <$HOME/.config/gemini/api-key)
+    end
     set -gx BUN_INSTALL $HOME/.bun
     set -gx ANDROID_HOME $HOME/Android/Sdk
     if test -d $HOME/.local/jdks/jdk-21
@@ -52,6 +55,9 @@ if status is-interactive
     alias exc "npx expo start --clear"
     alias expa "npx expo run:android"
     alias expi "npx expo run:ios"
+    alias ff "fastfetch"
+    alias ee "easyeffects"
+    alias cheat "cheatsheet"
 
     function cc --description "Claude Code with yolo + sudo"
         if test (count $argv) -gt 0

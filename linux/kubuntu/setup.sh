@@ -51,7 +51,7 @@ if ! did apt; then
 		neovim \
 		fonts-noto-core fonts-noto-color-emoji fonts-font-awesome \
 		pulseaudio pulseaudio-utils pavucontrol playerctl pamixer brightnessctl wl-clipboard \
-		flatpak \
+		flatpak qpwgraph rofi wmctrl xdotool \
 		git-lfs git-filter-repo
 	# fd-find ships as `fdfind` on Ubuntu — symlink to `fd`
 	mkdir -p "$HOME/.local/bin"
@@ -158,6 +158,9 @@ fi
 if ! did perfect-eq; then
 	echo "==> Installing Perfect Equalizer (EasyEffects)..."
 	flatpak install -y --user flathub com.github.wwmm.easyeffects
+	mkdir -p "$HOME/.var/app/com.github.wwmm.easyeffects/config/easyeffects/output" "$HOME/.var/app/com.github.wwmm.easyeffects/config/easyeffects/irs"
+	cp -rf "$DIR/config/easyeffects/output/"* "$HOME/.var/app/com.github.wwmm.easyeffects/config/easyeffects/output/" 2>/dev/null || true
+	cp -rf "$DIR/config/easyeffects/irs/"* "$HOME/.var/app/com.github.wwmm.easyeffects/config/easyeffects/irs/" 2>/dev/null || true
 	mark perfect-eq
 fi
 
@@ -542,6 +545,12 @@ if ! did configs; then
 	ln -sfn "$DIR/config/fish/config.fish" "$HOME/.config/fish/config.fish"
 	ln -sfn "$DIR/config/ghostty/config" "$HOME/.config/ghostty/config"
 	ln -sfn "$REPO/mac/config/starship.toml" "$HOME/.config/starship.toml"
+	ln -sfn "$DIR/config/fastfetch" "$HOME/.config/fastfetch"
+	ln -sfn "$DIR/config/rofi" "$HOME/.config/rofi"
+	if [ -f "$DIR/config/kwin/kwinrulesrc" ]; then
+		cp -f "$DIR/config/kwin/kwinrulesrc" "$HOME/.config/kwinrulesrc"
+		qdbus org.kde.KWin /KWin reconfigure 2>/dev/null || true
+	fi
 	mark configs
 fi
 
@@ -650,6 +659,41 @@ if ! did kde-terminal; then
 		printf '\n[General]\nTerminalApplication=ghostty\nTerminalService=com.mitchellh.ghostty.desktop\n' >>"$KFILE"
 	fi
 	mark kde-terminal
+fi
+
+# ── 36. KDE: Orchis theme & macOS/GNOME rice ─────────────────────────────────
+if ! did kde-orchis-rice; then
+	echo "==> Applying KDE Orchis rice (macOS/GNOME style)..."
+	bash "$DIR/rice.sh"
+	mark kde-orchis-rice
+fi
+
+# ── 37. Spiko ClickHouse: ensure systemd service auto-launches on reboot ────
+if ! did spiko-clickhouse; then
+	if [ -f "$HOME/services/spiko-clickhouse/docker-compose.yml" ]; then
+		echo "==> Configuring Spiko ClickHouse systemd service..."
+		cat << 'EOF_SVC' | sudo tee /etc/systemd/system/spiko-clickhouse.service >/dev/null
+[Unit]
+Description=Spiko Telemetry ClickHouse Service
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=%h/services/spiko-clickhouse
+ExecStart=/usr/bin/docker compose up -d
+ExecStop=/usr/bin/docker compose stop
+TimeoutStartSec=120
+
+[Install]
+WantedBy=multi-user.target
+EOF_SVC
+		sudo systemctl daemon-reload
+		sudo systemctl enable spiko-clickhouse.service
+	fi
+	mark spiko-clickhouse
 fi
 
 echo

@@ -1,0 +1,42 @@
+[$Version]
+update_info=kwinrules.upd:replace-placement-string-to-enum,kwinrules.upd:use-virtual-desktop-ids
+
+[1]
+Description=Ghostty on Desktop 1
+wmclass=ghostty
+wmclassmatch=2
+desktops=9ac331d2-80a0-4803-8757-6ed6dc25003c
+desktoprule=3
+
+[2]
+Description=Zen Browser Maximized on Desktop 2
+wmclass=zen
+wmclassmatch=2
+desktops=d5a75fa8-fb62-401d-a7a2-a0291d262f4d
+desktoprule=3
+maximizehoriz=true
+maximizehorizrule=3
+maximizevert=true
+maximizevertrule=3
+
+[3]
+Description=ChatGPT on Desktop 3
+wmclass=chatgpt
+wmclassmatch=2
+desktops=6eb27c16-8ec1-457f-9d0a-e6d14ce92d3e
+desktoprule=3
+
+[4]
+Description=Ghostty Scratchpad Dropdown
+title=Ghostty Scratchpad
+titlematch=1
+above=true
+aboverule=2
+skipswitcher=true
+skipswitcherrule=2
+skiptaskbar=true
+skiptaskbarrule=2
+
+[General]
+count=4
+rules=1,2,3,4
